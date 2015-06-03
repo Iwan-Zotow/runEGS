@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed May 06 21:23:51 2015
 
-@author: Oleg.Krivosheev
-"""
+import logging
 
-# holds index vs (name, density) tuple
 class materials(object):
     """
     Class which holds dictionary of the materials,
@@ -41,6 +37,9 @@ class materials(object):
             t = (split[0], float(split[1]))
             self._mats[id] = t
             id += 1
+            
+        logging.info("Materials constructed")
+        logging.debug(fname)
     
     def __getitem__(self, idx):
         """
@@ -54,6 +53,8 @@ class materials(object):
         returns: (string,double) tuple
             material data
         """
+        logging.debug(idx)
+        
         return self._mats[idx]
 
     def __len__(self):

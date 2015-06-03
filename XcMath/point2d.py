@@ -7,7 +7,7 @@ Created on Thu May 14 19:29:28 2015
 
 import numpy as np
 
-class point2d:
+class point2d(object):
     """
     2D point of two floats
     """

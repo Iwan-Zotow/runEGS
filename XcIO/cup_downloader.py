@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed May 06 16:46:37 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import os
 import shutil
@@ -27,7 +22,7 @@ class cup_downloader:
         self._file_prefix = file_prefix
         self._user_id     = user_id
         self._user_pass   = user_pass
-    
+        
         self._rc = 0
         
         logging.info("Cup downloader constructed")
@@ -46,7 +41,7 @@ class cup_downloader:
         
     def sign(self):
         """
-        Compute hash functions of the downloaded cups, to be
+        Compute hash fuR8O2IM01_KddCurveC.txtnctions of the downloaded cups, to be
         used as a signature
         """
         if not hashlib.algorithms.contains("sha1"):
@@ -59,24 +54,52 @@ class cup_downloader:
                 ctx = os.path.join(root, f)
                 val = hasher.update(ctx)
                 self._hash.append(val)
+                
+    @staticmethod
+    def single_load(src):
+        """
+        Load single cup from server
+        """
+        cmd = "wget"
+                
+        return subprocess.call([cmd, "-r", "-nH", "-nd", src], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def load(self):
         """
-        Load cup info from server
+        Load cups info from server
         """
+        
+        self._rc = 0
+        
         # form the command line
-        cmd = "wget"
-                
-        src = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
-        files = self._file_prefix + "*" + ".txt"
-        src = os.path.join( src, self._host_dir, self._host_dir, files )
-        rc = subprocess.call([cmd, "-r", "-nH", "-nd", src], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #addr = "http://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
+        addr = "http://" + "0.0.0.0:8080"
+        
+        fname = self._file_prefix + "_" + "KddCurveA.txt"
+        src = os.path.join( addr, self._host_dir, fname )
+        rc = cup_downloader.single_load(src)
+        
+        if rc != 0:
+            self._rc = rc
+            return
+            
+        fname = self._file_prefix + "_" + "KddCurveB.txt"
+        src = os.path.join( addr, self._host_dir, fname )
+        rc = cup_downloader.single_load(src)
+        
+        if rc != 0:
+            self._rc = rc
+            return
+            
+        fname = self._file_prefix + "_" + "KddCurveC.txt"
+        src = os.path.join( addr, self._host_dir, fname )
+        rc = cup_downloader.single_load(src)
         
         self._rc = rc        
         
     def rc(self):
         """
-        Returns return code of the downlowd operation
+        Returns return code of the downloud operation
         """
         
         return self._rc

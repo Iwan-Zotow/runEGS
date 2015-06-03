@@ -27,7 +27,7 @@ class phantom(phandim.phandim):
         # density
         self._dens = np.empty((self.nx(), self.ny(), self.nz()), dtype=np.float32)
         
-        logging.info("phantom object constructed")
+        logging.info("phantom object constructed")        
         
     def data(self):
         """

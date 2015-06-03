@@ -6,8 +6,9 @@ Created on Thu May 14 00:03:14 2015
 """
 
 import numpy as np
+import logging
 
-class linint:
+class linint(object):
     """
     Given the curve, produce linearly interpolated values
     """
@@ -32,6 +33,9 @@ class linint:
         
         self._zmin = self._points[-1].x()
         self._zmax = self._points[0].x()
+        
+        logging.info("linint constructed")
+        logging.debug(str(points))
         
     def invariant(self):
         """
@@ -81,6 +85,8 @@ class linint:
         returns: point
             2D point at given index
         """
+        logging.debug(str(idx))        
+        
         if idx < 0:
             raise RuntimeError("linint", "index is negative")
         
@@ -114,6 +120,8 @@ class linint:
         returns: float
             interpolated value
         """
+        logging.debug(str(z))
+
         idx = self.find_idx(z)
 
         # above zmax        
@@ -142,6 +150,7 @@ class linint:
         returns: float
             extrapolated value
         """
+        logging.debug(str(z))
 
         if z > self._zmax:
             return 0.0
@@ -170,6 +179,8 @@ class linint:
         returns: integer
             index of the bin
         """
+        logging.debug(str(z))     
+        
         if z > self._zmax:
             return -1
         

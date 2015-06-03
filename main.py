@@ -12,8 +12,8 @@ import logging
 import single_shot
     
 def main():
-    logging.basicConfig(filename='single_shot.log', level=logging.INFO)
-    logging.info("main", "Started")
+    logging.basicConfig(filename='single_shot.log', level=logging.DEBUG)
+    logging.info("Started")
     
     radUnit     = "8"
     outerCup    = "2"

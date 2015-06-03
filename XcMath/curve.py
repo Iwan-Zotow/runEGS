@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed May 06 20:54:09 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import numpy as np
 import point2d as pt
 from os import path
 
-class curve:
+class curve(object):
     """
     Load and check cup curve
     """
@@ -94,3 +89,13 @@ class curve:
             array of cup points
         """
         return self._curve
+        
+    def __len__(self):
+        """
+        Returns curve length
+        
+        returns: integer
+            curve length
+        """
+        return len(self._curve)
+    

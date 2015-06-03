@@ -27,20 +27,20 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
 
     fname_prefix = make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    cdown = cup_downloader.cup_downloader("127.0.0.1", "/.", cup_dir, fname_prefix, "kriol", "Proton31")
+    cdown = cup_downloader.cup_downloader("127.0.0.1", cup_dir, "/.", fname_prefix, "kriol", "Proton31")
     cdown.load()
     if (cdown.rc() != 0):
         raise RuntimeError("run_single_shot", "unable to load files")
 
-    return
-
-    cupA = cc.cup_curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveA.txt"))
-    cupB = cc.cup_curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.cup_curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveC.txt"))
+    cupA = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveA.txt"))
+    cupB = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveB.txt"))
+    cupC = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveC.txt"))
 
     liA = linint.linint(cupA)
     liB = linint.linint(cupB)
     liC = linint.linint(cupC)
+
+    return
 
     nr = int(cl.size()*1.2)
 
