@@ -30,7 +30,7 @@ class cup_downloader:
     
         self._rc = 0
         
-        logging.info()
+        logging.info("Cup downloader constructed")
         
     def clean(self):
         """
@@ -69,7 +69,7 @@ class cup_downloader:
                 
         src = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
         files = self._file_prefix + "*" + ".txt"
-        src = os.path.join( src, self._host_dir, self._host_d, files )
+        src = os.path.join( src, self._host_dir, self._host_dir, files )
         rc = subprocess.call([cmd, "-r", "-nH", "-nd", src], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         self._rc = rc        

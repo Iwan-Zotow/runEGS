@@ -1,7 +1,7 @@
 from os import path
 import math
 
-import cup_curve as cc
+import curve as cc
 import phantom
 import collimator
 import build_phandim
@@ -21,7 +21,7 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     cup_dir = "cup_geometry"
     out_dir = "cup_egsphan"
 
-    mats = materials.materials("materials.txt")
+    mats = materials.materials("Materials.txt")
 
     cl = collimator.collimator(coll)
 
@@ -31,6 +31,8 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     cdown.load()
     if (cdown.rc() != 0):
         raise RuntimeError("run_single_shot", "unable to load files")
+
+    return
 
     cupA = cc.cup_curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveA.txt"))
     cupB = cc.cup_curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveB.txt"))

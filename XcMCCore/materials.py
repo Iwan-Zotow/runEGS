@@ -6,7 +6,7 @@ Created on Wed May 06 21:23:51 2015
 """
 
 # holds index vs (name, density) tuple
-class materials:
+class materials(object):
     """
     Class which holds dictionary of the materials,
     index vs tuple(name, density)
@@ -14,6 +14,13 @@ class materials:
 
     def __init__(self, fname):
         """
+        Constructor
+        
+        Parameters
+        ----------
+        
+        fname: string
+            materials file name
         """
         self._mats = None
     
@@ -37,15 +44,27 @@ class materials:
     
     def __getitem__(self, idx):
         """
+        Returns item given the index
+
+        Parameters
+        ----------
+        
+        idx: integer
+            index of the material
+        returns: (string,double) tuple
+            material data
         """
         return self._mats[idx]
 
     def __len__(self):
         """
+        Returns length of the material dictionary
         """
         return len(self._mats)
 
     def mats(self):
         """
+        Returns material dictionary        
         """
         return self._mats
+

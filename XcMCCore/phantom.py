@@ -10,7 +10,7 @@ import logging
 
 import phandim
 
-class phantom(phandim):
+class phantom(phandim.phandim):
     """
     phantom which contains data together with dimensions
     """
@@ -19,7 +19,7 @@ class phantom(phandim):
         """
         Phantom
         """
-        super(phantom, self).__init__(bx, by, bz)
+        super(self.__class__, self).__init__(bx, by, bz)
         
         # material index
         self._data = np.empty((self.nx(), self.ny(), self.nz()), dtype=np.uint8)

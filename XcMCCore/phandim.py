@@ -8,7 +8,7 @@ Created on Tue May 05 20:32:01 2015
 import logging
 import numpy as np
 
-class phandim:
+class phandim(object):
     """
     class to hold phantom dimensions
     """
@@ -122,20 +122,27 @@ class phandim:
     def nx(self):
         """
         Returns number of voxels in X
-        :
+        
+        returns: integer
+            number of X voxels
         """
         return len(self._bx)-1
         
     def ny(self):
         """
         Returns number of voxels in Y
-        :
+
+        returns: integer
+            number of Y voxels
         """
         return len(self._by)-1
 
     def nz(self):
         """
         Returns number of voxels
-        :
+
+        returns: integer
+            number of Z voxels
         """
         return len(self._bz)-1
+
