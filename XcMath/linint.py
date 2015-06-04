@@ -34,6 +34,9 @@ class linint(object):
         self._zmin = self._points[-1].x()
         self._zmax = self._points[0].x()
         
+        if not self.invariant():
+            raise RuntimeError("linint", "from constructor")
+        
         logging.info("linint constructed")
         logging.debug(str(points))
         
@@ -88,10 +91,10 @@ class linint(object):
         logging.debug(str(idx))        
         
         if idx < 0:
-            raise RuntimeError("linint", "index is negative")
+            raise ValueError("linint", "index is negative")
         
         if idx >= self._len:
-            raise RuntimeError("linint", "index is too large")
+            raise ValueError("linint", "index is too large")
             
         return self._points[idx]
         
@@ -191,12 +194,15 @@ class linint(object):
         hi = 0            
         while True:
             me = (lo + hi) // 2
-            if self._points[me].x() > z:
+            xx = self._points[me].x()
+            if xx > z:
                 lo = me
             else:
                 hi = me
                 
-            if hi-lo == 1:
+            if lo - hi == 1:
                 break
             
         return hi
+
+

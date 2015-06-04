@@ -10,7 +10,7 @@ import shutil
 import hashlib
 import subprocess
 
-class data_uploader:
+class data_uploader(object):
     """
     Computed Data uploader
     """

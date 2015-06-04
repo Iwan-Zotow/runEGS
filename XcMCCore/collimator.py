@@ -7,7 +7,7 @@ Created on Fri May 08 16:59:23 2015
 
 import numpy as np
 
-class collimator:
+class collimator(object):
     """
     class represents particular collimator
     """

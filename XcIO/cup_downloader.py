@@ -6,7 +6,7 @@ import hashlib
 import subprocess
 import logging
 
-class cup_downloader:
+class cup_downloader(object):
     """
     Downloads and holds cups data
     """

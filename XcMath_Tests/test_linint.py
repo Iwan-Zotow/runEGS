@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import unittest
+import math
 
 import linint
 import point2d
@@ -27,12 +27,23 @@ class TestLinInt(unittest.TestCase):
     
     def test_constructor(self):
         """
-        test passable cm2mm conversion
+        test linint construction
         """
         
         li = linint.linint(TestLinInt.make_curve())
         
         self.assertTrue(len(li) == 5)
+        
+    def test_interpolation(self):
+        """
+        test interpolation
+        """
+        
+        li = linint.linint(TestLinInt.make_curve())
+        v  = li.interpolate(4.5)
+                
+        self.assertTrue(math.fabs(v - 1.5) < 0.001)
+        
 
 if __name__ == '__main__':
     unittest.main()
