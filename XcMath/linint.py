@@ -129,16 +129,16 @@ class linint(object):
 
         # above zmax        
         if (idx == -1):
-            return 0.0
+            raise RuntimeError("interpolate", "index is -1")
             
         # below zmin
         if (idx == -2):
-            return 0.0
+            raise RuntimeError("interpolate", "index is -2")
         
-        p = np.float32(z - self._points[idx].x() / (self._points[idx+1].x() - self._points[idx].x()))
+        p = np.float32(z - self._points[idx+1].x() / (self._points[idx].x() - self._points[idx+1].x()))
         q = 1.0 - p
         
-        return p * self._points[idx].y() + q * self._points[idx+1].x()
+        return p * self._points[idx].y() + q * self._points[idx+1].y()
 
     def extrapolate(self, z):
         """
@@ -157,17 +157,16 @@ class linint(object):
 
         if z > self._zmax:
             return 0.0
-
         
-        if z > self._zmin:
+        if z >= self._zmin:
             return self.interpolate(z)
 
         idx = self._len - 1
         
-        p = np.float32(z - self._points[idx].x() / (self._points[idx+1].x() - self._points[idx].x()))
+        p = np.float32(z - self._points[idx].x() / (self._points[idx-1].x() - self._points[idx].x()))
         q = 1.0 - p
         
-        return p * self._points[idx].y() + q * self._points[idx+1].x()
+        return p * self._points[idx-1].y() + q * self._points[idx].y()
 
     def find_idx(self, z):
         """
@@ -196,13 +195,29 @@ class linint(object):
             me = (lo + hi) // 2
             xx = self._points[me].x()
             if xx > z:
-                lo = me
-            else:
                 hi = me
+            else:
+                lo = me
                 
             if lo - hi == 1:
                 break
             
         return hi
 
+if __name__ == "__main__":
+    
+    import point2d    
+    
+    curve = []
+    curve.append(point2d.point2d(5.0, 1.0))
+    curve.append(point2d.point2d(4.0, 2.0))
+    curve.append(point2d.point2d(3.0, 3.0))
+    curve.append(point2d.point2d(2.0, 4.0))
+    curve.append(point2d.point2d(1.0, 5.0))
+    
+    li = linint(curve)
+    v  = li.extrapolate(0.1)
+    
+    print(v)
 
+    
