@@ -27,30 +27,32 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
 
     fname_prefix = make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    cdown = cup_downloader.cup_downloader("127.0.0.1", cup_dir, "/.", fname_prefix, "kriol", "Proton31")
-    cdown.load()
-    if (cdown.rc() != 0):
-        raise RuntimeError("run_single_shot", "unable to load files")
+    #cdown = cup_downloader.cup_downloader("127.0.0.1", cup_dir, "/.", fname_prefix, "kriol", "Proton31")
+    #cdown.load()
+    # if (cdown.rc() != 0):
+    #     raise RuntimeError("run_single_shot", "unable to load files")
 
     cupA = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveA.txt"))
     cupB = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveC.txt"))
-
+    cupC = cc.curve(path.join( cup_dir, fname_prefix + "_" + "KddCurveC.txt"))    
+    
     liA = linint.linint(cupA)
     liB = linint.linint(cupB)
     liC = linint.linint(cupC)
 
-    return
-
     nr = int(cl.size()*1.2)
 
-    pdim = build_phandim.build_phandim(shot, x_range, y_range, z_range, steps, nr)
+    z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
+
+    pdim = build_phandim.build_phandim(shot, x_range, y_range, (z_range[0], z_max), steps, nr)
     
     phntom = make_phantom(pdim, liA, liB, liC, mats)
     
     egsphname = path.join(out_dir, fname_prefix + str(cl) + ".egsphant")
     
     write_egs_phantom.write_phantom(egsphname, phntom, materials)
+    
+    return
     
     egnsinp_name = write_egs_input.write_input("template.egsinp", fname_prefix, coll, shot)
     
@@ -93,33 +95,36 @@ def make_phantom(pdim, liA, liB, liC, mats):
     poly  = mats[4]
     
     for iz in range (0, nz):
-        z = 0.5 * (bz[iz].x() + bz[iz+1].x())
+        z = 0.5 * (bz[iz] + bz[iz+1])
         for iy in range (0, ny):
-            y = 0.5 * (by[iy].x() + by[iy+1].x())    
+            y = 0.5 * (by[iy] + by[iy+1])
             for ix in range (0, nx):
-                x = 0.5 * (bx[ix].x() + bx[ix+1].x())
+                x = 0.5 * (bx[ix] + bx[ix+1])
                 
                 r = math.sqrt(x*x + y*y)
                 
-                ra = liA.interpolate(z)
+                ra = liA.extrapolate(z)
                 
                 if r <= ra:
                     data[ix,iy,iz] = 2 # water
                     dens[ix,iy,iz] = water[1]
                     continue
                     
-                rb = liB.interpolate(z)
+                rb = liB.extrapolate(z)
                 
                 if r <= rb:
                     data[ix,iy,iz] = 1 # air
                     dens[ix,iy,iz] = air[1]
                     continue
                 
-                rc = liC.interpolate(z)
+                rc = liC.extrapolate(z)
 
                 if r <= rc:
                     data[ix,iy,iz] = 4 # poly
                     dens[ix,iy,iz] = poly[1]
                     continue
+                
+                data[ix,iy,iz] = 1 # air
+                dens[ix,iy,iz] = air[1]
     
     return phntom
