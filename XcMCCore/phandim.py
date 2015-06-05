@@ -59,9 +59,7 @@ class phandim(object):
             bnp[k] = np.float32( b[k] )
             
         # just in case, sort boundaries
-        print(bnp)
         bnp = np.sort(bnp)
-        print(bnp)
 
         return bnp
         
