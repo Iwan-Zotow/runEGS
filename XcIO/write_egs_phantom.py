@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 01 15:36:58 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import conversion
 
-def write_materials(f, materials):
+def write_materials(f, mats):
     """
     Write materials into external stream
     
@@ -21,11 +16,16 @@ def write_materials(f, materials):
         dictionary of materials, id vs tuple (name, density)    
     """
     
-    f.write(len(materials))
-    for k in range(0, len(materials)):
-        f.write(materials[k][0])
+    f.write("  {0}\n".format(len(mats)-1))
+    
+    for k in range(1, len(mats)):
+        f.write(mats[k][0] + "\n")
         
-    f.write("0.000 0.000 0.000 0.000")
+    s = ""
+    for k in range(1, len(mats)):
+        s += "       0.0000000"
+    f.write(s)
+    f.write("\n")
 
 def write_boundary(f, bnd):
     """
@@ -41,13 +41,12 @@ def write_boundary(f, bnd):
         boundaries, in mm
     """
 
-    f.write(len(bnd))
     s = ""
     for b in bnd:
         bcm = conversion.mm2cm(b)
-        s += str(bcm) + " "
+        s += " {0:.2f}".format(bcm)
         
-    f.write(s)
+    f.write(s + "\n")
 
 def write_header(f, phntom, materials):
     """
@@ -68,10 +67,11 @@ def write_header(f, phntom, materials):
 
     write_materials(f, materials)
     
+    f.write("  {0}  {1}  {2}\n".format(phntom.nx(), phntom.ny(), phntom.nz()))
     write_boundary(f, phntom.bx())
     write_boundary(f, phntom.by())
-    write_boundary(f, phntom.bz())    
-    
+    write_boundary(f, phntom.bz())
+
 def write_matindeces(f, phntom):
     """
     Write EGS phantom material indices
@@ -96,13 +96,13 @@ def write_matindeces(f, phntom):
         for iy in range (0, ny):
             s = ""            
             for ix in range (0, nx):
-                
                 mat = data[ix,iy,iz]
                 s += str(mat)
                 
-            f.writeline(s)
+            f.write(s)
+            f.write("\n")
             
-        f.writeline("")
+        f.write("\n")
 
 def write_densities(f, phntom):
     """
@@ -122,7 +122,7 @@ def write_densities(f, phntom):
     ny = phntom.ny()
     nz = phntom.nz()
     
-    dens = phntom.data()
+    dens = phntom.dens()
 
     for iz in range (0, nz):
         for iy in range (0, ny):
@@ -130,13 +130,14 @@ def write_densities(f, phntom):
             for ix in range (0, nx):
                 
                 rho = dens[ix,iy,iz]
-                s += str(rho) + " "
+                s += " {0:.7f}".format(rho)
                 
-            f.writeline(s)
+            f.write(s)
+            f.write("\n")
             
-        f.writeline("")
+        f.write("\n")
     
-def write_phantom(fname, phntom, materials):
+def write_phantom(fname, phntom, mats):
     """
     Write EGS phantom data
     
@@ -155,6 +156,6 @@ def write_phantom(fname, phntom, materials):
     
     with open(fname, "wt") as f:
         
-        write_header(f, phntom, materials)
+        write_header(f, phntom, mats)
         write_matindeces(f, phntom)
-        write_densities(f, phntom)
+        write_densities(f, phntom)        

@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun May 10 23:57:59 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import subprocess
 

@@ -5,9 +5,9 @@ def construct_egsinput_name(file_prefix, coll, shot):
     Makes EGS input name
     """
     
-    return file_prefix + str(coll) + "_" + "Y{0}Z{1}".format(shot) + ".egsinp"
+    return file_prefix + str(coll) + "_" + "Y{0}Z{1}".format(int(shot[0]), int(shot[1])) + ".egsinp"
     
-
+        
 def write_input(template, file_prefix, coll, shot):
     """
     Write out egs input file from template

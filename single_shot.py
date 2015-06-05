@@ -40,17 +40,19 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     liB = linint.linint(cupB)
     liC = linint.linint(cupC)
 
-    nr = int(cl.size()*1.2)
+    nr = int(cl.size()*1.2/steps[0])
 
-    z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
+    z_max = liA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
 
     pdim = build_phandim.build_phandim(shot, x_range, y_range, (z_range[0], z_max), steps, nr)
     
+    fname = fname_prefix + str(cl)
+    fname = fname + "_" + "Y{0}Z{1}".format(int(shot[0]),int(shot[1])) + ".egsphant"
+    egsphname = path.join(out_dir, fname)
+    
     phntom = make_phantom(pdim, liA, liB, liC, mats)
     
-    egsphname = path.join(out_dir, fname_prefix + str(cl) + ".egsphant")
-    
-    write_egs_phantom.write_phantom(egsphname, phntom, materials)
+    write_egs_phantom.write_phantom(egsphname, phntom, mats)
     
     return
     
@@ -91,11 +93,21 @@ def make_phantom(pdim, liA, liB, liC, mats):
     
     air   = mats[1]
     water = mats[2]
-    # ss    = mats[3]    
+    ss    = mats[3]    
     poly  = mats[4]
+    
+    d_air   = air[1]
+    d_water = water[1]
+    d_ss    = ss[1]
+    d_poly  = poly[1]
     
     for iz in range (0, nz):
         z = 0.5 * (bz[iz] + bz[iz+1])
+
+        ra = liA.extrapolate(z)
+        rb = liB.extrapolate(z)
+        rc = liC.extrapolate(z)
+        
         for iy in range (0, ny):
             y = 0.5 * (by[iy] + by[iy+1])
             for ix in range (0, nx):
@@ -103,28 +115,20 @@ def make_phantom(pdim, liA, liB, liC, mats):
                 
                 r = math.sqrt(x*x + y*y)
                 
-                ra = liA.extrapolate(z)
+                m = 1
+                d = d_air
                 
                 if r <= ra:
-                    data[ix,iy,iz] = 2 # water
-                    dens[ix,iy,iz] = water[1]
-                    continue
-                    
-                rb = liB.extrapolate(z)
+                    m = 2 # water
+                    d = d_water
+                elif r <= rb:
+                    m = 1 # air
+                    d = d_air
+                elif r <= rc:
+                    m = 4 # poly
+                    d = d_poly
                 
-                if r <= rb:
-                    data[ix,iy,iz] = 1 # air
-                    dens[ix,iy,iz] = air[1]
-                    continue
-                
-                rc = liC.extrapolate(z)
-
-                if r <= rc:
-                    data[ix,iy,iz] = 4 # poly
-                    dens[ix,iy,iz] = poly[1]
-                    continue
-                
-                data[ix,iy,iz] = 1 # air
-                dens[ix,iy,iz] = air[1]
+                data[ix,iy,iz] = m
+                dens[ix,iy,iz] = d
     
     return phntom

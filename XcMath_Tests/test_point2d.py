@@ -1,34 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from os import path
-import curve
+import point2d
 
-class TestCupCurve(unittest.TestCase):
+class TestPoint2D(unittest.TestCase):
     """
-    Unit tests to check cup curve class
+    Unit tests to check point2d
     """
-    
-    @staticmethod
-    def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
-        """
-        """
-        return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
     
     def test_constructor(self):
-        cupdir = "cup_geometry"     
-        radUnit  = "8"
-        outerCup = "2"
-        innerCupSer = "M"
-        innerCupNum = "01"
-    
-        fname  = TestCupCurve.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
-        fname += "_" + "KddCurveA.txt"
-        filename = path.join("..", cupdir, fname)
-    
-        cup = curve.curve(filename)
+        """
+        constructor test
+        """        
+
+        pt = point2d.point2d()
         
-        self.assertTrue(cup.curve() != None)
+        self.assertTrue(pt.x() == 0.0)
+        self.assertTrue(pt.y() == 0.0)
 
 if __name__ == '__main__':
     unittest.main()

@@ -89,7 +89,7 @@ def build_one_boundary(shot, the_range, steps, nr):
 
         # first, with small steps
         pos = shot      
-        for k in range(0, nr):
+        for k in range(0, nr+1):
             pos = shot - float(k) * smin
             bs.append(pos)
             if (pos < rmin):
@@ -108,7 +108,7 @@ def build_one_boundary(shot, the_range, steps, nr):
         # going forward
         
         # first, with small steps
-        for k in range(1, nr):
+        for k in range(1, nr+1):
             pos = shot + float(k) * smin
             bs.append(pos)
             if (pos > rmax):

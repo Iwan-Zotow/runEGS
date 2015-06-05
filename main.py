@@ -12,7 +12,7 @@ import logging
 import single_shot
     
 def main():
-    logging.basicConfig(filename='single_shot.log', level=logging.DEBUG)
+    logging.basicConfig(filename='single_shot.log', level=logging.INFO)
     logging.info("Started")
     
     radUnit     = "8"

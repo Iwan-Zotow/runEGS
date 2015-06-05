@@ -1,16 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 28 19:02:57 2015
-
-@author: Oleg.Krivosheev
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May 07 12:12:35 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import unittest
 import materials
