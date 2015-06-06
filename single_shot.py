@@ -55,8 +55,6 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     
     egnsinp_name = write_egs_input.write_input("template.egsinp", file_prefix, cl, shot)
 
-    return    
-
     rc = run_dosxyz.run(egnsinp_name, "700jin.pegs4dat")
     if rc != 0:
         raise RuntimeError("run_single_shot", "Dose was not computed")

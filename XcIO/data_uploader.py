@@ -61,7 +61,7 @@ class data_uploader(object):
         # form the command line
         cmd = "wput"
                 
-        dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
+        dest = "http://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
         files = self._file_prefix + "*" + ".3ddose"
         dest = os.path.join( dest, self._host_dir, self._host_d, self._file_prefix )
 
