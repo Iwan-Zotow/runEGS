@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 import conversion
 
 def write_materials(f, mats):
@@ -15,6 +17,8 @@ def write_materials(f, mats):
     materials: dictionary
         dictionary of materials, id vs tuple (name, density)    
     """
+    
+    logging.info("building one boundary")
     
     f.write("  {0}\n".format(len(mats)-1))
     

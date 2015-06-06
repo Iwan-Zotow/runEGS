@@ -1,13 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-Created on Wed May 06 21:11:18 2015
-
-@author: Oleg.Krivosheev
-"""
-
-# main routine
-
 import logging
 import single_shot
     

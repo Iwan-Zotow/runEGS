@@ -1,25 +1,33 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May 26 09:44:22 2015 by Florin.Neacsu
 
-Copyright Xcision LLC.
-"""
+# couch parameters, in mm
+COUCH_BOTTOM    = 15.0
+COUCH_THICKNESS = 10.0
 
 def MaximumInnerCupSize():
     """
-    Returns an int, representing the max number/id
+    Returns the max number/id
     an inner cup could have.
+    
+    returns: integer
+        max cup id    
     
     Currently it is 10, since M10 exists
     """
     return 10
-
-    
     
 def MinimumInnerCupSize():
+    """
+    Returns the min number/id
+    an inner cup could have.
     
-    return 0
+    returns: integer
+        min cup id
+    
+    Currently it is 0
+    """
 
+    return 0
 
 def InnerCupSize(x):
     """
@@ -45,4 +53,3 @@ def InnerCupSize(x):
         'M':2,
         'L':3,
         'Q':0}.get(x,-1)
-        

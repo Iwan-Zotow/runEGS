@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def construct_egsinput_name(file_prefix, coll, shot):
-    """
-    Makes EGS input name
-    """
-    
-    return file_prefix + str(coll) + "_" + "Y{0}Z{1}".format(int(shot[0]), int(shot[1])) + ".egsinp"
-    
+import names_helper
         
 def write_input(template, file_prefix, coll, shot):
     """
@@ -17,15 +11,16 @@ def write_input(template, file_prefix, coll, shot):
         lines = f.readlines()
         
     # alter title
-    lines[0] = file_prefix + str(coll) + ";" + "Y{0}Z{1}".format(shot) + \
-               ";" + "SPAD=18cm;SAD=36cm" + "                #!GUI1.0"
+    qname = names_helper.make_qualified_name(file_prefix, coll, shot)
+        
+    lines[0] = qname + ";" + "SPAD=18cm;SAD=36cm" + "                #!GUI1.0"
                
     # alter phase space file name
-    lines[2] = str(coll) + ".egsphsp1"
+    lines[2] = qname + names_helper.EGSPHSF_EXT
     
-    lines[44] = str(coll) + ".egsphsp1"
+    lines[44] = str(coll) + names_helper.EGSPHSF_EXT
     
-    fname = construct_egsinput_name(file_prefix, coll, shot)
+    fname = names_helper.make_egsinput_name(file_prefix, coll, shot)
     with open(fname, "wt") as f:
         f.writelines(lines)
         

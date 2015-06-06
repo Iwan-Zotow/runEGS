@@ -75,6 +75,8 @@ def build_one_boundary(shot, the_range, steps, nr):
             phantom one dimension boundaries
         """
         
+        logging.info("building one boundary")
+        
         if (not invariant(shot, the_range, steps, nr)):
             raise ValueError("build_one_boundary", "invariant failed")
             
@@ -121,6 +123,8 @@ def build_one_boundary(shot, the_range, steps, nr):
             if (pos > rmax):
                 break
             
+        logging.info("done building one boundary")
+        
         return bs
 
 def build_phandim(shot, x_range, y_range, z_range, steps, nr):
@@ -161,5 +165,7 @@ def build_phandim(shot, x_range, y_range, z_range, steps, nr):
         bx = build_one_boundary(0.0, x_range, steps, nr)
         by = build_one_boundary( ys, y_range, steps, nr)
         bz = build_one_boundary( zs, z_range, steps, nr)
+        
+        logging.info("done building phandim")
         
         return phandim.phandim(bx, by, bz)
