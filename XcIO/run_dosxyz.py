@@ -26,6 +26,7 @@ def run_dosxyz(egs_inp, pegs_inp):
     """
     run dosxyz with a given egs and pegs input files
     """
+    
     process_name = DXYZ
     
     src = os.path.join(os.getcwd(), egs_inp)
@@ -38,7 +39,7 @@ def run_dosxyz(egs_inp, pegs_inp):
                           
     os.unlink(lnk)
     
-    name, = os.path.splitext(egs_inp)
+    name,ext = os.path.splitext(egs_inp)
     
     move_results(name + ".3ddose")
     move_results(name + ".errors")
