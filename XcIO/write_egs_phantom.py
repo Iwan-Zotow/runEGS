@@ -20,7 +20,7 @@ def write_materials(f, mats):
     
     logging.info("building one boundary")
     
-    f.write("  {0}\n".format(len(mats)-1))
+    f.write(" {0}\n".format(len(mats)-1))
     
     for k in range(1, len(mats)):
         f.write(mats[k][0] + "\n")

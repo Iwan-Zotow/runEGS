@@ -19,7 +19,7 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     """
     
     cup_dir = "cup_geometry"
-    out_dir = "cup_egsphan"
+    out_dir = "." # "cup_egsphan"
 
     mats = materials.materials("Materials.txt")
 
@@ -53,14 +53,16 @@ def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_r
     
     write_egs_phantom.write_phantom(egsphname, phntom, mats)
     
-    egnsinp_name = write_egs_input.write_input("template.egsinp", file_prefix, cl, shot)
+    egsinp_name = write_egs_input.write_input("template.egsinp", file_prefix, cl, shot)
 
-    rc = run_dosxyz.run(egnsinp_name, "700jin.pegs4dat")
+    rc = run_dosxyz.run_dosxyz(egsinp_name, "700jin.pegs4dat")
     if rc != 0:
         raise RuntimeError("run_single_shot", "Dose was not computed")
+
+    return
         
     dupload = data_uploader.data_uploader("127.0.0.1", "/.", file_prefix, "kriol", "Proton31")
     
     dupload.upload()
-    
+
 
