@@ -2,12 +2,14 @@
 
 import math
 
-import XcConstants
+import clinical
+from utils import squared
 import phantom
 
+# for a moment we use the same scheme for clinical and QA cups
 def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     """
-    Makes filename give RU, OC, IC info
+    Makes filename prefix given RU, OC, IC info
     
     Parameters
     ----------
@@ -25,14 +27,13 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
             inner cup number
         
     returns: string
-        clinical cup name
+        clinical cup name            
     """
-    
-    return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
+    return clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
-    Make phantom given dimensions and curves
+    Make QA phantom given dimensions and curves
     
     Parameters
     ----------
@@ -86,11 +87,6 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
     
     for iz in range (0, nz):
         z = 0.5 * (bz[iz] + bz[iz+1])
-
-        ra = liA.extrapolate(z)
-        rb = liB.extrapolate(z)
-        rc = liC.extrapolate(z)
-        
         for iy in range (0, ny):
             y = 0.5 * (by[iy] + by[iy+1])
             for ix in range (0, nx):
@@ -100,27 +96,15 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
                 m = 1
                 d = d_air
                 
-                if z <= z_max and z > XcConstants.COUCH_BOTTOM:
-                
-                    r = math.sqrt(x*x + y*y)
-                
-                    if r <= ra:
-                        m = 2 # water
-                        d = d_water
-                    elif r <= rb:
-                        m = 1 # air
-                        d = d_air
-                    elif r <= rc:
-                        m = 4 # poly
-                        d = d_poly
-                    else:
-                        if not (z <= z_max and z > (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS)):
-                            m = 4 # poly
-                            d = d_poly
-                        
-                elif z <= XcConstants.COUCH_BOTTOM:
-                    m = 2 # water
-                    d = d_water
+                r = math.sqrt(x*x + y*y)                
+
+                # as lifted from qa/make_cups                
+                if z > 15.0 and z <= 15.0+46.0 and r <= 77.0:
+                    m = 4 # poly
+                    d = d_poly
+                elif z > 15.0+46.0 and z <= 15.0+115.0 and math.sqrt(squared(r)+squared(z-(15.0+46.0))) <= 77.0:
+                    m = 4 # poly
+                    d = d_poly
                 
                 data[ix,iy,iz] = m
                 dens[ix,iy,iz] = d

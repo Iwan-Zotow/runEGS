@@ -7,7 +7,7 @@ import phantom
 
 def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     """
-    Makes filename give RU, OC, IC info
+    Makes filename prefix given RU, OC, IC info
     
     Parameters
     ----------

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from os import path
+import os
 import curve
+import clinical
 
 class TestCupCurve(unittest.TestCase):
     """
@@ -12,10 +13,14 @@ class TestCupCurve(unittest.TestCase):
     @staticmethod
     def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
         """
+        Makes cup name out of unit, inner cup, outer cup series and number
         """
-        return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
-    
+        return clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)        
+        
     def test_constructor(self):
+        """
+        Constructor test 1
+        """
         cupdir = "cup_geometry"     
         radUnit  = "8"
         outerCup = "2"
@@ -24,7 +29,7 @@ class TestCupCurve(unittest.TestCase):
     
         fname  = TestCupCurve.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
         fname += "_" + "KddCurveA.txt"
-        filename = path.join("..", cupdir, fname)
+        filename = os.path.join("..", cupdir, fname)
     
         cup = curve.curve(filename)
         
