@@ -25,9 +25,9 @@ def make_qualified_name(file_prefix, cl, shot):
     """
     return file_prefix + str(cl) + "_" + "Y{0}Z{1}".format(int(shot[0]),int(shot[1]))
 
-def make_egsinput_name(file_prefix, cl, shot):
+def make_egsinput_name(full_prefix):
     """
     Makes EGS input name
     """
     
-    return make_qualified_name(file_prefix, cl, shot) + EGSINP_EXT
+    return full_prefix + EGSINP_EXT

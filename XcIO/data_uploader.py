@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 01 15:32:43 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import os
 import shutil
@@ -15,14 +10,17 @@ class data_uploader(object):
     Computed Data uploader
     """
 
-    def __init__(self, host_ip, host_dir, file_prefix, user_id, user_pass):
+    def __init__(self, wrk_dir, host_ip, host_dir, full_prefix, user_id, user_pass):
         """
         Constructor
         """
+        
+        self._wrk_dir = wrk_dir
+        
         self._host_ip  = host_ip
         self._host_dir = host_dir
         
-        self._file_prefix = file_prefix
+        self._full_prefix = full_prefix
         self._user_id     = user_id
         self._user_pass   = user_pass
     
@@ -43,29 +41,60 @@ class data_uploader(object):
         Compute hash functions of the downloaded cups, to be
         used as a signature
         """
-        if not hashlib.algorithms.contains("sha1"):
-            raise Exception("data_uploader", "No SHA1 hash available")
+        
+        algo = "sha1"
+        
+        #if not hashlib.algorithms.contains(algo):
+        #    raise Exception("data_uploader", "No SHA1 hash available")
             
-        hasher = hashlib.sha1();
         self._hash = []
-        for root, dirs, files in os.walk(self._cup_dir):
+        
+        for root, dirs, files in os.walk(self._wrk_dir):
             for f in files:
+
+                hasher = hashlib.sha1()
+                
                 ctx = os.path.join(root, f)
-                val = hasher.update(ctx)
-                self._hash.append(val)
+                with open(ctx, "rb") as afile:
+                    buf = afile.read()
+                    hasher.update(buf)
+                    
+                    self._hash.append((ctx, hasher.hexdigest()))
+                
+        fname = os.path.join(self._wrk_dir, algo)
+        with open(fname, "wt") as f:
+            for l in self._hash:
+                f.write(l[0])
+                f.write(": ")
+                f.write(l[1])
+                f.write("\n")
+
+    def compress_data(self, dir_name):
+        """
+        pack and compress everything outgoing
+        """
+        
+        dst = dir_name + ".tar.bz2"
+        rc = subprocess.call(["tar", "-cvjSf", dst, dir_name],
+                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                          
+        if rc == 0:
+            return (0, dst)
+            
+        return (rc, None)
 
     def upload(self):
         """
         Load data to the server
         """
-        # form the command line
-        cmd = "wput"
-                
-        dest = "http://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip
-        files = self._file_prefix + "*" + ".3ddose"
-        dest = os.path.join( dest, self._host_dir, self._host_d, self._file_prefix )
-
-        rc = subprocess.call([cmd, files, dest], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cwd, dir_name = os.path.split(self._wrk_dir)
+        
+        rc, aname = self.compress_data(dir_name)
+        
+        self.sign()
+        
+        rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         
         self._rc = rc
 
@@ -75,3 +104,4 @@ class data_uploader(object):
         """
         
         return self._rc
+

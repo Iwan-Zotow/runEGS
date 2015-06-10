@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from os import path
+import logging
 
 import names_helper
 import curve as cc
@@ -13,56 +16,78 @@ import write_egs_input
 import run_dosxyz
 import data_uploader
 
-def run(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot):
+def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot):
     """
     Run single shot for a given cup, collimator, shot
     """
     
-    cup_dir = "cup_geometry"
-    out_dir = "." # "cup_egsphan"
-
+    logging.info("Single shot run")
+    
     mats = materials.materials("Materials.txt")
 
+    logging.info("Materials initialized")
+    
     cl = collimator.collimator(coll)
 
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    #cdown = cup_downloader.cup_downloader("127.0.0.1", cup_dir, "/.", file_prefix, "kriol", "Proton31")
-    #cdown.load()
-    # if (cdown.rc() != 0):
-    #     raise RuntimeError("run_single_shot", "unable to load files")
+    cdown = cup_downloader.cup_downloader("0.0.0.0", ".", wrk_dir, file_prefix, "kriol", "Proton31")
+    cdown.load()
+    if (cdown.rc() != 0):
+        raise RuntimeError("run_single_shot", "unable to load files")
 
-    cupA = cc.curve(path.join( cup_dir, file_prefix + "_" + "KddCurveA.txt"))
-    cupB = cc.curve(path.join( cup_dir, file_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.curve(path.join( cup_dir, file_prefix + "_" + "KddCurveC.txt"))    
+    logging.info("Cups downloaded")
+    
+    cupA = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
+    cupB = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+    cupC = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))    
     
     liA = linint.linint(cupA)
     liB = linint.linint(cupB)
     liC = linint.linint(cupC)
-
+    
+    logging.info("Interpolators done")
+    
     nr = int(cl.size()*1.2/steps[0])
 
     z_max = liA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
 
+    # phantom dimensions and boundaries
     pdim = build_phandim.build_phandim(shot, x_range, y_range, (z_range[0], z_max), steps, nr)
     
-    fname = names_helper.make_qualified_name(file_prefix, cl, shot) + names_helper.EGSPHAN_EXT
-    egsphname = path.join(out_dir, fname)
+    logging.info("Phantom dimensions")
     
+    # phantom in memory
     phntom = clinical.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
     
-    write_egs_phantom.write_phantom(egsphname, phntom, mats)
+    full_prefix = names_helper.make_qualified_name(file_prefix, cl, shot)
     
-    egsinp_name = write_egs_input.write_input("template.egsinp", file_prefix, cl, shot)
-
-    rc = run_dosxyz.run_dosxyz(egsinp_name, "700jin.pegs4dat")
+    write_egs_phantom.write_phantom(wrk_dir, full_prefix, phntom, mats)
+    
+    logging.info("Phantom saved")
+    
+    egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl)
+    
+    logging.info("EGS input")
+    
+    logging.info("And DosXYZ is about to run")
+    
+    rc = run_dosxyz.run_dosxyz(wrk_dir, egsinp_name, "700jin.pegs4dat")
     if rc != 0:
+        logging.info("DosXYZ error: {0}".format(rc))
         raise RuntimeError("run_single_shot", "Dose was not computed")
+    logging.info("And DosXYZ is done")
 
-    return
-        
-    dupload = data_uploader.data_uploader("127.0.0.1", "/.", file_prefix, "kriol", "Proton31")
+    dupload = data_uploader.data_uploader(wrk_dir, "0.0.0.0", "/.", file_prefix, "kriol", "Proton31")
     
     dupload.upload()
+    
+    rc = dupload.rc()
+    
+    if (rc != 0):
+        logging.info("Data upload failure {0}".rc)
+        raise RuntimeError("run_single_shot", "unable to load files")
 
+    logging.info("Data uploaded")
+    logging.info("Finita la comedia")
 

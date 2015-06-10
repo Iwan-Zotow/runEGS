@@ -53,3 +53,21 @@ def InnerCupSize(x):
         'M':2,
         'L':3,
         'Q':0}.get(x,-1)
+        
+def IsQACup(cup):
+    """
+    Given inner cup checks if it is QA or a clinical one
+    
+    Parameters
+    ----------
+    cup: string
+        Inner cup series
+    
+    returns: boolean
+        True if QA, False otherwise
+    """
+    
+    if cup == "Q":
+        return True
+    return False
+

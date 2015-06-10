@@ -7,7 +7,9 @@ DXYZ = "dosxyznrc"
 
 def path2dosxyznrc():
     """
+    Returns path to DOSXYZNRC executable
     """
+
     egs_path = os.environ["EGS_HOME"]
     
     if egs_path == None:
@@ -15,35 +17,48 @@ def path2dosxyznrc():
         
     return os.path.join(egs_path, DXYZ)
     
-def move_results(fname):
-    src = os.path.join(path2dosxyznrc(), fname)
-    dst = os.path.join(os.getcwd(), fname)
+def move_results(wrk_dir, fname):
+    """
+    Move results from dosxyz dir to work dir
+    """
     
+    # just in case, take file name
+    head, name = os.path.split(fname)
+    
+    src = os.path.join(path2dosxyznrc(), name)
+    dst = fname    
+
     os.rename(src, dst)
     
 
-def run_dosxyz(egs_inp, pegs_inp):
+def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
     """
     run dosxyz with a given egs and pegs input files
     """
     
     process_name = DXYZ
+        
+    src = os.path.join(wrk_dir, egs_inp)
+    lnk = os.path.join(path2dosxyznrc(), os.path.basename(egs_inp))
     
-    src = os.path.join(os.getcwd(), egs_inp)
-    lnk = os.path.join(path2dosxyznrc(), egs_inp)
-    
-    os.symlink(src, lnk)
+    if os.path.isfile(lnk):
+        os.unlink(lnk)
+        
+    os.symlink(src, lnk)    
 
-    rc = subprocess.call([process_name, "-i", egs_inp, "-p", pegs_inp, "-b"],
+    rc = subprocess.call([process_name, "-i", os.path.basename(egs_inp), "-p", pegs_inp, "-b"],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                           
-    os.unlink(lnk)
+    if os.path.isfile(lnk):
+        os.unlink(lnk)
     
+    # move the data to working folder
     name,ext = os.path.splitext(egs_inp)
     
-    move_results(name + ".3ddose")
-    move_results(name + ".errors")
-    move_results(name + ".egslog")
-    move_results(name + ".egslst")
+    move_results(wrk_dir, name + ".3ddose")
+    move_results(wrk_dir, name + ".errors")
+    move_results(wrk_dir, name + ".egslog")
+    move_results(wrk_dir, name + ".egslst")
                           
-    return rc  
+    return rc
+

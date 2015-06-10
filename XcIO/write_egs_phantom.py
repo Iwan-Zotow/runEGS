@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 
 import conversion
+import names_helper
 
 def write_materials(f, mats):
     """
@@ -141,15 +143,18 @@ def write_densities(f, phntom):
             
         f.write("\n")
     
-def write_phantom(fname, phntom, mats):
+def write_phantom(wrk_dir, fname, phntom, mats):
     """
     Write EGS phantom data
     
     Parameters
     ----------
 
-    f: stream
-        output stream
+    wrk_dir: string
+        working directory
+
+    fname: string
+        phantom name
         
     phntom: phantom
         holds boundaries, materials and densities
@@ -158,8 +163,8 @@ def write_phantom(fname, phntom, mats):
         dictionary of materials, id vs tuple (name, density)            
     """
     
-    with open(fname, "wt") as f:
+    with open(os.path.join(wrk_dir, fname + names_helper.EGSPHAN_EXT), "wt") as f:
         
         write_header(f, phntom, mats)
         write_matindeces(f, phntom)
-        write_densities(f, phntom)        
+        write_densities(f, phntom)
