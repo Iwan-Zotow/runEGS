@@ -22,6 +22,17 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     """
     
     logging.info("Single shot run")
+    logging.debug(wrk_dir)
+    logging.debug(radUnit)
+    logging.debug(outerCup)
+    logging.debug(innerCupSer)
+    logging.debug(innerCupNum)
+    logging.debug(str(coll))
+    logging.debug(str(x_range))
+    logging.debug(str(y_range))
+    logging.debug(str(z_range))
+    logging.debug(str(steps))
+    logging.debug(str(shot))
     
     mats = materials.materials("Materials.txt")
 

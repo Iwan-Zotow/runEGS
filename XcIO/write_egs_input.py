@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import logging
+
 import names_helper
         
 def write_input(wrk_dir, template, full_prefix, cl):
@@ -20,6 +22,12 @@ def write_input(wrk_dir, template, full_prefix, cl):
         full name without extention        
     """
     
+    logging.info("Start making EGS input")
+    logging.debug(wrk_dir)
+    logging.debug(template)
+    logging.debug(full_prefix)
+    logging.debug(str(cl))
+    
     lines = []
     with open(template, "rt") as f:
         lines = f.readlines()        
@@ -35,5 +43,8 @@ def write_input(wrk_dir, template, full_prefix, cl):
     with open(fname, "wt") as f:
         f.writelines(lines)
         
+    logging.info("Done making EGS input")
+    logging.debug(fname)
+    
     return fname
 

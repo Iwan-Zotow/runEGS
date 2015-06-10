@@ -2,7 +2,9 @@
 
 import numpy as np
 import point2d as pt
-from os import path
+
+import os
+import logging
 
 class curve(object):
     """
@@ -19,13 +21,16 @@ class curve(object):
         fname: string
             filename to load data from
         """
+
+        logging.info("Start curve construction")
+        logging.debug(fname)
         
         self._curve = None
         
         if fname == None:
             raise ValueError("curve", "Null file name")
 
-        if not path.isfile(fname):
+        if not os.path.isfile(fname):
             raise ValueError("curve", "No such file")            
         
         lines = []
@@ -47,6 +52,8 @@ class curve(object):
             
         if not self.invariant():
             raise RuntimeError("cup_curve", "Data not consistent")
+            
+        logging.info("Done curve construction")            
             
     def __getitem__(self, i):
         """

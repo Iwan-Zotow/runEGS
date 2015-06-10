@@ -4,6 +4,7 @@ import os
 import shutil
 import hashlib
 import subprocess
+import logging
 
 class data_uploader(object):
     """
@@ -15,6 +16,14 @@ class data_uploader(object):
         Constructor
         """
         
+        logging.info("Start data uploader construction")
+        logging.debug(wrk_dir)
+        logging.debug(host_ip)
+        logging.debug(host_dir)
+        logging.debug(full_prefix)
+        logging.debug(user_id)
+        logging.debug(user_pass)
+        
         self._wrk_dir = wrk_dir
         
         self._host_ip  = host_ip
@@ -25,6 +34,8 @@ class data_uploader(object):
         self._user_pass   = user_pass
     
         self._rc = 0
+        
+        logging.info("Done data uploader construction")
         
     def clean(self):
         """
@@ -42,10 +53,12 @@ class data_uploader(object):
         used as a signature
         """
         
+        logging.info("Start data signing")
+        
         algo = "sha1"
         
-        #if not hashlib.algorithms.contains(algo):
-        #    raise Exception("data_uploader", "No SHA1 hash available")
+        if not (algo in hashlib.algorithms):
+            raise Exception("data_uploader", "No SHA1 hash available")
             
         self._hash = []
         
@@ -69,10 +82,21 @@ class data_uploader(object):
                 f.write(l[1])
                 f.write("\n")
 
+        logging.info("Done data signing")
+        
     def compress_data(self, dir_name):
         """
-        pack and compress everything outgoing
+        Pack and compress everything outgoing
+        
+        Parameter
+        ---------
+        
+        dir_name: string
+            directory to pack and compress
         """
+        
+        logging.info("Start data packing")
+        logging.debug(dir_name)
         
         dst = dir_name + ".tar.bz2"
         rc = subprocess.call(["tar", "-cvjSf", dst, dir_name],
@@ -81,12 +105,17 @@ class data_uploader(object):
         if rc == 0:
             return (0, dst)
             
+        logging.info("Done data packing")
+        
         return (rc, None)
 
     def upload(self):
         """
-        Load data to the server
+        Upload data to the server
         """
+
+        logging.info("Start data uploading")
+        
         cwd, dir_name = os.path.split(self._wrk_dir)
         
         rc, aname = self.compress_data(dir_name)
@@ -97,10 +126,11 @@ class data_uploader(object):
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         
         self._rc = rc
+        logging.info("Done data uploading")
 
     def rc(self):
         """
-        Returns return code of the downlowd operation
+        Returns return code of the upload operation
         """
         
         return self._rc

@@ -18,6 +18,10 @@ class materials(object):
         fname: string
             materials file name
         """
+        
+        logging.info("Start material construction")
+        logging.debug(fname)
+        
         self._mats = None
     
         lines = []
@@ -39,7 +43,6 @@ class materials(object):
             id += 1
             
         logging.info("Materials constructed")
-        logging.debug(fname)
     
     def __getitem__(self, idx):
         """

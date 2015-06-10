@@ -20,7 +20,7 @@ def write_materials(f, mats):
         dictionary of materials, id vs tuple (name, density)    
     """
     
-    logging.info("building one boundary")
+    logging.info("Start building one boundary")
     
     f.write(" {0}\n".format(len(mats)-1))
     
@@ -32,6 +32,8 @@ def write_materials(f, mats):
         s += "       0.0000000"
     f.write(s)
     f.write("\n")
+    
+    logging.info("Done building one boundary")
 
 def write_boundary(f, bnd):
     """

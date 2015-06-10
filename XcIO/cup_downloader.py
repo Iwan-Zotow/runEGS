@@ -8,13 +8,25 @@ import logging
 
 class cup_downloader(object):
     """
-    Downloads and holds cups data
+    Downloads and holds cups        logging.info("Start data uploader construction")
+        logging.debug(wrk_dir)
+        logging.debug(host_ip)
+ data
     """
     
     def __init__(self, host_ip, host_dir, cup_dir, file_prefix, user_id, user_pass):
         """
         Constructor
         """
+        
+        logging.info("Start cup downloader construction")
+        logging.debug(host_ip)
+        logging.debug(host_dir)
+        logging.debug(cup_dir)
+        logging.debug(file_prefix)
+        logging.debug(user_id)
+        logging.debug(user_pass)
+        
         self._host_ip  = host_ip
         self._host_dir = host_dir
         self._cup_dir  = cup_dir
@@ -25,7 +37,7 @@ class cup_downloader(object):
         
         self._rc = 0
         
-        logging.info("Cup downloader constructed")                
+        logging.info("Done cup downloader construction")
                 
     def single_load(self, src):
         """
@@ -38,6 +50,8 @@ class cup_downloader(object):
         """
         Load all cups info from server
         """
+        
+        logging.info("Start cup downloading")
         
         self._rc = 0
         
@@ -63,7 +77,8 @@ class cup_downloader(object):
         src = os.path.join( self._host_dir, fname )
         rc = self.single_load(src)
         
-        self._rc = rc        
+        self._rc = rc
+        logging.info("Done cup downloading")        
         
     def rc(self):
         """
