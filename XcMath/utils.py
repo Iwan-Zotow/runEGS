@@ -11,3 +11,4 @@ def cubed(v):
     Returns cubed value
     """
     return v*v*v
+

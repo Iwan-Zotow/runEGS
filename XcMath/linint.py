@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 14 00:03:14 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import numpy as np
 import logging
