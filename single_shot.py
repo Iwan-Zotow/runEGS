@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from os import path
+import os
 import logging
 
+import XcConstants
 import names_helper
 import curve as cc
 import collimator
@@ -11,6 +12,7 @@ import cup_downloader
 import linint
 import materials
 import clinical
+import qa
 import write_egs_phantom
 import write_egs_input
 import run_dosxyz
@@ -40,7 +42,10 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     cl = collimator.collimator(coll)
 
-    file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+    if not XcConstants.IsQACup(innerCupSer):
+        file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+    else:
+        file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
     cdown = cup_downloader.cup_downloader("0.0.0.0", ".", wrk_dir, file_prefix, "kriol", "Proton31")
     cdown.load()
@@ -49,9 +54,9 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     logging.info("Cups downloaded")
     
-    cupA = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
-    cupB = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.curve(path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))    
+    cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
+    cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+    cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))    
     
     liA = linint.linint(cupA)
     liB = linint.linint(cupB)
@@ -59,9 +64,14 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     logging.info("Interpolators done")
     
-    nr = int(cl.size()*1.2/steps[0])
+    if not XcConstants.IsQACup(innerCupSer):
+        nr = int(cl.size()*1.2/steps[0])
+    else:
+	    nr = int(40.0/steps[0])
 
-    z_max = liA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
+    z_max = z_range[1]
+    if not XcConstants.IsQACup(innerCupSer):
+        z_max = liA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
 
     # phantom dimensions and boundaries
     pdim = build_phandim.build_phandim(shot, x_range, y_range, (z_range[0], z_max), steps, nr)
@@ -69,7 +79,10 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.info("Phantom dimensions")
     
     # phantom in memory
-    phntom = clinical.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
+    if not XcConstants.IsQACup(innerCupSer):
+        phntom = clinical.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
+    else:
+        phntom = qa.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
     
     full_prefix = names_helper.make_qualified_name(file_prefix, cl, shot)
     
@@ -79,7 +92,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl)
     
-    logging.info("EGS input")
+    logging.info("Making EGS input")
     
     logging.info("And DosXYZ is about to run")
     
@@ -89,6 +102,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         raise RuntimeError("run_single_shot", "Dose was not computed")
     logging.info("And DosXYZ is done")
 
+    logging.info("Data uploader is going up")
     dupload = data_uploader.data_uploader(wrk_dir, "0.0.0.0", "/.", file_prefix, "kriol", "Proton31")
     
     dupload.upload()
@@ -97,7 +111,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     if (rc != 0):
         logging.info("Data upload failure {0}".rc)
-        raise RuntimeError("run_single_shot", "unable to load files")
+        raise RuntimeError("run_single_shot", "unable to upload files")
 
     logging.info("Data uploaded")
     logging.info("Finita la comedia")

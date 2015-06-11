@@ -53,7 +53,8 @@ class curve(object):
         if not self.invariant():
             raise RuntimeError("cup_curve", "Data not consistent")
             
-        logging.info("Done curve construction")            
+        logging.info("Done curve construction")
+        logging.debug(str(self))
             
     def __getitem__(self, i):
         """
@@ -68,6 +69,7 @@ class curve(object):
         returns: point2d
             point at index at the curve
         """
+        logging.debug("curve.__getitem__({0})".format(i))
         return self._curve[i]
         
     def invariant(self):
@@ -106,3 +108,11 @@ class curve(object):
         """
         return len(self._curve)
     
+    def __str__(self):
+        """
+        """
+        s = ""
+        for p in self._curve:
+            s += str(p) + "\n"
+        return s
+

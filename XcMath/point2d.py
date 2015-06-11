@@ -41,3 +41,12 @@ class point2d(object):
             point Y position
         """
         return self._y
+        
+    def __str__(self):
+        """
+        returns: string
+            default string representation
+        """
+        return "({0},{1})".format(self._x, self._y)
+
+    

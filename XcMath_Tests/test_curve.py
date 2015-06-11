@@ -29,7 +29,9 @@ class TestCupCurve(unittest.TestCase):
     
         fname  = TestCupCurve.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
         fname += "_" + "KddCurveA.txt"
-        filename = os.path.join("..", cupdir, fname)
+        filename = os.path.join(cupdir, fname)
+        
+        print(filename)
     
         cup = curve.curve(filename)
         

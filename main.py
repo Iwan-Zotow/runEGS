@@ -70,7 +70,7 @@ def get_qa_steps():
     """
     Returns qa steps
     """
-    return (1.0, 6.0) # in mm    
+    return (1.0, 2.0) # in mm    
     
 def clean_wrk_dir(wrk_dir):
     """
@@ -124,7 +124,7 @@ def main():
         z_range = get_qa_Z_range()
 
         steps = get_qa_steps()
-
+        
     single_shot.run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot)
     
     logging.info("Done")
