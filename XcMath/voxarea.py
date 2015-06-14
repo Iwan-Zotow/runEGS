@@ -62,25 +62,62 @@ def circ_segmentsector_area(R, hx, hy):
     Sy = circ_segment_area(R, hy)
     
     return Sx + Sy + hx*hy - 0.25* math.pi * R*R
+    
+def rotate_voxel(xmin, ymin, xmax, ymax):
+    """
+    Given center position, rotate to the first quadrant
+    """
+    
+    xc = 0.5 * (xmin + xmax)
+    yc = 0.5 * (ymin + ymax)
+    Никто даже не поинтересовался - зачем?
+    if xc >= 0.0 and yc >= 0.0:
+        return (xmin, ymin, xmax, ymax)
+    
+    if xc < 0.0 and yc >= 0.0:
+        return (ymin, -xmax, ymax, -xmin)
+        
+    if xc < 0.0 and yc < 0.0:
+        return (-xmax, -xmin, -xmax, -xmin)
+        
+    # xc > 0.0 && yc < 0.0:
+    return (-ymax, xmin, -ymin, xmax)
+    
 
-def vaInner(R, xmin, xmax, ymin, ymax):
+def vaInner(R, xmin, ymin, xmax, ymax):
     """
     Computes intersection area
     
     Radius of the point with center of the voxel is inside the R
     """
     
-    if ymax < 0.0: # both values are negative, reflect
-        ymin, ymax = math.fabs(ymax), math.fabs(ymax)
-        
-    if xmax < 0.0: # both values are negative, reflect
-        xmin, xmax = math.fabs(xmax), math.fabs(xmax)
+    # get the points in the first quadrant
+    (xmin, ymin, xmax, ymax) = rotate_voxel(xmin, ymin, xmax, ymax)
     
-    rxy = math.sqrt(xmax*xmax + ymax*ymax)
-    if rxy <= R:
+    rmaxmax = math.sqrt(xmax*xmax + ymax*ymax)
+    if rmaxmax <= R:
         return 1.0
         
-    return 1.0 
+    # we know we have one corner out
+    rminmax = math.sqrt(xmin*xmin + ymax*ymax)
+    rmaxmin = math.sqrt(xmax*xmax + ymin*ymin)
+    
+    if rminmax >= R:
+        if rmaxmin >= R:
+            A = circ_segmentsector_area(R, xmin, ymin)
+        else: # rmaxmin < R
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmax, ymin)
+    else:
+        if rmaxmin >= R:
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmin, ymax)
+        else: # rmaxmin < R
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmax, ymin)
+            A -= circ_segmentsector_area(R, xmin, ymax)            
+        
+    return A /((ymax-ymin)*(xmax-xmin))
     
 def vaOuter(R, xmin, xmax, ymin, ymax):
     """
@@ -89,13 +126,31 @@ def vaOuter(R, xmin, xmax, ymin, ymax):
     Radius of the point with center of the voxel is outside the R
     """
     
-    if ymax < 0.0: # both values are negative, reflect
-        ymin, ymax = math.fabs(ymax), math.fabs(ymax)
+    # get the points in the first quadrant
+    (xmin, ymin, xmax, ymax) = rotate_voxel(xmin, ymin, xmax, ymax)
         
-    if xmax < 0.0: # both values are negative, reflect
-        xmin, xmax = math.fabs(xmax), math.fabs(xmax)
+    rminmin = math.sqrt(xmin*xmin + ymin*ymin)
+    if rminmin <= R:
+        return 1.0
+        
+    # we know we have one corner in
+    rminmax = math.sqrt(xmin*xmin + ymax*ymax)
+    rmaxmin = math.sqrt(xmax*xmax + ymin*ymin)
     
-    rxy = math.sqrt(xmax*xmax + ymax*ymax)
-
-    return 1.0
+    if rminmax >= R:
+        if rmaxmin >= R:
+            A = circ_segmentsector_area(R, xmin, ymin)
+        else: # rmaxmin < R
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmax, ymin)
+    else:
+        if rmaxmin >= R:
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmin, ymax)
+        else: # rmaxmin < R
+            A  = circ_segmentsector_area(R, xmin, ymin)
+            A -= circ_segmentsector_area(R, xmax, ymin)
+            A -= circ_segmentsector_area(R, xmin, ymax)            
+        
+    return A /((ymax-ymin)*(xmax-xmin))
 
