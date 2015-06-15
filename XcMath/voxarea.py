@@ -70,7 +70,7 @@ def rotate_voxel(xmin, ymin, xmax, ymax):
     
     xc = 0.5 * (xmin + xmax)
     yc = 0.5 * (ymin + ymax)
-    Никто даже не поинтересовался - зачем?
+    
     if xc >= 0.0 and yc >= 0.0:
         return (xmin, ymin, xmax, ymax)
     
