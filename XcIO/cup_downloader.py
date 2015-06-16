@@ -43,8 +43,19 @@ class cup_downloader(object):
         """
         Load single cup from server
         """
-        return subprocess.call(["sshpass", "-p", self._user_pass, "scp", self._user_id +"@" + self._host_ip + ":" + src, self._cup_dir],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            logging.info("Start single cup download: {0}".format(src))
+            
+            rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", self._user_id +"@" + self._host_ip + ":" + src, self._cup_dir],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            logging.debug("OS failure")
+        
+            rc = -1
+            
+        return rc
+
+
 
     def load(self):
         """
