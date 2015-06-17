@@ -23,10 +23,12 @@ def circ_segment_area(R, h):
         raise ValueError("circ_segment_area", "circle radius is negative or 0")
         
     if h < 0.0:
+        print(R)
+        print(h)
         raise ValueError("circ_segment_area", "circle radius is negative or 0")
         
     if h > R:
-        raise ValueError("circ_segment_area", "circle radius is smaller than height")
+        return 0.0
         
     if h == R:
         return 0.0    
@@ -77,12 +79,17 @@ def rotate_voxel(xmin, ymin, xmax, ymax):
     if xc < 0.0 and yc >= 0.0:
         return (ymin, -xmax, ymax, -xmin)
         
-    if xc < 0.0 and yc < 0.0:
-        return (-xmax, -xmin, -xmax, -xmin)
+    if xc < 0.0 and yc < 0.0: # 180 degress rotation
+        return (-xmax, -ymax, -xmin, -ymin)
         
     # xc > 0.0 && yc < 0.0:
     return (-ymax, xmin, -ymin, xmax)
     
+    
+def check_voxel(xmin, ymin, xmax, ymax):
+    """
+    """
+    return xmin < xmax and ymin < ymax
 
 def vaInner(R, xmin, ymin, xmax, ymax):
     """
@@ -91,8 +98,18 @@ def vaInner(R, xmin, ymin, xmax, ymax):
     Radius of the point with center of the voxel is inside the R
     """
     
+    if not check_voxel(xmin, ymin, xmax, ymax):
+        print("QQQ")
+    
+    print("{0} {1} {2} {3} {4}".format(xmin, ymin, xmax, ymax, R))
+    
     # get the points in the first quadrant
     (xmin, ymin, xmax, ymax) = rotate_voxel(xmin, ymin, xmax, ymax)
+
+    if not check_voxel(xmin, ymin, xmax, ymax):
+        print("WWW")
+        
+    print("{0} {1} {2} {3} {4}".format(xmin, ymin, xmax, ymax, R))
     
     rmaxmax = math.sqrt(xmax*xmax + ymax*ymax)
     if rmaxmax <= R:

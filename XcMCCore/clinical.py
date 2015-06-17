@@ -34,7 +34,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
     """
-    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_complex_phantom(pdim, liA, liB, liC, mats, z_range)
     
 def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -202,10 +202,12 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
             ymin = by[iy]
             ymax = by[iy+1]
             y = 0.5 * (ymin + ymax)
+            
             for ix in range (0, nx):
                 xmin = bx[ix]
                 xmax = bx[ix+1]
                 x = 0.5 * (xmin + xmax)
+                print("{0} {1} {2} {3}".format(iz, iy, ix, x))
                 
                 # default material: air                
                 m = 1
@@ -218,19 +220,19 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
                     if r <= ra:
                         m = 2 # water
                         
-                        q = voxarea.vaInner(ra, xmin, xmax, ymin, ymax)                        
+                        q = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)                
                         d = q * d_water + (1.0 - q) * d_air
                         
                     elif r <= rb:
                         m = 1 # air
                         
-                        q = voxarea.vaInner(rb, xmin, xmax, ymin, ymax)                        
+                        q = voxarea.vaInner(rb, xmin, ymin, xmax, ymax)                        
                         d = q * d_air + (1.0 - q) * d_poly
                         
                     elif r <= rc:
                         m = 4 # poly
                         
-                        q = voxarea.vaInner(rc, xmin, xmax, ymin, ymax)                        
+                        q = voxarea.vaInner(rc, xmin, ymin, xmax, ymax)                        
                         d = q * d_poly + (1.0 - q) * d_air                        
                     else:
                         if not (z <= z_max and z > (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS)):
