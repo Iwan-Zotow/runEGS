@@ -36,5 +36,7 @@ ENV EGS_CONFIG /home/kriol/HEN_HOUSE/specs/x86_64-unknown-linux-gnu.conf
 # running the show
 
 WORKDIR /home/kriol/runEGS
-ENTRYPOINT /home/kriol/runEGS/main.py
+ENTRYPOINT["/usr/bin/python", "/home/kriol/runEGS/main.py"]
+
+#CMD["R8O2IM01C25"]
 
