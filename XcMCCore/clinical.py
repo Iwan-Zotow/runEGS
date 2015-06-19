@@ -105,8 +105,6 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
 
                 r = math.sqrt(x*x + y*y)
                 
-                print("{0}  {1}  {2}  {3}".format(r, ra, rb, rc))
-                
                 # default material: air                
                 m = 1
                 d = d_air

@@ -50,6 +50,13 @@ class curve(object):
             zr = pt.point2d(np.float32(split[0]), np.float32(split[1]))
             self._curve.append( zr )
             
+        # last point from some fixup in make_cup
+        ptl  = self._curve[-1]
+        ptll = self._curve[-2]
+        
+        zr = pt.point2d(2.0*ptl.x() - ptll.x(), 2.0*ptl.y() - ptll.y())
+        self._curve.append( zr )
+            
         if not self.invariant():
             raise RuntimeError("cup_curve", "Data not consistent")
             

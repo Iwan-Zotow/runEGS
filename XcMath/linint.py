@@ -121,6 +121,9 @@ class linint(object):
         logging.debug(str(z))
 
         idx = self.find_idx(z)
+#        print(self._points[idx].x())
+#        print(self._points[idx+1].x())
+#        print(idx)
 
         # above zmax        
         if (idx == -1):
@@ -130,8 +133,13 @@ class linint(object):
         if (idx == -2):
             raise RuntimeError("interpolate", "index is -2")
         
-        p = np.float32(z - self._points[idx+1].x() / (self._points[idx].x() - self._points[idx+1].x()))
+        p = (z - self._points[idx+1].x()) / (self._points[idx].x() - self._points[idx+1].x())
         q = 1.0 - p
+        
+#        print(p)
+#        print(q)
+#        print(self._points[idx].y())
+#        print(self._points[idx+1].y())
         
         return p * self._points[idx].y() + q * self._points[idx+1].y()
 
@@ -158,7 +166,7 @@ class linint(object):
 
         idx = self._len - 1
         
-        p = np.float32(z - self._points[idx].x() / (self._points[idx-1].x() - self._points[idx].x()))
+        p = (z - self._points[idx].x()) / (self._points[idx-1].x() - self._points[idx].x())
         q = 1.0 - p
         
         return p * self._points[idx-1].y() + q * self._points[idx].y()
