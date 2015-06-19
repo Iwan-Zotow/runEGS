@@ -6,6 +6,8 @@ import hashlib
 import subprocess
 import logging
 
+import names_helper
+
 class data_uploader(object):
     """
     Computed Data uploader
@@ -47,7 +49,7 @@ class data_uploader(object):
             for d in dirs:
                 shutil.rmtree(os.path.join(root, d))
         
-    def sign(self):
+    def sign(self, cl):
         """
         Compute hash functions of the downloaded cups, to be
         used as a signature
@@ -62,6 +64,7 @@ class data_uploader(object):
             
         self._hash = []
         
+        # everything in work.dir: input, phantom, cups, etc
         for root, dirs, files in os.walk(self._wrk_dir):
             for f in files:
 
@@ -73,7 +76,18 @@ class data_uploader(object):
                     hasher.update(buf)
                     
                     self._hash.append((ctx, hasher.hexdigest()))
-                
+                    
+        # add phase space file signature
+        phsf  = str(cl) + names_helper.EGSPHSF_EXT
+        head,tail = os.path.split(self._wrk_dir)
+        phsf = os.path.join(head, phsf)
+        hasher = hashlib.sha1()
+        with open(phsf, "rb") as afile:
+            buf = afile.read()
+            hasher.update(buf)
+                    
+            self._hash.append((phsf, hasher.hexdigest()))
+        
         fname = os.path.join(self._wrk_dir, algo)
         with open(fname, "wt") as f:
             for l in self._hash:
@@ -109,7 +123,7 @@ class data_uploader(object):
         
         return (rc, None)
 
-    def upload(self):
+    def upload(self, cl):
         """
         Upload data to the server
         """
@@ -120,7 +134,7 @@ class data_uploader(object):
         
         rc, aname = self.compress_data(dir_name)
         
-        self.sign()
+        self.sign(cl)
         
         rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)        

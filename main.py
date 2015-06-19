@@ -1,7 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
 import logging
+import sys    
 
 import XcConstants
 import clinical
@@ -14,7 +16,7 @@ def get_clinical_cup():
     """
     Returns tuple with clinical cup description
     """
-    return ("8", "2", "M", "01")
+    return ("8", "2", "M", "01", 25)
     
 def get_clinical_X_range():
     """
@@ -46,7 +48,7 @@ def get_qa_cup():
     """
     # outer cup shall be always 0
     # inner cup shall be always Q
-    return ("8", "0", "Q", "00")
+    return ("8", "0", "Q", "00", 25)
     
 def get_qa_X_range():
     """
@@ -85,15 +87,30 @@ def clean_wrk_dir(wrk_dir):
                 os.rmdir(os.path.join(root, name))    
         os.rmdir(wrk_dir)
     
-    return    
+    return
+    
+def parse_input(s):
+    """
+    Parse input string and produce rad.unit, outer cup, inner cup, inner cup #, collimator
+    """
+    radUnit  = str(s[1:2])
+    outerCup = str(s[3:4])
+    innerCupSer = str(s[5:6])
+    innerCupNum = str(s[6:8])
+    coll        = int(str(s[9:]))
+    
+    return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
     
 def main():
     """
+
     Drives all other methods to compute single shot dose
     """
-    radUnit, outerCup, innerCupSer, innerCupNum = get_clinical_cup() # = get_qa_cup()
-
-    coll = 25 # in mm
+    
+    if len(sys.argv) == 1:
+        radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
+    else:
+        radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
 
     shot = (0.0, 0.0) # in mm
     

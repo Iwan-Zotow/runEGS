@@ -105,7 +105,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.info("Data uploader is going up")
     dupload = data_uploader.data_uploader(wrk_dir, "127.0.0.1", "/.", file_prefix, "kriol", "Proton31")
     
-    dupload.upload()
+    dupload.upload(cl)
     
     rc = dupload.rc()
     
