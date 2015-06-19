@@ -34,7 +34,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
     """
-    return make_complex_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
     
 def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -103,13 +103,15 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
             for ix in range (0, nx):
                 x = 0.5 * (bx[ix] + bx[ix+1])
 
+                r = math.sqrt(x*x + y*y)
+                
+                print("{0}  {1}  {2}  {3}".format(r, ra, rb, rc))
+                
                 # default material: air                
                 m = 1
                 d = d_air
                 
                 if z <= z_max and z > XcConstants.COUCH_BOTTOM:
-                
-                    r = math.sqrt(x*x + y*y)
                 
                     if r <= ra:
                         m = 2 # water

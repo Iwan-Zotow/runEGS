@@ -67,7 +67,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     if not XcConstants.IsQACup(innerCupSer):
         nr = int(cl.size()*1.2/steps[0])
     else:
-	    nr = int(40.0/steps[0])
+        nr = int(40.0/steps[0])
 
     z_max = z_range[1]
     if not XcConstants.IsQACup(innerCupSer):
@@ -89,6 +89,8 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     write_egs_phantom.write_phantom(wrk_dir, full_prefix, phntom, mats)
     
     logging.info("Phantom saved")
+    
+    return
     
     egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl)
     
