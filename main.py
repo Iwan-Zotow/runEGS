@@ -125,7 +125,7 @@ def main():
     os.makedirs(wrk_dir)
 
     # configuring logging    
-    logging.basicConfig(filename=os.path.join(wrk_dir, full_prefix+".log"), level=logging.INFO)
+    logging.basicConfig(filename=os.path.join(wrk_dir, full_prefix+".log"), level=logging.DEBUG)
     logging.info("Started")
 
     # ranges and steps

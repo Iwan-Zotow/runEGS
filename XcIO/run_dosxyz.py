@@ -2,6 +2,8 @@
 
 import os
 import subprocess
+import logging
+import time
 
 DXYZ = "dosxyznrc"
 
@@ -36,6 +38,13 @@ def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
     run dosxyz with a given egs and pegs input files
     """
     
+    logging.info("Running DOSXYZ")
+    logging.debug(wrk_dir)
+    logging.debug(egs_inp)
+    logging.debug(pegs_inp)
+    
+    start = time.time()
+    
     process_name = DXYZ
         
     src = os.path.join(wrk_dir, egs_inp)
@@ -49,8 +58,12 @@ def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
     rc = subprocess.call([process_name, "-i", os.path.basename(egs_inp), "-p", pegs_inp, "-b"],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                           
+    thetime = time.time() - start
+    
     if os.path.isfile(lnk):
         os.unlink(lnk)
+
+    logging.info("Finished with running DOSXYZ: {0}".format(thetime))
     
     # move the data to working folder
     name,ext = os.path.splitext(egs_inp)
@@ -60,5 +73,7 @@ def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
     move_results(wrk_dir, name + ".egslog")
     move_results(wrk_dir, name + ".egslst")
                           
+    logging.info("Done with DOSXYZ")
+    
     return rc
 
