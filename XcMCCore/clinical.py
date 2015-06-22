@@ -34,7 +34,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
     """
-    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_complex_phantom(pdim, liA, liB, liC, mats, z_range)
     
 def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -207,37 +207,61 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
                 xmin = bx[ix]
                 xmax = bx[ix+1]
                 x = 0.5 * (xmin + xmax)
-                print("{0} {1} {2} {3}".format(iz, iy, ix, x))
                 
+                r = math.sqrt(x*x + y*y)
+                    
                 # default material: air                
                 m = 1
                 d = d_air
                 
                 if z <= z_max and z > XcConstants.COUCH_BOTTOM:
                 
-                    r = math.sqrt(x*x + y*y)
-                
                     if r <= ra:
                         m = 2 # water
                         
-                        q = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)                
-                        d = q * d_water + (1.0 - q) * d_air
+                        q = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)
+                        p = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)
+                        
+                        w_w = q
+                        w_a = p - q
+                        w_p = 1.0 - p
+                        if w_w < 0.0 or w_w > 1.0 or w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0:
+                            print("RA")
+                        d = w_w * d_water + w_a * d_air + w_p * d_poly
                         
                     elif r <= rb:
                         m = 1 # air
                         
-                        q = voxarea.vaInner(rb, xmin, ymin, xmax, ymax)                        
-                        d = q * d_air + (1.0 - q) * d_poly
+                        p = voxarea.vaOuter(ra, xmin, ymin, xmax, ymax)
+                        q = voxarea.vaInner(rb, xmin, ymin, xmax, ymax)
+                        w_w = p
+                        w_a = q - p
+                        w_p = 1.0 - q
+                        
+                        if w_w < 0.0 or w_w > 1.0 or w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0:
+                            print("RB")
+                        d = w_w * d_water + w_a * d_air + w_p * d_poly
                         
                     elif r <= rc:
                         m = 4 # poly
                         
-                        q = voxarea.vaInner(rc, xmin, ymin, xmax, ymax)                        
-                        d = q * d_poly + (1.0 - q) * d_air                        
+                        p = voxarea.vaOuter(rb, xmin, ymin, xmax, ymax)
+                        q = voxarea.vaInner(rc, xmin, ymin, xmax, ymax)
+                        
+                        w_a = p
+                        w_p = q - p
+                        w_aa= 1.0 - 1
+                        if w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0 or w_aa < 0.0 or w_aa > 1.0:
+                            print("RC")
+                        d = w_a * d_air + w_p * d_poly + w_aa * d_air                        
                     else:
                         if not (z <= z_max and z > (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS)):
                             m = 4 # poly
-                            d = d_poly
+                            
+                            p = voxarea.vaOuter(rc, xmin, ymin, xmax, ymax)
+                            if p < 0.0 or p > 1.0:
+                                print("RD")                          
+                            d = p*d_poly + (1.0-p)*d_air
                         
                 elif z <= XcConstants.COUCH_BOTTOM:
                     m = 2 # water

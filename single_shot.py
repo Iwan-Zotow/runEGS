@@ -56,7 +56,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
     cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))    
+    cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
     
     liA = linint.linint(cupA)
     liB = linint.linint(cupB)
@@ -89,6 +89,8 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     write_egs_phantom.write_phantom(wrk_dir, full_prefix, phntom, mats)
     
     logging.info("Phantom saved")
+    
+    return
     
     egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl)
     

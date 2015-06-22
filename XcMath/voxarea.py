@@ -4,11 +4,10 @@ import math
 
 def circ_segment_area(R, h):
     """
-    Computes half of the area of the circular segment
-    
-    
+    Computes the area of the circular segment
+       
     Parameters
-        ----------
+    ----------
         
     R: float
         radius of the circle, mm
@@ -23,15 +22,10 @@ def circ_segment_area(R, h):
         raise ValueError("circ_segment_area", "circle radius is negative or 0")
         
     if h < 0.0:
-        print(R)
-        print(h)
         raise ValueError("circ_segment_area", "circle radius is negative or 0")
         
-    if h > R:
-        return 0.0
-        
-    if h == R:
-        return 0.0    
+    if h >= R:
+        return 0.0        
         
     if h == 0.0:
         return 0.25 * math.pi * R*R
@@ -44,15 +38,13 @@ def circ_segmentsector_area(R, hx, hy):
     """
     Computes half of the area of the circular segment
     
-    
     Parameters
-        ----------
+    ----------
         
     R: float
         radius of the circle, mm
     hx: float
-        chord X position, mm
-        
+        chord X position, mm        
     hy: float
         chord Y position, mm
         
@@ -68,26 +60,43 @@ def circ_segmentsector_area(R, hx, hy):
 def rotate_voxel(xmin, ymin, xmax, ymax):
     """
     Given center position, rotate to the first quadrant
+    
+    Parameters
+    ----------
+        
+    xmin: float
+        low point X position, mm
+    ymin: float
+        low point Y position, mm
+    xmax: float
+        high point X position, mm
+    ymax: float
+        high point Y position, mm
+        
+    returns: floats
+        properly rotated voxel in the first quadrant
     """
     
     xc = 0.5 * (xmin + xmax)
     yc = 0.5 * (ymin + ymax)
     
-    if xc >= 0.0 and yc >= 0.0:
+    if xc >= 0.0 and yc >= 0.0: # no rotation
         return (xmin, ymin, xmax, ymax)
     
-    if xc < 0.0 and yc >= 0.0:
+    if xc < 0.0 and yc >= 0.0: # CW 90 rotation
         return (ymin, -xmax, ymax, -xmin)
         
-    if xc < 0.0 and yc < 0.0: # 180 degress rotation
+    if xc < 0.0 and yc < 0.0: # CW 180 rotation
         return (-xmax, -ymax, -xmin, -ymin)
         
-    # xc > 0.0 && yc < 0.0:
+    # xc > 0.0 && yc < 0.0: # CW 270 rotation
     return (-ymax, xmin, -ymin, xmax)
     
     
 def check_voxel(xmin, ymin, xmax, ymax):
     """
+    Given voxel hi and low point, return true if
+    voxel is good, false otherwise
     """
     return xmin < xmax and ymin < ymax
 
@@ -99,23 +108,21 @@ def vaInner(R, xmin, ymin, xmax, ymax):
     """
     
     if not check_voxel(xmin, ymin, xmax, ymax):
-        print("QQQ")
+        raise RuntimeError("vaInner", "bad incoming voxel")
     
-    print("{0} {1} {2} {3} {4}".format(xmin, ymin, xmax, ymax, R))
+    #print("{0} {1} {2} {3} {4}".format(xmin, ymin, xmax, ymax, R))
     
     # get the points in the first quadrant
     (xmin, ymin, xmax, ymax) = rotate_voxel(xmin, ymin, xmax, ymax)
 
     if not check_voxel(xmin, ymin, xmax, ymax):
-        print("WWW")
-        
-    print("{0} {1} {2} {3} {4}".format(xmin, ymin, xmax, ymax, R))
+        raise RuntimeError("vaInner", "bad rotated voxel")        
     
     rmaxmax = math.sqrt(xmax*xmax + ymax*ymax)
     if rmaxmax <= R:
         return 1.0
         
-    # we know we have one corner out
+    # computing other two corners
     rminmax = math.sqrt(xmin*xmin + ymax*ymax)
     rmaxmin = math.sqrt(xmax*xmax + ymin*ymin)
     
@@ -136,21 +143,27 @@ def vaInner(R, xmin, ymin, xmax, ymax):
         
     return A /((ymax-ymin)*(xmax-xmin))
     
-def vaOuter(R, xmin, xmax, ymin, ymax):
+def vaOuter(R, xmin, ymin, xmax, ymax):
     """
     Computes intersection area
     
     Radius of the point with center of the voxel is outside the R
     """
     
+    if not check_voxel(xmin, ymin, xmax, ymax):
+        raise RuntimeError("vaOuter", "bad original voxel")
+        
     # get the points in the first quadrant
     (xmin, ymin, xmax, ymax) = rotate_voxel(xmin, ymin, xmax, ymax)
         
+    if not check_voxel(xmin, ymin, xmax, ymax):
+        raise RuntimeError("vaOuter", "bad rotated voxel")
+
     rminmin = math.sqrt(xmin*xmin + ymin*ymin)
-    if rminmin <= R:
-        return 1.0
+    if rminmin >= R:
+        return 0.0
         
-    # we know we have one corner in
+    # we know we have one corner 
     rminmax = math.sqrt(xmin*xmin + ymax*ymax)
     rmaxmin = math.sqrt(xmax*xmax + ymin*ymin)
     
