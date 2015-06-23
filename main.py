@@ -150,18 +150,16 @@ def main():
         radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
 
     shot = (0.0, 0.0) # in mm
-
+    
     pps = []
-    for k in range(0, 7):
+    for k in range(0, 8):
         shot = (0.0, float(k)*5.0)
         p = multiprocessing.Process(target=run_one_shot, args=(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot,))
         pps.append(p)
         p.start()
         
-    for k in range(0, 7):
+    for k in range(0, 8):
         pps[k].join()
-    #run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot)
-
 
 if __name__ == '__main__':
 

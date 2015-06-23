@@ -17,6 +17,7 @@ import data_uploader
 
 def make_shot_list(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, shstep, shmargin):
     """
+    Given
     """
     
     cl = collimator.collimator(coll)
