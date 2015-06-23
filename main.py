@@ -4,6 +4,7 @@
 import os
 import logging
 import sys    
+import multiprocessing
 
 import XcConstants
 import clinical
@@ -101,18 +102,10 @@ def parse_input(s):
     
     return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
     
-def main():
+def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
     """
-
-    Drives all other methods to compute single shot dose
+    Make everything to compute one shot
     """
-    
-    if len(sys.argv) == 1:
-        radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
-    else:
-        radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
-
-    shot = (0.0, 0.0) # in mm
     
     # making working directory
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
@@ -144,7 +137,31 @@ def main():
         
     single_shot.run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot)
     
-    logging.info("Done")
+    logging.info("Done")    
+    
+def main():
+    """
+    Drives all other methods to compute single shot dose
+    """
+    
+    if len(sys.argv) == 1:
+        radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
+    else:
+        radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
+
+    shot = (0.0, 0.0) # in mm
+
+    pps = []
+    for k in range(0, 7):
+        shot = (0.0, float(k)*5.0)
+        p = multiprocessing.Process(target=run_one_shot, args=(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot,))
+        pps.append(p)
+        p.start()
+        
+    for k in range(0, 7):
+        pps[k].join()
+    #run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot)
+
 
 if __name__ == '__main__':
 
