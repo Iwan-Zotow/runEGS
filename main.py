@@ -149,7 +149,7 @@ def main():
     else:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
 
-    nof_shots = 8
+    nof_shots = 8 # int(sys.argv[2])
     
     pps = []
     for k in range(0, nof_shots):

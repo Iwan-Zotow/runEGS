@@ -2,6 +2,22 @@
 
 import math
 
+#
+#    Q1   Q0
+#    Q2   Q3
+#
+# rotation matrices
+mtxQ0 = (( 1.0, 0.0), ( 0.0, 1.0))
+mtxQ1 = (( 0.0, 1.0), (-1.0, 0.0))
+mtxQ2 = ((-1.0, 0.0), ( 0.0,-1.0))
+mtxQ3 = (( 0.0,-1.0), ( 1.0, 0.0))
+
+def rotate(x, y, mat):
+    """
+    Given 2D matrix, rotate x, y pair and return rotated position
+    """
+    return (mat[0][0]*x + mat[0][1]*y, mat[1][0]*x + mat[1][1]*y)
+
 def circ_segment_area(R, h):
     """
     Computes the area of the circular segment
@@ -41,6 +57,7 @@ def circ_segmentsector_area(R, hx, hy):
     Parameters
     ----------
         
+
     R: float
         radius of the circle, mm
     hx: float
