@@ -6,6 +6,8 @@ import XcConstants
 import phantom
 import voxarea
 
+EPS = 1.0e-4
+
 def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     """
     Makes filename prefix given RU, OC, IC info
@@ -34,7 +36,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
     """
-    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_complex_phantom(pdim, liA, liB, liC, mats, z_range)
     
 def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -220,47 +222,81 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
                         m = 2 # water
                         
                         q = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)
+                        if q < 0.0 and q > -EPS:
+                            q = 0.0
+                        if q > 1.0 and q < 1.0+EPS:
+                            q = 1.0
+                        
                         p = voxarea.vaInner(ra, xmin, ymin, xmax, ymax)
+                        if p < 0.0 and p > -EPS:
+                            p = 0.0
+                        if p > 1.0 and p < 1.0+EPS:
+                            p = 1.0
                         
                         w_w = q
                         w_a = p - q
                         w_p = 1.0 - p
                         if w_w < 0.0 or w_w > 1.0 or w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0:
-                            print("RA")
+                            print("RA: {0} {1} {2}".format(w_W, w_a, w_p))
+                                                        
                         d = w_w * d_water + w_a * d_air + w_p * d_poly
                         
                     elif r <= rb:
                         m = 1 # air
                         
                         p = voxarea.vaOuter(ra, xmin, ymin, xmax, ymax)
+                        if p < 0.0 and p > -EPS:
+                            p = 0.0
+                        if p > 1.0 and p < 1.0+EPS:
+                            p = 1.0
+                            
                         q = voxarea.vaInner(rb, xmin, ymin, xmax, ymax)
+                        if q < 0.0 and q > -EPS:
+                            q = 0.0
+                        if q > 1.0 and q < 1.0+EPS:
+                            q = 1.0
+                        
                         w_w = p
                         w_a = q - p
                         w_p = 1.0 - q
                         
                         if w_w < 0.0 or w_w > 1.0 or w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0:
-                            print("RB")
+                            print("RB: {0} {1} {2}".format(w_w, w_a, w_p))
                         d = w_w * d_water + w_a * d_air + w_p * d_poly
                         
                     elif r <= rc:
                         m = 4 # poly
                         
                         p = voxarea.vaOuter(rb, xmin, ymin, xmax, ymax)
+                        if p < 0.0 and p > -EPS:
+                            p = 0.0
+                        if p > 1.0 and p < 1.0+EPS:
+                            p = 1.0
+                            
                         q = voxarea.vaInner(rc, xmin, ymin, xmax, ymax)
+                        if q < 0.0 and q > -EPS:
+                            q = 0.0
+                        if q > 1.0 and q < 1.0+EPS:
+                            q = 1.0
                         
                         w_a = p
                         w_p = q - p
-                        w_aa= 1.0 - 1
+                        w_aa= 1.0 - q
                         if w_a < 0.0 or w_a > 1.0 or w_p < 0.0 or w_p > 1.0 or w_aa < 0.0 or w_aa > 1.0:
-                            print("RC")
+                            print("RC: {0} {1} {2}".format(w_a, w_p, w_aa))
                         d = w_a * d_air + w_p * d_poly + w_aa * d_air                        
                     else:
                         if not (z <= z_max and z > (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS)):
                             m = 4 # poly
                             
                             p = voxarea.vaOuter(rc, xmin, ymin, xmax, ymax)
+                            if p < 0.0 and p > -EPS:
+                                p = 0.0
+                            if p > 1.0 and p < 1.0+EPS:
+                                p = 1.0
+                                
                             if p < 0.0 or p > 1.0:
-                                print("RD")                          
+                                print("RD: {0}".format(p))
                             d = p*d_poly + (1.0-p)*d_air
                         
                 elif z <= XcConstants.COUCH_BOTTOM:
