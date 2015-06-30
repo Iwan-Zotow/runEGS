@@ -78,8 +78,8 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     by = phntom.by()
     bz = phntom.bz()
     
-    data = phntom.data()
-    dens = phntom.dens()
+    dens = phntom.data()
+    idxs = phntom.mats()
     
     air   = mats[1]
     water = mats[2]
@@ -131,7 +131,7 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
                     m = 2 # water
                     d = d_water
                 
-                data[ix,iy,iz] = m
+                idxs[ix,iy,iz] = m
                 dens[ix,iy,iz] = d
     
     return phntom
@@ -178,8 +178,8 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
     by = phntom.by()
     bz = phntom.bz()
     
-    data = phntom.data()
-    dens = phntom.dens()
+    idxs = phntom.mats()
+    dens = phntom.data()
     
     air   = mats[1]
     water = mats[2]
@@ -303,7 +303,7 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
                     m = 2 # water
                     d = d_water
                 
-                data[ix,iy,iz] = m
+                idxs[ix,iy,iz] = m
                 dens[ix,iy,iz] = d
     
     return phntom

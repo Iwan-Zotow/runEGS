@@ -136,12 +136,12 @@ class data_uploader(object):
         
         self.sign(cl)
         
-#        rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
-#                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
+        rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         
         dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + self._host_dir + "/" + self._full_prefix[0:11] + "/"
         cmd = ["wput", aname, dest]
-        rc  = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
+#        rc  = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         self._rc = rc
 
         logging.info("Done data uploading")

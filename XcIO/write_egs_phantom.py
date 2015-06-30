@@ -98,13 +98,13 @@ def write_matindeces(f, phntom):
     ny = phntom.ny()
     nz = phntom.nz()
     
-    data = phntom.data()
+    idxs = phntom.mats()
     
     for iz in range (0, nz):
         for iy in range (0, ny):
             s = ""            
             for ix in range (0, nx):
-                mat = data[ix,iy,iz]
+                mat = idxs[ix,iy,iz]
                 s += str(mat)
                 
             f.write(s)
@@ -130,7 +130,7 @@ def write_densities(f, phntom):
     ny = phntom.ny()
     nz = phntom.nz()
     
-    dens = phntom.dens()
+    dens = phntom.data()
 
     for iz in range (0, nz):
         for iy in range (0, ny):

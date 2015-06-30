@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import unittest
 import phandim
-import phantom
+import phdata
 
 class TestPhantom(unittest.TestCase):
     """
@@ -14,7 +12,7 @@ class TestPhantom(unittest.TestCase):
         by = [3,2,5,1,6]
         bz = [8,5,23,9,4,3]
         
-        ph = phantom.phantom(bx, by, bz)
+        ph = phdata.phdata(bx, by, bz)
         
         self.assertTrue(phandim.phandim.check_sorted(ph.bx()))
         self.assertTrue(phandim.phandim.check_sorted(ph.by()))
@@ -26,7 +24,7 @@ class TestPhantom(unittest.TestCase):
         bz = [8,5,23,8,4,3]
         
         with self.assertRaises(RuntimeError):
-            phantom.phantom(bx, by, bz)
+            phdata.phdata(bx, by, bz)
             
     def test_constructor3(self):
         bx = [3,2,5,1,2]
@@ -34,7 +32,7 @@ class TestPhantom(unittest.TestCase):
         bz = [8,5,23,8,4,3]
         
         with self.assertRaises(RuntimeError):
-            phantom.phantom(bx, by, bz)
+            phdata.phdata(bx, by, bz)
 
     def test_constructor5(self):
         bx = [3,2,5,1,2]
@@ -42,14 +40,14 @@ class TestPhantom(unittest.TestCase):
         bz = None
         
         with self.assertRaises(RuntimeError):
-            phantom.phantom(bx, by, bz)
+            phdata.phdata(bx, by, bz)
 
     def test_access1(self):
         bx = [3,2,5,1,2]
         by = [8,5,23,8,4,3]
         bz = [8,5,23,9,4,3,90]
         
-        ph = phantom.phantom(bx, by, bz)
+        ph = phdata.phdata(bx, by, bz)
         
         self.assertTrue( ph.nx() == len(bx)-1 )
         self.assertTrue( ph.ny() == len(by)-1 )

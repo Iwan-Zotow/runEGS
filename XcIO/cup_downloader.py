@@ -46,12 +46,12 @@ class cup_downloader(object):
         try:
             logging.info("Start single cup download: {0}".format(src))
             
-#            rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", self._user_id +"@" + self._host_ip + ":" + src, self._cup_dir],
-#                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", self._user_id +"@" + self._host_ip + ":" + src, self._cup_dir],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            source = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + src
-            cmd = ["wget", "-r", "-nH", "-nd", "-P", self._cup_dir, source]
-            rc = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #source = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + src
+            #cmd = ["wget", "-r", "-nH", "-nd", "-P", self._cup_dir, source]
+            #rc = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
             logging.debug("OS failure")
         

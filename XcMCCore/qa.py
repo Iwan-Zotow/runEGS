@@ -70,8 +70,8 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
     by = phntom.by()
     bz = phntom.bz()
     
-    data = phntom.data()
-    dens = phntom.dens()
+    idxs = phntom.mats()
+    dens = phntom.data()
     
     air   = mats[1]
     water = mats[2]
@@ -106,7 +106,7 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
                     m = 4 # poly
                     d = d_poly
                 
-                data[ix,iy,iz] = m
+                idxs[ix,iy,iz] = m
                 dens[ix,iy,iz] = d
     
     return phntom
