@@ -122,10 +122,10 @@ class data_uploader(object):
         logging.info("Done data packing")
         
         return (rc, None)
-
-    def upload(self, cl):
+        
+    def upload_ssh(self, cl):
         """
-        Upload data to the server
+        Upload data to the server using SSH protocol
         """
 
         logging.info("Start data uploading")
@@ -136,15 +136,47 @@ class data_uploader(object):
         
         self.sign(cl)
         
-        rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
+        try:
+            rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            logging.debug("upload_ssh: OS failure")
+            rc = -1        
         
-        dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + self._host_dir + "/" + self._full_prefix[0:11] + "/"
-        cmd = ["wput", aname, dest]
-#        rc  = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)        
         self._rc = rc
 
         logging.info("Done data uploading")
+        
+    def upload_ftp(self, cl):
+        """
+        Upload data to the server using FTP protocol
+        """
+
+        logging.info("Start data uploading")
+        
+        cwd, dir_name = os.path.split(self._wrk_dir)
+        
+        rc, aname = self.compress_data(dir_name)
+        
+        self.sign(cl)
+        
+        try:
+            dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + self._host_dir + "/" + self._full_prefix[0:11] + "/"
+            cmd = ["wput", aname, dest]
+            rc  = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            logging.debug("upload_ftp: OS failure")
+            rc = -1        
+
+        self._rc = rc
+
+        logging.info("Done data uploading")
+
+    def upload(self, cl):
+        """
+        Upload data to the server
+        """
+        return self.upload_ssh(cl)
 
     def rc(self):
         """

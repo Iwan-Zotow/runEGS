@@ -38,29 +38,48 @@ class cup_downloader(object):
         self._rc = 0
         
         logging.info("Done cup downloader construction")
-                
-    def single_load(self, src):
+        
+    def single_load_ssh(self, src):
         """
-        Load single cup from server
+        Load single cup using SSH protocol
         """
         try:
             logging.info("Start single cup download: {0}".format(src))
             
             rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", self._user_id +"@" + self._host_ip + ":" + src, self._cup_dir],
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            #source = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + src
-            #cmd = ["wget", "-r", "-nH", "-nd", "-P", self._cup_dir, source]
-            #rc = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
-            logging.debug("OS failure")
-        
+            logging.debug("single_load_ssh: OS failure")
             rc = -1
             
         logging.info("One cup loaded")
             
         return rc
-
+        
+    def single_load_ftp(self, src):
+        """
+        Load single cup using FTP protocol
+        """
+        try:
+            logging.info("Start single cup download: {0}".format(src))
+            
+            source = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + src
+            cmd = ["wget", "-r", "-nH", "-nd", "-P", self._cup_dir, source]
+            rc = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            logging.debug("single_load_ftp: OS failure")
+            rc = -1
+            
+        logging.info("One cup loaded")
+            
+        return rc
+                
+    def single_load(self, src):
+        """
+        Load single cup from server
+        """
+        
+        return self.single_load_ssh(src)
 
     def load(self):
         """
