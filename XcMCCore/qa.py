@@ -69,7 +69,8 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
     bx = phntom.bx()
     by = phntom.by()
     bz = phntom.bz()
-    
+
+    # denity and material indeces    
     idxs = phntom.mats()
     dens = phntom.data()
     
@@ -92,13 +93,14 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
             for ix in range (0, nx):
                 x = 0.5 * (bx[ix] + bx[ix+1])
 
-                # default material: air                
+                # default material: air            
                 m = 1
                 d = d_air
                 
-                r = math.sqrt(x*x + y*y)                
+                r = math.sqrt(x*x + y*y)
 
-                # as lifted from qa/make_cups                
+                # as lifted from qa/make_cups
+                # all units are in mm
                 if z > 15.0 and z <= 15.0+46.0 and r <= 77.0:
                     m = 4 # poly
                     d = d_poly
@@ -110,3 +112,4 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
                 dens[ix,iy,iz] = d
     
     return phntom
+

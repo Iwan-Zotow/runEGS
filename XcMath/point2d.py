@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 14 19:29:28 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import numpy as np
 
@@ -49,4 +44,3 @@ class point2d(object):
         """
         return "({0},{1})".format(self._x, self._y)
 
-    

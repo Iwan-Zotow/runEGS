@@ -1,11 +1,99 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 14 11:18:34 2015
-
-@author: Florin.Neacsu
-"""
 
 import numpy as np
+import phdata
+import logging
+
+def Read3ddata(fname):
+    """
+    Reads the file provided by fname as a 3ddose file with the 
+    following format:
+    
+    |nx ny nz 
+    |xBoundary
+    |yBoundary
+    |zBoundary
+    |data
+    
+    where nx, ny, nz are integers providing the size in each dimension.
+    xBoundary is a vector of nx+1 floats. 
+    yBoundary is a vector of ny+1 floats.
+    zBoundary is a vector if nz+1 floats.
+    data is a vector of nx*ny*nz floats.
+    
+    Please note that the 3ddose file dimensions are in cm.
+    
+    We are using mm, so a transformation will be made while reading
+    the file.
+    
+    Parameters
+    --------
+    fname: string
+        A string pointing to a file on the Hdd.
+    
+    Returns
+    -------
+    phdata: phantom data object, which contains boundaries and dose data
+    
+    Raises
+    ------
+    IOerror:
+        In case the file doesn't exist, and IOError('Invalid file name')
+        will be raised
+    """
+    
+    if fname == None:
+        return None
+    
+    try:
+        fileHandle = open(fname, 'r')
+    except IOError:
+        raise IOError("Invalid file name")
+    
+    with fileHandle:
+        #read in the dimensions       
+        line = fileHandle.readline()
+        logging.debug(line)
+        (nx, ny, nz) = GetDimensions(line)
+        logging.info("NNs: {0} {1} {2}".format(nx, ny, nz))
+        
+        line = fileHandle.readline()
+        logging.debug(line)        
+        bx = GetBoundaries(nx, line)
+        logging.info(str(bx))
+        
+        line = fileHandle.readline()
+        logging.debug(line)        
+        by = GetBoundaries(ny, line)
+        logging.info(str(by))
+        
+        line = fileHandle.readline();
+        logging.debug(line)        
+        bz = GetBoundaries(nz, line)
+        logging.info(str(bz))
+        
+        phd = phdata.phdata(bx, by, bz)
+                
+        #create dose matrix
+        line = fileHandle.readline()
+        logging.debug(line)
+        
+        split = line.split(" ")
+        split = [x for x in split if x]  # remove empty lines
+
+        if len(split) != nz*ny*nx:
+            raise  RuntimeError("Data and ph dimensions are not compatible")
+
+        data = ph.data()
+        k = 0
+        for iz in range(0, nz):
+            for iy in range(0, ny):
+                for ix in range(0, nx):
+                    data[ix,iy,iz] = float(split[k])
+                    k += 1
+        
+        logging.info("Done with constructing")
+        return phd
 
 def Read3ddose(fname):
     """
@@ -58,11 +146,13 @@ def Read3ddose(fname):
         will be raised
     """
     
+    if fname == None:
+        return None
+    
     try:
         fileHandle = open(fname, 'r')
     except IOError:
-        #print "Could not read:", fname
-        raise IOError('Invalid file name')
+        raise IOError("Invalid file name")
     
     with fileHandle:
         #read in the dimensions
@@ -84,8 +174,6 @@ def Read3ddose(fname):
         dose3ddose = Get3ddata(nx, ny, nz, line)
         
         return (nx,ny,nz,bx,by,bz,dose3ddose)
-        
-        
 
 def GetDimensions(line):
     """
@@ -140,6 +228,11 @@ def GetBoundaries(n, line):
     split = [x for x in split if x]  # remove empty lines
 
     boundaries = []
+    
+    # we assume boundaries and n is equal
+    if len(split) != n+1:
+        raise RuntimeError("GetBoundaries: Wrong number of boundaries")
+    
     for i in range(0,n+1):
         d = float(split[i])
         boundaries.append(d)
@@ -171,8 +264,7 @@ def Get3ddata(nx, ny, nz, line):
     split = line.split(" ")
     split = [x for x in split if x]  # remove empty lines
 
-    data = np.empty((nx,ny,nz))
-
+    data = np.empty((nx,ny,nz), dtype=np.float32)
     k = 0
     for iz in range(0, nz):
         for iy in range(0, ny):

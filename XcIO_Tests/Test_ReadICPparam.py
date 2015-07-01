@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May 25 14:48:39 2015 by Florin.Neacsu
-
-Copyright Xcision LLC.
-"""
 
 import unittest
 from XcIO import ReadICPparam

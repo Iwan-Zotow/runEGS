@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 07 12:12:35 2015
-
-@author: Oleg.Krivosheev
-"""
 
 import unittest
 import phandim

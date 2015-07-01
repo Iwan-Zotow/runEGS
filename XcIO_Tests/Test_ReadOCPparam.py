@@ -1,15 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May 26 15:32:55 2015 by Florin.Neacsu
-
-Copyright Xcision LLC.
-"""
 
 import unittest
 from XcIO import ReadOCPparam
-
-
-
 
 class Test_ReadICPparam(unittest.TestCase):
     
