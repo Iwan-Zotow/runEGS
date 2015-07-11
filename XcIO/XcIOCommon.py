@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May 26 11:09:16 2015 by Florin.Neacsu
-
-Copyright Xcision LLC.
-"""
 
 def GetWallDescription(fileHandle):
     """

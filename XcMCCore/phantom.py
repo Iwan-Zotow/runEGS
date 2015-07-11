@@ -13,6 +13,18 @@ class phantom(phdata.phdata):
     def __init__(self, bx, by, bz):
         """
         Phantom constructor
+        
+        Parameters
+        ----------
+        
+        bx: array of floats
+            voxel boundaries in X, mm
+            
+        by: array of floats
+            voxel boundaries in Y, mm
+        
+        bz: array of floats
+            voxel boundaries in Z, mm
         """
 
         super(phantom, self).__init__(bx, by, bz)

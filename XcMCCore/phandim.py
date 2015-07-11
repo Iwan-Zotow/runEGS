@@ -15,6 +15,14 @@ class phandim(object):
         Parameters
         ----------
         
+        bx: array of floats
+            voxel boundaries in X, mm
+            
+        by: array of floats
+            voxel boundaries in Y, mm
+        
+        bz: array of floats
+            voxel boundaries in Z, mm
         """
         if bx == None:
             raise RuntimeError("phantom", "Null bx parameter in constructor")            
@@ -48,7 +56,7 @@ class phandim(object):
         Parameters
         ----------
         
-        b: vector of cloats
+        b: array of floats
             input vector of boundaries, mm
             
         returns:
