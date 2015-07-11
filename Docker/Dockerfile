@@ -1,13 +1,14 @@
-# Docker to 
+# Docker to run dose calc remotely
 FROM ubuntu:15.04
 MAINTAINER O.K. <oleg.krivosheev@xcision.com>
 
 # commands and configuration
 RUN apt-get update && \
-    apt-get install -y python-numpy \
-    apt-get install -y net-tools \
-    apt-get install -y sshpass
-# more packages ?
+    apt-get install -y python-numpy && \
+    apt-get install -y net-tools && \
+    apt-get install -y sshpass && \
+    apt-get install -y iputils-ping && \
+    apt-get install -y bzip2
 
 RUN mkdir -p /home/kriol
 
@@ -21,6 +22,11 @@ COPY HEN_HOUSE /home/kriol/HEN_HOUSE
 
 RUN mkdir -p /home/kriol/runEGS
 COPY runEGS /home/kriol/runEGS
+
+COPY C25.egsphsp1 /home/kriol/runEGS/C25.egsphsp1
+
+RUN mkdir -p /root/.ssh
+COPY known_hosts /root/.ssh/known_hosts
 
 # python environment
 ENV PYTHONPATH /home/kriol/runEGS/XcDefinitions:/home/kriol/runEGS/XcMath:/home/kriol/runEGS/XcMCCore:/home/kriol/runEGS/XcIO
@@ -36,7 +42,7 @@ ENV EGS_CONFIG /home/kriol/HEN_HOUSE/specs/x86_64-unknown-linux-gnu.conf
 # running the show
 
 WORKDIR /home/kriol/runEGS
-ENTRYPOINT["/usr/bin/python", "/home/kriol/runEGS/main.py"]
+CMD /home/kriol/runEGS/main.py
 
 #CMD["R8O2IM01C25"]
 

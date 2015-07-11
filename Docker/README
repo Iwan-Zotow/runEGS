@@ -1,0 +1,13 @@
+Here is how to make Docker image for dose calc
+
+0. You have to have EGS and BeamNRC installed on your computer.
+
+1. You have to have C25 phase space file in your home dir
+
+2. Put known_hosts in your home dir
+
+3. Make working dir and copy build_image.py and Dockerfile here
+
+4. Run `build_image.py`. Check with docker images
+
+5. Run `docker run -t ubuntu:dxyz`. Should get archive with results in your home dir
