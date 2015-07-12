@@ -23,7 +23,7 @@ def copy_EGS(top):
         
     try:
         shutil.copytree(src, egsd)
-    except Error:
+    except OSError:
         raise RuntimeError("Unable to copy EGS, aboring")
         
 def copy_HEN(top):
