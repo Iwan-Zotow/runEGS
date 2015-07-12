@@ -54,12 +54,12 @@ class phdata(phandim.phandim):
             for iy in range(0, ny):
                 for ix in range(0, nx):
                 
-                d = data[ix,iy,iz]
-                if d > dmax:
-                    dmax = d
-                    xmax = ix
-                    ymax = iy
-                    zmax = iz
+                    d = self._data[ix,iy,iz]
+                    if d > dmax:
+                        dmax = d
+                        xmax = ix
+                        ymax = iy
+                        zmax = iz
                     
         return (xmax, ymax, zmax, dmax)
 
