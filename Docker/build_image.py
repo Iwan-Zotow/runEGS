@@ -72,6 +72,11 @@ def main():
     """
     Building Docker image
     """
+    
+    # step 0 - pull ubuntu:15.04 from docker hub
+    rc = subprocess.call(["docker", "pull", "ubuntu:15.04"], stderr=subprocess.PIPE)
+    if rc != 0:
+        raise RuntimeError("Unable to pull ubuntu:15.04 image")
 
     top = os.getcwd()
     
