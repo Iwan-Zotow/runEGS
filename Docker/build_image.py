@@ -104,7 +104,7 @@ def main():
     copy_C25(top)
     
     # step 5 - copy SSH key
-    copy_SSH(top)
+    #copy_SSH(top)
     
     # step last - build docker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:dxyz",  "."], stderr=subprocess.PIPE)
