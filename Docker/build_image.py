@@ -51,13 +51,13 @@ def copy_C25(top):
     """
     Copy source file
     """
-    shutil.copy("/home/kriol/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
+    shutil.copy("/home/beamuser/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
 
 def copy_SSH(top):
     """
     Copy SSH key file
     """
-    shutil.copy("/home/kriol/known_hosts", os.path.join(top, "known_hosts"))
+    shutil.copy("/home/beamuser/known_hosts", os.path.join(top, "known_hosts"))
     
 def get_repo(top):
     """
