@@ -4,6 +4,7 @@ import os
 import shutil
 import hashlib
 import subprocess
+import shutil
 import logging
 
 class cup_downloader(object):
@@ -51,6 +52,7 @@ class cup_downloader(object):
         except OSError:
             logging.debug("single_load_ssh: OS failure")
             rc = -1
+            return rc
             
         logging.info("One cup loaded")
             
@@ -69,11 +71,35 @@ class cup_downloader(object):
         except OSError:
             logging.debug("single_load_ftp: OS failure")
             rc = -1
+            return rc
             
         logging.info("One cup loaded")
             
         return rc
                 
+    def single_load_copy(self, src):
+        """
+        Load single cup using fs copy
+        """
+
+        up   = ".."
+        cups = "CUPS"
+
+        try:
+            logging.info("Start single cup download: {0}".format(src))
+
+            source = os.path.join(up, cups, src)
+            shutil.copy(src, ".")
+
+        except OSError:
+            logging.debug("single_load_ftp: OS failure")
+            rc = -1
+            return rc
+
+        logging.info("One cup loaded")
+
+        return rc
+
     def single_load(self, src):
         """
         Load single cup from server
