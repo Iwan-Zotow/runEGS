@@ -132,16 +132,18 @@ class data_uploader(object):
         
         cwd, dir_name = os.path.split(self._wrk_dir)
         
-        rc, aname = self.compress_data(dir_name)
-        
         self.sign(cl)
+        
+        rc, aname = self.compress_data(dir_name)
+        print(rc)
         
         try:
             rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
             logging.debug("upload_ssh: OS failure")
-            rc = -1        
+            self._rc = rc
+            return
         
         self._rc = rc
 
@@ -156,9 +158,10 @@ class data_uploader(object):
         
         cwd, dir_name = os.path.split(self._wrk_dir)
         
-        rc, aname = self.compress_data(dir_name)
-        
         self.sign(cl)
+        
+        rc, aname = self.compress_data(dir_name)
+        print(rc)
         
         try:
             dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + self._host_dir + "/" + self._full_prefix[0:11] + "/"
@@ -167,6 +170,8 @@ class data_uploader(object):
         except OSError:
             logging.debug("upload_ftp: OS failure")
             rc = -1        
+            self._rc = rc
+            return
 
         self._rc = rc
 
