@@ -116,12 +116,14 @@ class data_uploader(object):
         rc = subprocess.call(["tar", "-cvjSf", dst, dir_name],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                           
-        if rc == 0:
-            return (0, dst)
+        if rc != 0:
+            logging.info("Error in data packing")
+            logging.debug(rc)
+            return (rc, None)
             
         logging.info("Done data packing")
         
-        return (rc, None)
+        return (rc, dst)
         
     def upload_ssh(self, cl):
         """
@@ -135,7 +137,10 @@ class data_uploader(object):
         self.sign(cl)
         
         rc, aname = self.compress_data(dir_name)
-        print(rc)
+        if rc != 0:
+            self._rc = rc
+            return
+        
         
         try:
             rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
@@ -161,7 +166,9 @@ class data_uploader(object):
         self.sign(cl)
         
         rc, aname = self.compress_data(dir_name)
-        print(rc)
+        if rc != 0:
+            self._rc = rc
+            return
         
         try:
             dest = "ftp://" + self._user_id + ":" + self._user_pass + "@" + self._host_ip + "/" + self._host_dir + "/" + self._full_prefix[0:11] + "/"
