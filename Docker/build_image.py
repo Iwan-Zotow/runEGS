@@ -59,6 +59,30 @@ def copy_SSH(top):
     """
     shutil.copy("/home/beamuser/known_hosts", os.path.join(top, "known_hosts"))
     
+def copy_CUPS(top):
+    """
+    Copy all cups
+    """
+
+    cups = os.path.join(top, "CUPS")
+
+    if os.path.isdir(cups):
+        shutil.rmtree(cups)
+
+    os.mkdir(cups)
+
+    cwd = os.getcwd()
+
+    os.chdir(cups)
+
+    src = os.path.join("ftp://beamuser:beamuser@192.168.1.230", "Programs_n_Docs/Kdd_CupGeometry/Out", "R*Curve*.txt")
+
+    rc = subprocess.call(["wget", "-r", "-nH", "-nd", src], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    os.chdir(cwd)
+
+    return rc
+    
 def get_repo(top):
     """
     Get python scripts from repository
@@ -95,7 +119,7 @@ def main():
         raise RuntimeError("Unable to fetch main scripts from SVN, aborting")
         
     # step 2 - copy EGS
-    copy_EGS(top)
+    rc = copy_EGS(top)
     
     # step 3 - copy HEN_HOUSE
     copy_HEN(top)
@@ -105,6 +129,11 @@ def main():
     
     # step 5 - copy SSH key
     copy_SSH(top)
+    
+    # step 6 - copy all cups
+    rc = copy_CUPS(top)
+    if rc != 0:
+        raise RuntimeError("Unable to fetch all cups main scripts from Server, aborting")    
     
     # step last - build docker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:dxyz",  "."], stderr=subprocess.PIPE)

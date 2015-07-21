@@ -27,6 +27,9 @@ COPY HEN_HOUSE /home/beamuser/HEN_HOUSE
 RUN mkdir -p /home/beamuser/runEGS
 COPY runEGS /home/beamuser/runEGS
 
+RUN mkdir -p /home/beamuser/CUPS
+COPY CUPS /home/beamuser/CUPS
+
 COPY C25.egsphsp1 /home/beamuser/runEGS/C25.egsphsp1
 
 RUN mkdir -p /root/.ssh
