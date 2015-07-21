@@ -63,8 +63,8 @@ def get_repo(top):
     """
     Get python scripts from repository
     """
-    # rc = subprocess.call(["git", "clone", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/trunk", "."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    rc = subprocess.call(["git", "clone", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/branches/oleg/PSrework/trunk", "."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     return rc
 
@@ -104,7 +104,7 @@ def main():
     copy_C25(top)
     
     # step 5 - copy SSH key
-    #copy_SSH(top)
+    copy_SSH(top)
     
     # step last - build docker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:dxyz",  "."], stderr=subprocess.PIPE)

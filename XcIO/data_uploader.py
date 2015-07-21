@@ -122,8 +122,9 @@ class data_uploader(object):
             return (rc, None)
             
         logging.info("Done data packing")
-        
+
         return (rc, dst)
+        
         
     def upload_ssh(self, cl):
         """
@@ -135,8 +136,8 @@ class data_uploader(object):
         cwd, dir_name = os.path.split(self._wrk_dir)
         
         self.sign(cl)
-        
         rc, aname = self.compress_data(dir_name)
+
         if rc != 0:
             self._rc = rc
             return
@@ -164,8 +165,8 @@ class data_uploader(object):
         cwd, dir_name = os.path.split(self._wrk_dir)
         
         self.sign(cl)
-        
         rc, aname = self.compress_data(dir_name)
+        
         if rc != 0:
             self._rc = rc
             return
@@ -176,7 +177,7 @@ class data_uploader(object):
             rc  = subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
             logging.debug("upload_ftp: OS failure")
-            rc = -1        
+            #rc = -1
             self._rc = rc
             return
 
@@ -188,7 +189,8 @@ class data_uploader(object):
         """
         Upload data to the server
         """
-        return self.upload_ssh(cl)
+        return self.upload_ftp(cl)
+        #return self.upload_ssh(cl)
 
     def rc(self):
         """

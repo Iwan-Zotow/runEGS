@@ -78,8 +78,8 @@ class cup_downloader(object):
         """
         Load single cup from server
         """
-        
-        return self.single_load_ssh(src)
+        return self.single_load_ftp(src)
+        #return self.single_load_ssh(src)
 
     def load(self):
         """
