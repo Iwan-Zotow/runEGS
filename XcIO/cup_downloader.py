@@ -87,9 +87,14 @@ class cup_downloader(object):
 
         try:
             logging.info("Start single cup download: {0}".format(src))
+            
+            dirOfFile, nameOfFile = os.path.split(src)
 
-            source = os.path.join(up, cups, src)
-            shutil.copy(src, ".")
+            source = os.path.join(os.getcwd(),up, cups, nameOfFile)
+            
+            shutil.copy(source, self._cup_dir)
+
+            rc = 0
 
         except OSError:
             logging.debug("single_load_ftp: OS failure")
@@ -104,7 +109,8 @@ class cup_downloader(object):
         """
         Load single cup from server
         """
-        return self.single_load_ftp(src)
+        return self.single_load_copy(src)
+        #return self.single_load_ftp(src)
         #return self.single_load_ssh(src)
 
     def load(self):

@@ -47,9 +47,10 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     else:
         file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31") 
-    #cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
+    #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31") 
+    cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
     cdown.load()
+    #cdown.load()
     if (cdown.rc() != 0):
         raise RuntimeError("run_single_shot", "unable to load files")
 
