@@ -98,9 +98,32 @@ def parse_input(s):
     outerCup = str(s[3:4])
     innerCupSer = str(s[5:6])
     innerCupNum = str(s[6:8])
-    coll        = int(str(s[9:]))
+    coll        = int(str(s[9:11]))
     
     return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
+    
+def parse_shot(s):
+    """
+    Parse input string to extract shot
+    """
+    idx_shot = s.find("_")
+    if idx_shot < 0:
+        raise ValueError("No shot info in input")
+    
+    sh = s[idx_shot+1:]
+    
+    idx_Y = sh.find("Y")
+    if idx_Y < 0: 
+        raise ValueError("No Y shot position in input")
+    
+    idx_Z = sh.find("Z")
+    if idx_Z < 0: 
+        raise ValueError("No Z shot position in input")
+        
+    sh_Y = sh[idx_Y+1:idx_Z]
+    sh_Z = sh[idx_Z+1:]
+    
+    return (float(sh_Y), float(sh_Z))  
     
 def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
     """
@@ -120,6 +143,8 @@ def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
     # configuring logging    
     logging.basicConfig(filename=os.path.join(wrk_dir, full_prefix+".log"), level=logging.DEBUG)
     logging.info("Started")
+    
+    logging.info("Running shot for input parameters: {0} {1} {2} {3} {4} {5}".format(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot) )
 
     # ranges and steps
     if not XcConstants.IsQACup(innerCupSer):
@@ -146,20 +171,12 @@ def main():
     
     if len(sys.argv) == 1:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
+        shot = (0.0, 0.0)
     else:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
-
-    nof_shots = 1 # int(sys.argv[2])
+        shot = parse_shot(sys.argv[1])
     
-    pps = []
-    for k in range(0, nof_shots):
-        shot = (0.0, float(k)*5.0)
-        p = multiprocessing.Process(target=run_one_shot, args=(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot,))
-        pps.append(p)
-        p.start()
-        
-    for k in range(0, nof_shots):
-        pps[k].join()
+    run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot)
 
 if __name__ == '__main__':
 
