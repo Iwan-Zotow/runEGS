@@ -36,7 +36,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
     """
-    return make_complex_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
     
 def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -307,4 +307,3 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range):
                 dens[ix,iy,iz] = d
     
     return phntom
-
