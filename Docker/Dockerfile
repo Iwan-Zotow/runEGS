@@ -5,6 +5,7 @@ MAINTAINER O.K. <oleg.krivosheev@xcision.com>
 # commands and configuration
 RUN apt-get update && \
     apt-get install -y python-numpy && \
+    apt-get install -y python-paramiko && \
     apt-get install -y net-tools && \
     apt-get install -y sshpass && \
     apt-get install -y iputils-ping && \
@@ -31,6 +32,8 @@ RUN mkdir -p /home/beamuser/CUPS
 COPY CUPS /home/beamuser/CUPS
 
 COPY C25.egsphsp1 /home/beamuser/runEGS/C25.egsphsp1
+
+COPY C15.egsphsp1 /home/beamuser/runEGS/C15.egsphsp1
 
 RUN mkdir -p /root/.ssh
 COPY known_hosts /root/.ssh/known_hosts

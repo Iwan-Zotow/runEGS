@@ -105,8 +105,9 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.info("And DosXYZ is done")
 
     logging.info("Data uploader is going up")
-    #dupload = data_uploader.data_uploader(wrk_dir, "192.168.1.217", ".", file_prefix, "kriol", "Proton31")
-    dupload = data_uploader.data_uploader(wrk_dir, "192.168.1.230", "/Mc_Out/junk/", file_prefix, "beamuser", "beamuser")
+    logging.info("...right now, no upload")
+    dupload = data_uploader.data_uploader(wrk_dir, "192.168.1.217", ".", file_prefix, "kriol", "Proton31")
+    #dupload = data_uploader.data_uploader(wrk_dir, "192.168.1.230", "/Mc_Out/junk/", file_prefix, "beamuser", "beamuser")
     
     dupload.upload(cl)
     

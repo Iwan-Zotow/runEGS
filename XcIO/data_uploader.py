@@ -5,6 +5,7 @@ import shutil
 import hashlib
 import subprocess
 import logging
+import paramiko
 
 import names_helper
 
@@ -184,12 +185,55 @@ class data_uploader(object):
         self._rc = rc
 
         logging.info("Done data uploading")
+    
+    def upload_sftp(self, cl):
+        """
+        Upload data to the server using SFTP
+        """
+
+        logging.info("Start data uploading [SFTP]")
+
+        cwd, dir_name = os.path.split(self._wrk_dir)
+        self.sign(cl)
+        rc, aname = self.compress_data(dir_name)
+
+        if rc != 0:
+            self._rc = rc
+            return
+
+        try:
+            host = "75.148.23.249"
+            port = 22
+            transport = paramiko.Transport((host, port))
+
+            password = "lgwang2010"
+            username = "lgwang"
+            transport.connect(username=username, password=password)
+            
+            sftp = paramiko.SFTPClient.from_transport(transport)
+            destinationPath="/MYFILES/gcloud/{0}".format(aname)
+            logging.info("Copying {0} to {1}".format(aname, destinationPath))
+            sftp.put(aname,destinationPath)
+
+            sftp.close()
+            transport.close()
+            
+            rc=0
+        except OSError:
+            logging.debug("upload_sftp: OS failure ")
+            rc = -1
+            self._rc = rc
+            return
+
+        self._rc = rc
+        logging.info("Done with upload")
+
 
     def upload(self, cl):
         """
         Upload data to the server
         """
-        return self.upload_ftp(cl)
+        return self.upload_sftp(cl)
         #return self.upload_ssh(cl)
 
     def rc(self):

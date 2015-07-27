@@ -53,6 +53,12 @@ def copy_C25(top):
     """
     shutil.copy("/home/beamuser/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
 
+def copy_C15(top):
+    """
+    Copy source file
+    """
+    shutil.copy("/home/beamuser/C15.egsphsp1", os.path.join(top, "C15.egsphsp1"))
+
 def copy_SSH(top):
     """
     Copy SSH key file
@@ -124,8 +130,9 @@ def main():
     # step 3 - copy HEN_HOUSE
     copy_HEN(top)
     
-    # step 4 - copy C25 phsf
+    # step 4 - copy C25 and C15 phsfs
     copy_C25(top)
+    copy_C15(top)
     
     # step 5 - copy SSH key
     #copy_SSH(top)
