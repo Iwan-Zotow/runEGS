@@ -61,6 +61,7 @@ def main():
     imageType='container-vm'
     machineType='n1-standard-1'
     dockerImage='egs-single-shot'
+    dockerImageLocation='us.gcr.io/direct-disk-101619/'
     numberOfGCL=8
     fileOfDesiredKdd='kddToBeCalculated.txt'
 
@@ -87,7 +88,7 @@ def main():
         
         ipAddr = obtainIP(gclInstance)
         #print ipAddr
-        cmdDocker="sudo docker pull us.gcr.io/upbeat-cargo-100919/{0}; sudo docker run -d -t us.gcr.io/upbeat-cargo-100919/{0} python main.py {1};".format(dockerImage,listOfKdds[i])
+        cmdDocker="sudo docker pull {0}{1}; sudo docker run -d -t {0}{1} python main.py {2};".format(dockerImageLocation,dockerImage,listOfKdds[i])
         cmd="ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o CheckHostIp=no -o StrictHostKeyChecking=no beamuser@{0} \'{1}\'".format(ipAddr,cmdDocker)
         print cmd
         rc=subprocess.call(cmd, shell=True)

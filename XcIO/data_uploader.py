@@ -211,7 +211,7 @@ class data_uploader(object):
             transport.connect(username=username, password=password)
             
             sftp = paramiko.SFTPClient.from_transport(transport)
-            destinationPath="/gcloud/{0}".format(aname)
+            destinationPath="/home/sphinx/gcloud/{0}".format(aname)
             logging.info("Copying {0} to {1}".format(aname, destinationPath))
             sftp.put(aname,destinationPath)
 
