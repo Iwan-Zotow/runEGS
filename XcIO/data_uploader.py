@@ -202,16 +202,16 @@ class data_uploader(object):
             return
 
         try:
-            host = "75.148.23.249"
+            host = "75.148.23.250"
             port = 22
             transport = paramiko.Transport((host, port))
 
-            password = "lgwang2010"
-            username = "lgwang"
+            password = "twobob2015@xc"
+            username = "sphinx"
             transport.connect(username=username, password=password)
             
             sftp = paramiko.SFTPClient.from_transport(transport)
-            destinationPath="/MYFILES/gcloud/{0}".format(aname)
+            destinationPath="/gcloud/{0}".format(aname)
             logging.info("Copying {0} to {1}".format(aname, destinationPath))
             sftp.put(aname,destinationPath)
 
