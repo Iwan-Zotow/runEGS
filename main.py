@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 import sys    
+import logging
 import multiprocessing
 
 import XcConstants
@@ -182,3 +182,4 @@ if __name__ == '__main__':
 
     main()
 
+    sys.exit(0)
