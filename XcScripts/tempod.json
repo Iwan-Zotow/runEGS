@@ -1,0 +1,20 @@
+{
+  "kind": "Pod",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "r8o2im01c25-y0z0"
+  },
+  "spec": {
+    "containers": [
+      {
+        "name": "r8o2im01c25-y0z0",
+        "image": "us.gcr.io/direct-disk-101619/egs-rc-4002",
+        "workingDir": "/home/beamuser/runEGS",
+        "command": [ "python", "main.py"],
+        "args": ["R8O2IM01C25_Y0Z0"]
+      }
+    ],
+    "restartPolicy": "Never"
+  }
+}
+

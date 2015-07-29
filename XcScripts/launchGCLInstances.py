@@ -60,7 +60,7 @@ def main():
     zone='us-central1-a'
     imageType='container-vm'
     machineType='n1-standard-1'
-    dockerImage='egs-single-shot'
+    dockerImage='egs-rc-4002'
     dockerImageLocation='us.gcr.io/direct-disk-101619/'
     numberOfGCL=8
     fileOfDesiredKdd='kddToBeCalculated.txt'
