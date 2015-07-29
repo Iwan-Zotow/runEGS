@@ -105,34 +105,35 @@ def make_json_pod(template, kdd, docker2run):
         
     return fname
 
-def main():
+def main(kdds_fname, numberOfGCL):
     """
-    This method creates 
-    in each running a docker image
-    each being run with a particular kdd shot
+    This method creates a cluster, and then
+    for a given cluster launches pods (one pod per kdd),
+    which are read from input file
     """
-    
-    CID = "egs"
-    ZID = "us-central1-f"
-    mtype  = "n1-standard-1"
+
+    CID   = "egs"
+    ZID   = "us-central1-f"
+    mtype = "n1-standard-1"
     
     docker  = "egs-rc-4002"
     gcr     = "us.gcr.io"
     project = "direct-disk-101619"
     
-    numberOfGCL = 8
-    fileOfDesiredKdd='kddToBeCalculated.txt'
+    print("Reading KDDs list from {0}".format(kdds_fname))
 
-    Kdds = ReadKddsToBeCalculated(fileOfDesiredKdd)
+    Kdds = ReadKddsToBeCalculated(kdds_fname)
 
-    print('This script will create cluster with (at most) {0} google instances'.format(numberOfGCL-1)) # one for cluster management
+    print("KDDs to be calculated: {0}".format(len(Kdds))
 
-    rc = make_cluster(CID, mtype, numberOfGCL-1, ZID)
+    print('This script will create cluster with (at most) {0} nodes'.format(numberOfGCL-1)) # one for cluster management
+
+    rc = 0 # make_cluster(CID, mtype, numberOfGCL-1, ZID)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
         
-    rc = auth_cluster(CID, ZID)
+    rc = 0 # auth_cluster(CID, ZID)
     if rc != 0:
         print("Cannot make auth")
         sys.exit(1)
@@ -148,7 +149,20 @@ def main():
             sys.exit(1)
 
 if __name__ =='__main__':
-    main()
+    nof_args = len(sys.argv)
+
+    if nof_args == 1:
+        print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
+        sys.exit(1)
+
+    if nof_args == 2:
+        kdds_fname = sys.argv[1]
+
+    numberOfGCL = 8 # default number of nodes
+    if nof_args > 2:
+        numberOfGCL = int(sys.argv[2])
+
+    main(kdds_fname, numberOfGCL)
 
     sys.exit(0)
 
