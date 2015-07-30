@@ -115,7 +115,7 @@ def main(kdds_fname, numberOfGCL):
 
     CID   = "egs"
     ZID   = "us-central1-f"
-    mtype = "n1-standard-1"
+    mtype = "n1-highcpu-2" # "n1-standard-1"
     
     docker  = "egs-rc-4002"
     gcr     = "us.gcr.io"
@@ -161,6 +161,8 @@ if __name__ =='__main__':
 
     if nof_args == 1:
         print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
+        print("Default machine is n1-highcpu-2 with 2CPUs, so 51nodes=100cpus")
+        print("Default # of nodes is 7")
         sys.exit(1)
 
     kdds_fname = ""

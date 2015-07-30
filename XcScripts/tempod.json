@@ -14,7 +14,7 @@
         "args": ["R8O2IM01C25_Y0Z0"],
         "resources": {
             "limits": {
-                "cpu": "490m"
+                "cpu": "700m"
             }
         }
       }
