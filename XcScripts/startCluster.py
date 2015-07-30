@@ -6,6 +6,7 @@ import sys
 import json
 import shutil
 import subprocess
+import time
 
 def ReadKddsToBeCalculated(fname):
     """
@@ -124,16 +125,16 @@ def main(kdds_fname, numberOfGCL):
 
     Kdds = ReadKddsToBeCalculated(kdds_fname)
 
-    print("KDDs to be calculated: {0}".format(len(Kdds))
+    print("To compute KDDs: {0}".format(len(Kdds)))
 
-    print('This script will create cluster with (at most) {0} nodes'.format(numberOfGCL-1)) # one for cluster management
+    print("Making cluster with nodes: {0}".format(numberOfGCL-1))
 
-    rc = 0 # make_cluster(CID, mtype, numberOfGCL-1, ZID)
+    rc = make_cluster(CID, mtype, numberOfGCL-1, ZID)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
         
-    rc = 0 # auth_cluster(CID, ZID)
+    rc = auth_cluster(CID, ZID)
     if rc != 0:
         print("Cannot make auth")
         sys.exit(1)
@@ -143,10 +144,17 @@ def main(kdds_fname, numberOfGCL):
     for kdd in Kdds:
         pod_name = make_json_pod("tempod.json", kdd, docker2run)
         cmd = "kubectl create -f " + pod_name
-        rc = subprocess.call(cmd, shell=True)
+        rc = 0
+        for k in range(0, 12): # several attempts to make a pod
+            rc = subprocess.call(cmd, shell=True)
+            if rc == 0:
+                time.sleep(0.5)
+                break
+
         if rc != 0:
             print("Cannot make kdd {0}".format(kdd))
             sys.exit(1)
+
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
@@ -155,7 +163,8 @@ if __name__ =='__main__':
         print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
         sys.exit(1)
 
-    if nof_args == 2:
+    kdds_fname = ""
+    if nof_args >= 2:
         kdds_fname = sys.argv[1]
 
     numberOfGCL = 8 # default number of nodes
