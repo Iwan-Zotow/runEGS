@@ -105,6 +105,13 @@ def make_json_pod(template, kdd, docker2run):
         f.write(json.dumps(outjson, indent=4))
         
     return fname
+    
+def read_config():
+    """
+    """
+    with open("config_cluster.json") as data_file:    
+        data = json.load(data_file)
+    return data
 
 def main(kdds_fname, numberOfGCL):
     """
@@ -113,13 +120,18 @@ def main(kdds_fname, numberOfGCL):
     which are read from input file
     """
 
-    CID   = "egs"
-    ZID   = "us-central1-f"
-    mtype = "n1-highcpu-2" # "n1-standard-1"
+    cfg = read_config()
+
+    CID   = cfg["CID"]
+    ZID   = cfg["ZID"]
+    mtype = cfg["machine-type"]
     
-    docker  = "egs-rc-4002"
-    gcr     = "us.gcr.io"
-    project = "direct-disk-101619"
+    docker  = cfg["docker"]
+    gcr     = cfg["gcr"]
+    project = cfg["project"]
+    
+    print("From config_cluster.json:")
+    print(CID,ZID,mtype,docker,gcr,project)
     
     print("Reading KDDs list from {0}".format(kdds_fname))
 
@@ -127,9 +139,9 @@ def main(kdds_fname, numberOfGCL):
 
     print("To compute KDDs: {0}".format(len(Kdds)))
 
-    print("Making cluster with nodes: {0}".format(numberOfGCL-1))
+    print("Making cluster with nodes: {0}".format(numberOfGCL))
 
-    rc = make_cluster(CID, mtype, numberOfGCL-1, ZID)
+    rc = make_cluster(CID, mtype, numberOfGCL, ZID)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
@@ -161,8 +173,8 @@ if __name__ =='__main__':
 
     if nof_args == 1:
         print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
-        print("Default machine is n1-highcpu-2 with 2CPUs, so 51nodes=100cpus")
-        print("Default # of nodes is 7")
+        print("Default machine is n1-highcpu-2 with 2CPUs, so 50nodes=100cpus")
+        print("Default # of nodes is 8")
         sys.exit(1)
 
     kdds_fname = ""
