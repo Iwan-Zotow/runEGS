@@ -173,7 +173,7 @@ if __name__ =='__main__':
 
     if nof_args == 1:
         print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
-        print("Default machine is n1-highcpu-2 with 2CPUs, so 50nodes=100cpus")
+        print("Default machine is n1-standard-1 with 1CPUs, so 101nodes=100cpus")
         print("Default # of nodes is 8")
         sys.exit(1)
 
