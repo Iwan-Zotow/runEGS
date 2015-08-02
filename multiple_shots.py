@@ -40,16 +40,14 @@ def parse_input(s):
     
     return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
 
-def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, shstep, shmargin):
+def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, x_range, y_range, z_range, shstep, shmargin):
     """
-    Given rad.unit, outer cup, inner cup, collimator, ranges, step size and margin,
+    Given rad.unit, outer cup, inner cup, ranges, step size and margin,
     produce list of shots for a given conditions
     """
     
-    cup_dir = "/home/kriol/Documents/EGS/CUPS"
+    cup_dir = "/home/beamuser/Documents/EGS/CUPS"
     
-    cl = collimator.collimator(coll)
-
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
     cupA_fname = os.path.join( cup_dir, file_prefix + "_" + "KddCurveA.txt")
@@ -97,16 +95,17 @@ if __name__ == "__main__":
     
     radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(cname)
     
-    shots = make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, coll, get_clinical_X_range(), get_clinical_Y_range(), get_clinical_Z_range(), 5.0, 0.0)
+    shots = make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, get_clinical_X_range(), get_clinical_Y_range(), get_clinical_Z_range(), 5.0, 0.0)
+    
+    cl = collimator.collimator(coll)    
     
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    k = 0
-    for shot in shots:
-        sname = names_helper.make_qualified_name(file_prefix, coll, shot)
-        k += 1
-        print(sname)
-
-    #print("Total: {0}".format(k))
+    fname = file_prefix + str(cl) + ".kdds"
+    with open(fname, "wt") as f:
+        for shot in shots:
+            sname = names_helper.make_qualified_name(file_prefix, cl, shot)
+            f.write(sname + os.linesep)
     
     sys.exit(0)
+
