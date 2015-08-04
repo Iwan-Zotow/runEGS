@@ -42,7 +42,7 @@ def get_clinical_steps():
     """
     Returns clinical steps
     """
-    return (1.2, 3.6) # in mm
+    return (1.2, 6.0) # in mm
 
 def get_qa_cup():
     """
