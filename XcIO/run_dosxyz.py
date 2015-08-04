@@ -31,7 +31,6 @@ def move_results(wrk_dir, fname):
     dst = fname    
 
     os.rename(src, dst)
-    
 
 def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
     """
@@ -57,6 +56,10 @@ def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
 
     rc = subprocess.call([process_name, "-i", os.path.basename(egs_inp), "-p", pegs_inp, "-b"],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if rc != 0:
+        logging.info("Cannot run DOSXYZ")
+        logging.debug(rc)
+        return rc
                           
     thetime = time.time() - start
     
