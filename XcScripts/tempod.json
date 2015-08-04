@@ -2,16 +2,16 @@
   "kind": "Pod",
   "apiVersion": "v1",
   "metadata": {
-    "name": "r8o2im01c25-y0z0"
+    "name": "the_name"
   },
   "spec": {
     "containers": [
       {
-        "name": "r8o2im01c25-y0z0",
-        "image": "us.gcr.io/direct-disk-101619/egs-rc-4002",
+        "name": "the_name",
+        "image": "us.gcr.io/direct-disk-101619/docker",
         "workingDir": "/home/beamuser/runEGS",
         "command": [ "python", "main.py"],
-        "args": ["R8O2IM01C25_Y0Z0"],
+        "args": ["THE_NAME"],
         "resources": {
             "limits": {
                 "cpu": "700m"
