@@ -8,6 +8,7 @@ import multiprocessing
 
 import XcConstants
 import clinical
+import qa
 import collimator
 import names_helper
 
@@ -131,9 +132,13 @@ def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
     """
     
     # making working directory
-    file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+    if not XcConstants.IsQACup(innerCupSer):
+        file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+    else:
+        file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+
     full_prefix = names_helper.make_qualified_name(file_prefix, collimator.collimator(coll), shot)
-    
+
     wrk_dir = os.path.join(os.getcwd(), full_prefix)
     
     # making empty work dir
@@ -175,7 +180,7 @@ def main():
     else:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_input(sys.argv[1])
         shot = parse_shot(sys.argv[1])
-    
+
     run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot)
 
 if __name__ == '__main__':

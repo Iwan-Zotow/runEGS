@@ -2,7 +2,7 @@
 
 import math
 
-import clinical
+import names_helper
 from utils import squared
 import phantom
 
@@ -29,7 +29,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     returns: string
         clinical cup name            
     """
-    return clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+    return names_helper.make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum)
     
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """
@@ -78,12 +78,14 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
     water = mats[2]
     ss    = mats[3]    
     poly  = mats[4]
+    pmma  = mats[5]
     
     d_air   = air[1]
     d_water = water[1]
     d_ss    = ss[1]
     d_poly  = poly[1]
-    
+    d_pmma  = pmma[1]
+
     z_min, z_max = z_range
     
     for iz in range (0, nz):
@@ -102,11 +104,11 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range):
                 # as lifted from qa/make_cups
                 # all units are in mm
                 if z > 15.0 and z <= 15.0+46.0 and r <= 77.0:
-                    m = 4 # poly
-                    d = d_poly
+                    m = 5 # PMMA
+                    d = d_pmma
                 elif z > 15.0+46.0 and z <= 15.0+115.0 and math.sqrt(squared(r)+squared(z-(15.0+46.0))) <= 77.0:
-                    m = 4 # poly
-                    d = d_poly
+                    m = 5 # PMMA
+                    d = d_pmma
                 
                 idxs[ix,iy,iz] = m
                 dens[ix,iy,iz] = d

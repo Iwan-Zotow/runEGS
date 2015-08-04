@@ -47,24 +47,28 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     else:
         file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
     
-    #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31") 
-    cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
-    cdown.load()
-    #cdown.load()
-    if (cdown.rc() != 0):
-        raise RuntimeError("run_single_shot", "unable to load files")
+    liA = None
+    liB = None
+    liC = None
+    if not XcConstants.IsQACup(innerCupSer):
+        #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31")
+        cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
+        cdown.load()
+        #cdown.load()
+        if (cdown.rc() != 0):
+            raise RuntimeError("run_single_shot", "unable to load files")
 
-    logging.info("Cups downloaded")
+        logging.info("Cups downloaded")
     
-    cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
-    cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-    cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+        cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
+        cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+        cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
     
-    liA = linint.linint(cupA)
-    liB = linint.linint(cupB)
-    liC = linint.linint(cupC)
+        liA = linint.linint(cupA)
+        liB = linint.linint(cupB)
+        liC = linint.linint(cupC)
     
-    logging.info("Interpolators done")
+        logging.info("Interpolators done")
     
     if not XcConstants.IsQACup(innerCupSer):
         nr = int(cl.size()*1.2/steps[0])

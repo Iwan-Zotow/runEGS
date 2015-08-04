@@ -67,7 +67,5 @@ def IsQACup(cup):
         True if QA, False otherwise
     """
     
-    if cup == "Q":
-        return True
-    return False
+    return cup == "Q"
 

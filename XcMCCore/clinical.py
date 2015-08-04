@@ -3,6 +3,7 @@
 import math
 
 import XcConstants
+import names_helper
 import phantom
 import voxarea
 
@@ -30,8 +31,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     returns: string
         clinical cup name
     """
-    
-    return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
+    return names_helper.make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum)
     
 def make_phantom(pdim, liA, liB, liC, mats, z_range):
     """

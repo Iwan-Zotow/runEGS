@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
+import math
 import logging
+import numpy as np
 
 import phandim
+
+EPS = 1.0e-4
 
 def invariant(shot, the_range, steps, nr):
         """
@@ -94,14 +97,18 @@ def build_one_boundary(shot, the_range, steps, nr):
         for k in range(0, nr+1):
             pos = shot - float(k) * smin
             bs.append(pos)
-            if (pos < rmin):
+            if math.fabs(pos - rmin) < EPS:
+                break
+            if pos < rmin:
                 break
 
         # now large steps, continue from previous position
         while True:
             pos = pos - smax
             bs.append(pos)            
-            if (pos < rmin):
+            if math.fabs(pos - rmin) < EPS:
+                break
+            if pos < rmin:
                 break
             
         # revert the list
@@ -113,14 +120,18 @@ def build_one_boundary(shot, the_range, steps, nr):
         for k in range(1, nr+1):
             pos = shot + float(k) * smin
             bs.append(pos)
-            if (pos > rmax):
+            if math.fabs(pos - rmax) < EPS:
+                break
+            if pos > rmax:
                 break
                     
         # now large steps, continue from previous position
         while True:
             pos = pos + smax
             bs.append(pos)            
-            if (pos > rmax):
+            if math.fabs(pos - rmax) < EPS:
+                break
+            if pos > rmax:
                 break
             
         logging.info("done building one boundary")
