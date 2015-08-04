@@ -73,14 +73,14 @@ def main():
     print 'This script will create (at most) {0} google instances'.format(numberOfGCL)
 
     for i in range(0,itMax):
-        gclInstance='{0}-{1}'.format(gclName,listOfKdds[i]).replace('_','-').lower()
+        gclInstance='{0}-{1}'.format(gclName,listOfKdds[i]).replace('_','-').lower().rstrip()
         print 'Creating {0}'.format(gclInstance)
-        cmd="gcloud compute instances create {0} --zone {1} --image {2} --machine-type {3}".format(
+        cmd='gcloud compute instances create {0} --zone {1} --image {2} --machine-type {3}'.format(
                 gclInstance,
                 zone,
                 imageType,
                 machineType)
-        #print cmd
+        print cmd
         rc=subprocess.call(cmd, shell=True)#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     for i in range(0,itMax):

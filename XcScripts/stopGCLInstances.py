@@ -5,7 +5,7 @@ Created on: Jul 27 2015
 
 Created by: Florin Neacsu
 
-Last modified: Jul 27 2015, 21:34:22
+Last modified: Jul 29 2015, 15:36:32
 
 Copyright Xcision LLC.
 """
@@ -25,7 +25,7 @@ def main():
 
     gclName='egs'
     zone='us-central1-a'
-    dockerImage='egs-single-shot'
+    dockerImage='egs-rc-4002'
     dockerImageLocation='us.gcr.io/direct-disk-101619/'
 
 
@@ -41,7 +41,7 @@ def main():
 
     listOfInstances = output.split('\n')
 
-    print output
+    #print output
 
     for i in range(1,len(listOfInstances)-1):
         # each line contains info such as name, zone, machine-type etc 
@@ -59,15 +59,15 @@ def main():
         rc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #output = rc.stdout.read()
         output, err = rc.communicate()
-        listOfDockers = output# output.split('\n')
+        listOfDockers = output.split('\n')
         
         #print listOfDockers
         runningDocker=0
 
         if (len(listOfDockers)>1):
-            for i in range(0,len(listOfDockers)-1):
+            for i in range(1,len(listOfDockers)-1):
                 #print 'Line {0} is {1}'.format(i,listOfDockers[i])
-                if dockerImage in listOfDockers[i]:
+                if gclName in listOfDockers[i]:
                     runningDocker+=1
             #print listOfDockers[1]
             t=1
@@ -85,6 +85,7 @@ def main():
             #print output, err
         else:
             print 'There is stuff running... Let it run'
+
         
 
         #print output
