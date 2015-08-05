@@ -96,7 +96,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     logging.info("Phantom saved")
     
-    egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl)
+    egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl, shot)
     
     logging.info("Making EGS input")
     
