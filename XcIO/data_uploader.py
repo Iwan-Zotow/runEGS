@@ -113,8 +113,8 @@ class data_uploader(object):
         logging.info("Start data packing")
         logging.debug(dir_name)
         
-        dst = dir_name + ".tar.bz2"
-        rc = subprocess.call(["tar", "-cvjSf", dst, dir_name],
+        dst = dir_name + ".tar.xz"
+        rc = subprocess.call(["tar", "-cvJSf", dst, dir_name],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                           
         if rc != 0:
@@ -142,7 +142,6 @@ class data_uploader(object):
         if rc != 0:
             self._rc = rc
             return
-        
         
         try:
             rc = subprocess.call(["sshpass", "-p", self._user_pass, "scp", aname, self._user_id +"@" + self._host_ip + ":" + "." ],
@@ -211,14 +210,23 @@ class data_uploader(object):
             transport.connect(username=username, password=password)
             
             sftp = paramiko.SFTPClient.from_transport(transport)
-            destinationPath="/home/sphinx/gcloud/{0}".format(aname)
+
+            dest_dir = dir_name[0:dir_name.find("_")]
+            remote_dir = os.path.join("/home/sphinx/gcloud", dest_dir)
+            try:
+                sftp.chdir(remote_dir)  # test if remote_dir exists
+            except IOError:
+                sftp.mkdir(remote_dir)
+                sftp.chdir(remote_dir)
+            
+            destinationPath = os.path.join(remote_dir, aname)
             logging.info("Copying {0} to {1}".format(aname, destinationPath))
-            sftp.put(aname,destinationPath)
+            sftp.put(aname, destinationPath)
 
             sftp.close()
             transport.close()
             
-            rc=0
+            rc = 0
         except OSError:
             logging.debug("upload_sftp: OS failure ")
             rc = -1
