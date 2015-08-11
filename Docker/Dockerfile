@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y net-tools && \
     apt-get install -y sshpass && \
     apt-get install -y iputils-ping && \
-    apt-get install -y bzip2 && \
+    apt-get install -y xz-utils && \
     apt-get install -y wget && \
     apt-get install -y wput && \
     apt-get autoremove; apt-get clean; apt-get autoclean
@@ -48,6 +48,7 @@ ENV PATH /home/beamuser/egsnrc_mp/bin/x86_64-unknown-linux-gnu:/home/beamuser/HE
 ENV HEN_HOUSE /home/beamuser/HEN_HOUSE/
 ENV OMEGA_HOME /home/beamuser/HEN_HOUSE/omega
 ENV EGS_CONFIG /home/beamuser/HEN_HOUSE/specs/x86_64-unknown-linux-gnu.conf
+ENV XZ_OPT=-9e
 
 # running the show
 
