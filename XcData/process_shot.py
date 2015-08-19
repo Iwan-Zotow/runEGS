@@ -80,8 +80,6 @@ def check_signatures(full_prefix):
     if not (algo in hashlib.algorithms):
         raise Exception("check_signatures", "No SHA1 hash available")
         
-    print(shas)
-        
     for k, v in shas.items():
         filename, extension = os.path.splitext(k)
         if extension == ".log":
