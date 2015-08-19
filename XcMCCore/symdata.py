@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import math
 import numpy as np
 import logging
 
@@ -10,10 +11,6 @@ class symdata(phdata.phdata):
     phantom data which contains float-per-voxel together with dimensions,
     plus symmetrization flags and logic
     """
-    
-    # STD - standard data
-    # SYM - symmetrized data
-    STD, SYM = range(2)
     
     EPS = 0.01 # in mm
     
@@ -36,9 +33,9 @@ class symdata(phdata.phdata):
 
         super(symdata, self).__init__(bx, by, bz)
         
-        self._sym_x = STD
-        self._sym_y = STD
-        self._sym_z = STD
+        self._sym_x = False
+        self._sym_y = False
+        self._sym_z = False
         
         logging.info("symdata object constructed")
                         
@@ -97,19 +94,19 @@ class symdata(phdata.phdata):
         """
         True if could symmetrize X, False otherwise
         """
-        return symdata.could_sym(self._bx, EPS)
+        return symdata.could_sym(self._bx, symdata.EPS)
 
     def could_sym_y(self):
         """
         True if could symmetrize Y, False otherwise
         """
-        return symdata.could_sym(self._by, EPS)
+        return symdata.could_sym(self._by, symdata.EPS)
 
     def could_sym_z(self):
         """
         True if could symmetrize Z, False otherwise
         """
-        return symdata.could_sym(self._bz, EPS)
+        return symdata.could_sym(self._bz, symdata.EPS)
 
     def do_sym_x(self):
         """
@@ -121,16 +118,17 @@ class symdata(phdata.phdata):
         nz = self.nz()
         
         scale = np.float32(0.5)
-        data = np.empty((nx, ny, nz), dtype=np.float32)
+        data  = np.empty((nx, ny, nz), dtype=np.float32)
     
         for iz in range(0, nz):
             for iy in range(0, ny):
                 for ix in range(0, nx):
-                    dleft = self._data[ix,iy,iz]
-                    drght = self._data[nx-1-ix,iy,iz]
+                    dleft = self._data[ix,      iy, iz]
+                    drght = self._data[nx-1-ix, iy, iz]
                     data[ix,iy,iz] = (dleft + drght) * scale
     
-        self._data = data
+        self._data  = data
+        self._sym_x = True
         
     def do_sym_y(self):
         """
@@ -142,14 +140,37 @@ class symdata(phdata.phdata):
         nz = self.nz()
         
         scale = np.float32(0.5)
-        data = np.empty((nx, ny, nz), dtype=np.float32)
+        data  = np.empty((nx, ny, nz), dtype=np.float32)
     
         for iz in range(0, nz):
             for iy in range(0, ny):
                 for ix in range(0, nx):
-                    dleft = self._data[ix,iy,iz]
-                    drght = self._data[ix,ny-1-iy,iz]
+                    dleft = self._data[ix,      iy, iz]
+                    drght = self._data[ix, ny-1-iy, iz]
                     data[ix,iy,iz] = (dleft + drght) * scale
     
-        self._data = data
+        self._data  = data
+        self._sym_y = True
+        
+    def do_sym_z(self):
+        """
+        Make data symmetric over Z
+        """
+        
+        nx = self.nx()
+        ny = self.ny()
+        nz = self.nz()
+        
+        scale = np.float32(0.5)
+        data  = np.empty((nx, ny, nz), dtype=np.float32)
+    
+        for iz in range(0, nz):
+            for iy in range(0, ny):
+                for ix in range(0, nx):
+                    dleft = self._data[ix, iy,      iz]
+                    drght = self._data[ix, iy, nz-1-iz]
+                    data[ix,iy,iz] = (dleft + drght) * scale
+    
+        self._data  = data
+        self._sym_z = True
 
