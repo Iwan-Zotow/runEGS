@@ -56,3 +56,39 @@ def make_egsinput_name(full_prefix):
     """
     
     return full_prefix + EGSINP_EXT
+    
+def parse_file_prefix(s):
+    """
+    Parse file prefix string and produce rad.unit, outer cup, inner cup, inner cup number, collimator
+    """
+    radUnit  = str(s[1:2])
+    outerCup = str(s[3:4])
+    innerCupSer = str(s[5:6])
+    innerCupNum = str(s[6:8])
+    coll        = int(str(s[9:11]))
+    
+    return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
+
+def parse_shot(s):
+    """
+    Parse input string to extract shot
+    """
+    idx_shot = s.find("_")
+    if idx_shot < 0:
+        raise ValueError("No shot info in input")
+    
+    sh = s[idx_shot+1:]
+    
+    idx_Y = sh.find("Y")
+    if idx_Y < 0: 
+        raise ValueError("No Y shot position in input")
+    
+    idx_Z = sh.find("Z")
+    if idx_Z < 0: 
+        raise ValueError("No Z shot position in input")
+        
+    sh_Y = sh[idx_Y+1:idx_Z]
+    sh_Z = sh[idx_Z+1:]
+    
+    return (float(sh_Y), float(sh_Z))  
+
