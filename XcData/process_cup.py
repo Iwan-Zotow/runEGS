@@ -6,9 +6,10 @@ import sys
 import fnmatch
 import subprocess
 
-import XcDefinitions
+import XcConstants
 import collimator
 import process_shot
+import names_helper
 
 def write_ifo(cup_tag, out_dir, ifos, zshift):
     """
@@ -30,9 +31,13 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
         Z shift, mm
     """
 
-    head, tail = os.path.split(cup_dir)
-    fname = os.path.join(out_dir, tail + ".d3difo")
+    fname = os.path.join(out_dir, cup_tag + ".d3difo")
     with open(fname, "w") as f:
+    	f.write("8\n")
+    	f.write("2\n")
+    	f.write("L08\n")
+    	f.write(len(ifos))    	
+    	f.write("\n")
         for ifo in ifos:
             coll = ifo[0]
             shY, shZ = ifo[1]
@@ -60,8 +65,8 @@ def shots_comparer(fname):
     
     head, tail = os.path.split( fname )
     
-    full_prefix, = os.path.splitext(tail)
-    full_prefix, = os.path.splitext(full_prefix)
+    full_prefix, qq = os.path.splitext(tail)
+    full_prefix, qq = os.path.splitext(full_prefix)
     
     (shY, shZ) = names_helper.parse_shot(full_prefix)
     
@@ -101,13 +106,13 @@ def check_invariant(lsof15, lsof25):
         
         # ok, get full_prefix for C15
         head, tail15 = os.path.split( f15 )
-        tail15, = os.path.splitext(tail15)
-        fullp15, = os.path.splitext(tail15)
+        tail15, qq  = os.path.splitext(tail15)
+        fullp15, qq = os.path.splitext(tail15)
         
         # ok, get full_prefix for C25
         head, tail25 = os.path.split( f25 )
-        tail25, = os.path.splitext(tail25)
-        fullp25, = os.path.splitext(tail25)
+        tail25, qq  = os.path.splitext(tail25)
+        fullp25, qq = os.path.splitext(tail25)
 
         # now compare them, they should be different only by colimator
         if len(fullp25) != len(fullp15):
@@ -138,8 +143,8 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     given cups directory and , process all shots in cup
     """
     
-    lsof15 = get_sorted_file_list(cups_dir, cup_tag, XcDefinitions.C15)
-    lsof25 = get_sorted_file_list(cups_dir, cup_tag, XcDefinitions.C25)
+    lsof15 = get_sorted_file_list(cups_dir, cup_tag, XcConstants.C15)
+    lsof25 = get_sorted_file_list(cups_dir, cup_tag, XcConstants.C25)
     
     check_invariant(lsof15, lsof25)
     
@@ -148,14 +153,15 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
+        print(fname)
         shot_data = process_shot.process_shot(fname, out_dir)
         ifos.append(shot_data)
             
-        idx = shot_name.find(".")
-        sname = shot_name[:idx]
+        idx = shot_fname.find(".")
+        sname = shot_fname[:idx]
         subprocess.call("rm -rf ./{0}".format(sname), shell=True)
 
-    write_ifo(cup_dir, out_dir, ifos, zshift)
+    write_ifo(cup_tag, out_dir, ifos, zshift)
             
 if __name__ == "__main__":
     process_cup("/home/sphinx/gcloud", "R8O3IL08", "qqq", -140.0)
