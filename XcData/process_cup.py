@@ -2,6 +2,7 @@
 
 import os
 import fnmatch
+import subprocess
 import process_shot
 
 def write_ifo(cup_dir, out_dir, ifos, zshift):
@@ -35,13 +36,12 @@ def process_cup(cup_dir, out_dir, zshift):
             shot_data = process_shot.process_shot(fname, out_dir)
             ifos.append(shot_data)
             
-            k += 1
-            
-            if k == 4:
-                break
-                
+            idx = shot_name.find(".")
+            sname = shot_name[:idx]
+            #print("QQQ:{0}".format(sname))
+            subprocess.call("rm -rf ./{0}".format(sname), shell=True)
+
     write_ifo(cup_dir, out_dir, ifos, zshift)
             
 if __name__ == "__main__":
     process_cup("/home/sphinx/gcloud/R8O3IL08C25", "qqq", -140.0)
-
