@@ -4,6 +4,10 @@
 COUCH_BOTTOM    = 15.0
 COUCH_THICKNESS = 10.0
 
+# collimators
+C15 = 15
+C25 = 25
+
 def MaximumInnerCupSize():
     """
     Returns the max number/id
