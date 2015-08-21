@@ -36,7 +36,7 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
     	f.write("8\n")
     	f.write("2\n")
     	f.write("L08\n")
-    	f.write(len(ifos))    	
+    	f.write(str(len(ifos)))
     	f.write("\n")
         for ifo in ifos:
             coll = ifo[0]
