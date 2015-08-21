@@ -33,9 +33,15 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
 
     fname = os.path.join(out_dir, cup_tag + ".d3difo")
     with open(fname, "w") as f:
-    	f.write("8\n")
-    	f.write("2\n")
-    	f.write("L08\n")
+    
+	radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C25" )
+    
+    	f.write(str(radUnit))
+    	f.write("\n")
+    	f.write(str(outerCup))
+    	f.write("\n")
+    	f.write( innerCupSer + innerCupNum )
+    	f.write("\n")    	
     	f.write(str(len(ifos)))
     	f.write("\n")
         for ifo in ifos:
@@ -46,7 +52,7 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
             shX = 0.0
             dmax = 0.0
             
-            s = "+{0}  {1}  {2}  {3}  {4}   {5}  {6}  {7}  {8}  {9}  {10}  {11}\n".format(coll, shX, shY, shZ-zshift, dmax, minX, maxX, minY, maxY, minZ-zshift, maxZ-zshift, aname)
+            s = "{0:+3d}  {1:+14.7e} {2:+14.7e} {3:+14.7e}  {4:+14.7e}  {5:+14.7e} {6:+14.7e} {7:+14.7e} {8:+14.7e} {9:+14.7e} {10:+14.7e}  {11}\n".format(coll, shX, shY, shZ-zshift, dmax, minX, maxX, minY, maxY, minZ-zshift, maxZ-zshift, aname)
             f.write(s)
             
 def shots_comparer(fname):
@@ -65,12 +71,13 @@ def shots_comparer(fname):
     
     head, tail = os.path.split( fname )
     
+    # remove dual extension
     full_prefix, qq = os.path.splitext(tail)
     full_prefix, qq = os.path.splitext(full_prefix)
     
     (shY, shZ) = names_helper.parse_shot(full_prefix)
     
-    # sorting over Y is preffered, Z is second order
+    # sorting over Y is preffered, Z is second order sort key
     return 1000*int(shY) + shZ
             
 def get_sorted_file_list(cups_dir, cup_tag, coll):
@@ -150,16 +157,22 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     
     allcups = merge_lsofs(lsof15, lsof25)
     
+    k = 0
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
-        print(fname)
         shot_data = process_shot.process_shot(fname, out_dir)
         ifos.append(shot_data)
-            
-        idx = shot_fname.find(".")
-        sname = shot_fname[:idx]
+        
+        head, tail = os.path.split(shot_fname)
+        sname, tail = os.path.splitext(tail)
+        sname, tail = os.path.splitext(sname)
+        
         subprocess.call("rm -rf ./{0}".format(sname), shell=True)
+        
+        k += 1
+        if k == 4:
+            break
 
     write_ifo(cup_tag, out_dir, ifos, zshift)
             
