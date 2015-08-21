@@ -1,29 +1,24 @@
+#!/usr/bin/python
+
 import os
 import fnmatch
+from multiprocessing import Process
 
 import process_cup
 
-def process_set(set_dir, out_dir, zshift):
+def process_set(set_dir, set_tag, idx_start, idx_end,  out_dir, zshift):
     """
     """
     
-    tag = "R8O1IS"
-    
-    for k in range(1,10):
-        cup_tag = tag + "0" + str(k)
-        process_cup.process_cup(set_dir, cup_tag, out_dir, zshift)        
-
-    tag = "R8O2IM"
-    
-    for k in range(1,10):
-        cup_tag = tag + "0" + str(k)
-        process_cup.process_cup(set_dir, cup_tag, out_dir, zshift)
-            
-    tag = "R8O2IM"
-    
-    for k in range(1,10):
-        cup_tag = tag + "0" + str(k)
-            process_cup.process_cup(set_dir, cup_tag, out_dir, zshift)
+    pps = []
+    for k in range(idx_start, idx_end+1):
+    	cup_tag = "{}{:02d}".format(set_tag, k)
+	p = Process(target=process_cup.process_cup, args=(set_dir, cup_tag, out_dir, zshift)) # process_cup.process_cup(set_dir, cup_tag, out_dir, zshift)
+    	p.start()
+	pps.append(p)
+	
+    for p in pps:
+    	p.join()
 
 if __name__ == "__main__":
-    process_set("/home/sphinx/gcloud", "qqq", 140.0)
+    process_set("/home/sphinx/gcloud", "R8O3IL", 1, 9, "qqq", 140.0)

@@ -201,7 +201,7 @@ def read_data(full_prefix):
 
     return phd
     
-def writeX_d3d(fname, tddata):
+def writeX_d3d(fname, tddata, zshift):
     """
     write X averaged dose data, assuming data is X averaged
     """
@@ -248,7 +248,7 @@ def writeX_d3d(fname, tddata):
 
         # write Y boundaries, full
         for iz in range(0, nz+1):
-            zmm = np.float32(conversion.cm2mm( bz[iz])-163 ) #hard coded for L04
+            zmm = np.float32(conversion.cm2mm( bz[iz] ) - zshift)
             f.write(struct.pack("f", zmm))
 
         # supposed to be reversed order
@@ -257,6 +257,8 @@ def writeX_d3d(fname, tddata):
                 for iz in range(0, nz):
                     d = np.float32(data[ix,iy,iz])
                     f.write(struct.pack("f", d))
+                    
+    return (conversion.cm2mm(bx[0]), conversion.cm2mm(bx[-1]), conversion.cm2mm(by[0]), conversion.cm2mm(by[-1]), conversion.cm2mm(bz[0]), conversion.cm2mm(bz[-1]))
                         
                     
 def full_prefix_2_d3d_name(full_prefix):
@@ -271,7 +273,7 @@ def full_prefix_2_d3d_name(full_prefix):
     
     return file_prefix + "_Y{0:03d}Z{1:03d}C{2:03d}".format(int(shY), int(shZ), int(coll))
 
-def process_shot(shot_name, out_dir):
+def process_shot(shot_name, out_dir, zshift):
     """
     Process single shot given shot full filename
     """
@@ -307,14 +309,12 @@ def process_shot(shot_name, out_dir):
     tddose.do_sym_x()
 
     aname = full_prefix_2_d3d_name(full_prefix)+".d3d"
-    writeX_d3d(os.path.join(out_dir, aname), tddose)
+    bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift)
     
     shot   = names_helper.parse_shot(full_prefix)
-    bounds = (tddose.bx()[0], tddose.bx()[-1], tddose.by()[0], tddose.by()[-1], tddose.bz()[0], tddose.bz()[-1])
     radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( full_prefix )
     
     return (coll, shot, bounds, aname)
 
 if __name__ == "__main__":
-    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".")
-
+    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0)

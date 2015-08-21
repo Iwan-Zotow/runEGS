@@ -161,7 +161,7 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
-        shot_data = process_shot.process_shot(fname, out_dir)
+        shot_data = process_shot.process_shot(fname, out_dir, zshift)
         ifos.append(shot_data)
         
         head, tail = os.path.split(shot_fname)
@@ -171,10 +171,8 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
         subprocess.call("rm -rf ./{0}".format(sname), shell=True)
         
         k += 1
-        if k == 4:
-            break
 
     write_ifo(cup_tag, out_dir, ifos, zshift)
             
 if __name__ == "__main__":
-    process_cup("/home/sphinx/gcloud", "R8O3IL08", "qqq", -140.0)
+    process_cup("/home/sphinx/gcloud", "R8O3IL08", "qqq", 140.0)
