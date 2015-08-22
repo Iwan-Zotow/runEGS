@@ -33,7 +33,7 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
 
     fname = os.path.join(out_dir, cup_tag + ".d3difo")
     with open(fname, "w") as f:
-	    radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C00" )
+        radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C00" )
 
     	f.write(str(radUnit))
     	f.write("\n")
@@ -43,6 +43,7 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
     	f.write("\n")    	
     	f.write(str(len(ifos)))
     	f.write("\n")
+
         for ifo in ifos:
             coll = ifo[0]
             shY, shZ = ifo[1]

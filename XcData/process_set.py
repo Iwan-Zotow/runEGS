@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os
 import fnmatch
@@ -34,10 +35,10 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift):
 
     pps = []
     for k in range(idx_start, idx_stop + 1):
-    	cup_tag = "{}{:02d}".format(set_tag, k)
-	    p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift)
-    	p.start()
-	    pps.append(p)
+        cup_tag = "{}{:02d}".format(set_tag, k)
+        p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift)
+        p.start()
+        pps.append(p)
 	
     for p in pps:
     	p.join()

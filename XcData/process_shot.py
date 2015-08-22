@@ -356,7 +356,7 @@ def writeX_d3d(fname, tddata, zshift):
 
         # write Y boundaries, full
         for iz in range(0, nz+1):
-            zmm = np.float32( bz[iz] ) - zshift )
+            zmm = np.float32( bz[iz] ) - zshift
             f.write(struct.pack("f", zmm))
 
         # supposed to be reversed order
