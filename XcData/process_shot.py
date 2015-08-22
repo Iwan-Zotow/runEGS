@@ -16,6 +16,15 @@ EXT = "xz"
 def check_archive_integrity(shot_name):
     """
     Given the shot archive, check compression integrity
+        
+    Parameters
+    ----------
+        
+    shot_name: string
+        name of the archive with compressed shot data
+        
+    returns: integer
+        0 is Ok, non-zero means error
     """
     
     cmd = "xz -t {0}".format(shot_name)
@@ -26,6 +35,15 @@ def check_archive_integrity(shot_name):
 def check_tar_integrity(shot_name):
     """
     Given the shot archive, check TAR integrity
+        
+    Parameters
+    ----------
+        
+    shot_name: string
+        name of the archive with compressed shot data
+        
+    returns: integer
+        0 is Ok, non-zero means error
     """
     
     cmd = "tar tJf {0}".format(shot_name)
@@ -35,7 +53,16 @@ def check_tar_integrity(shot_name):
 
 def unpack_archive(shot_name):
     """
-    Given the shot archive, check TAR integrity
+    Given the shot archive, unpack it
+        
+    Parameters
+    ----------
+        
+    shot_name: string
+        name of the archive with compressed shot data
+        
+    returns: integer
+        0 is Ok, non-zero means error
     """
 
     cmd = "tar xJvf {0}".format(shot_name)
@@ -47,6 +74,15 @@ def unpack_archive(shot_name):
 def read_sha1(full_prefix):
     """
     Read sha1 file, return it as dictionary
+        
+    Parameters
+    ----------
+        
+    full_prefix: string
+        shot full prefix (e.g R8O3IL08C25_Y10Z15)
+        
+    returns: dictionary or None
+        Dictionary is Ok, None if error
     """
     
     fname = os.path.join(full_prefix, "sha1")
@@ -73,9 +109,20 @@ def read_sha1(full_prefix):
 def check_signatures(full_prefix):
     """
     Given unpacked direcory with full_prefix, read signatures and check against sha1
+        
+    Parameters
+    ----------
+        
+    full_prefix: string
+        shot full prefix (e.g R8O3IL08C25_Y10Z15)
+        
+    returns: Tuple of (bool, string, string)
+        True if ok, False and file name and SHA1 if signature mismatch
     """
     
     shas = read_sha1(full_prefix)
+    if shas == None:
+        raise Exception("check_signatures", "SHA1 file is problematic")
     
     algo = "sha1"
     if not (algo in hashlib.algorithms):
@@ -105,6 +152,16 @@ def check_signatures(full_prefix):
 def get_dimensions(line):
     """
     Parse and extract X, Y and Z dimensions from string
+    
+    Parameters
+    ----------
+        
+    full_prefix: string
+        shot full prefix (e.g R8O3IL08C25_Y10Z15)
+        
+    returns: Tuple of (bool, string, string)
+        True if ok, False and file name and SHA1 if signature mismatch
+    
     :param line: line contains x, y, z dimensions
     """
     split = line.split(" ")
@@ -119,16 +176,25 @@ def get_dimensions(line):
 def get_boundaries(n, line):
     """
     Parse and extract X, Y and Z boundaries from string
-    :param n: number of bins (boundaries are one more)
-    :param line: line contains boundaries data
-    :returns: array of parsed boundaries
+    
+    Parameters
+    ----------
+    
+    n: integer
+        number of bins (boundaries are one more)
+        
+    line: string
+        line contains boundaries data
+        
+    returns: array of floats
+        array of parsed boundaries, in mm
     """
     split = line.split(" ")
     split = [x for x in split if x]  # remove empty lines
 
     boundaries = []
     for i in range(0,n+1):
-        d = float(split[i])
+        d = conversion.cm2mm( float(split[i]) )
         boundaries.append(d)
 
     if boundaries.count == 0:
@@ -138,7 +204,16 @@ def get_boundaries(n, line):
     
 def get_full_prefix_name(shot_name):
     """
-    given shot name, get back full name
+    Given shot name, get back full name
+    
+    Parameters
+    ----------
+    
+    shot_name: string
+        full shot file name
+        
+    returns: string
+        extracted full prefix (e.g R8O3IL08C25_Y10Z15)
     """
     
     head,tail = os.path.split(shot_name)
@@ -152,12 +227,22 @@ def get_full_prefix_name(shot_name):
 def get_3ddata(nx, ny, nz, line, data):
     """
     Read a line and convert it to 3D dose representation
-    :param nx: nof X points
-    :param ny: nof Y points
-    :param nz: nof Z points
-    :param line" string which contains all 3D dose data points
-    :returns: 3D dose data as NumPy object
+    
+    Parameters
+    ----------
+    
+    nx: integer
+        nof X points
+    ny: integer
+        nof Y points
+    nz: integer
+        nof Z points
+    line: string
+        which contains all 3D dose data points
+    data: numpy 3D grid of floats
+        3D dose data as NumPy object
     """
+
     split = line.split(" ")
     split = [x for x in split if x]  # remove empty lines
 
@@ -168,11 +253,18 @@ def get_3ddata(nx, ny, nz, line, data):
                 data[ix,iy,iz] = float(split[k])
                 k += 1
 
-    return None
-
 def read_data(full_prefix):
     """
     Read shot data into data array from full prefixed dir
+    
+    Parameters
+    ----------
+    
+    full_prefix: string
+        directory with full prefix name, contains unpacked shot data (e.g R8O3IL08C25_Y10Z15)
+        
+    returns: symdata object
+        all .3ddose data read from shot on success, None on failure
     """
     
     fname = os.path.join(full_prefix, full_prefix + ".3ddose")
@@ -204,7 +296,23 @@ def read_data(full_prefix):
 def writeX_d3d(fname, tddata, zshift):
     """
     write X averaged dose data, assuming data is X averaged
+    
+    Parameters
+    ----------
+    
+    fname: string
+        file name to write
+        
+    tddata: 3d data object
+        holds dose and boundaries to write
+        
+    zshift: float
+        Z shift, mm
+        
+    returns: Tuple of floats
+        dose bounding box (minX, maxX, minY, maxY, minZ, maxZ), in mm, or None in the case of failure
     """
+
     folderName = os.path.dirname(fname)
     
     if not tddata.sym_x():
@@ -238,17 +346,17 @@ def writeX_d3d(fname, tddata, zshift):
 
         # write X boundaries, symmetric
         for ix in range(nx_half, nx+1):
-            xmm = np.float32(conversion.cm2mm( bx[ix] ))
+            xmm = np.float32( bx[ix] )
             f.write(struct.pack("f", xmm))
 
         # write Y boundaries, full
         for iy in range(0, ny+1):
-            ymm = np.float32(conversion.cm2mm( by[iy] ))
+            ymm = np.float32( by[iy] )
             f.write(struct.pack("f", ymm))
 
         # write Y boundaries, full
         for iz in range(0, nz+1):
-            zmm = np.float32(conversion.cm2mm( bz[iz] ) - zshift)
+            zmm = np.float32( bz[iz] ) - zshift )
             f.write(struct.pack("f", zmm))
 
         # supposed to be reversed order
@@ -258,12 +366,17 @@ def writeX_d3d(fname, tddata, zshift):
                     d = np.float32(data[ix,iy,iz])
                     f.write(struct.pack("f", d))
                     
-    return (conversion.cm2mm(bx[0]), conversion.cm2mm(bx[-1]), conversion.cm2mm(by[0]), conversion.cm2mm(by[-1]), conversion.cm2mm(bz[0]), conversion.cm2mm(bz[-1]))
-                        
+    return ( bx[0], bx[-1], by[0], by[-1], bz[0] - zshift, bz[-1] - zshift)
                     
 def full_prefix_2_d3d_name(full_prefix):
     """
-    Make new style filename for d3d
+    Given full prefix for a shot, make .d3difo compatible file name
+    
+    full_prefix: string
+        directory with full prefix name, contains unpacked shot data (e.g R8O3IL08C25_Y10Z15)
+        
+    returns: string
+        .d3difo compatible file name (e.q. R8O2IM01_Y000Z000C015)
     """
     
     radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( full_prefix )
@@ -276,6 +389,18 @@ def full_prefix_2_d3d_name(full_prefix):
 def process_shot(shot_name, out_dir, zshift):
     """
     Process single shot given shot full filename
+    
+    shot_name: string
+        full name of the compressed shot data file
+        
+    out_dir: string
+        name of the output directory
+        
+    zshift: float
+        Z shift, in mm
+        
+    returns: tuple of data for .d3difo file
+        collimator, shot position (Y,Z) in mm, dose box bounds (minX, maxX, minY, maxY, minZ, maxZ) in mm, .d3d file name
     """
     
     # first, check archive existance
@@ -310,6 +435,8 @@ def process_shot(shot_name, out_dir, zshift):
 
     aname = full_prefix_2_d3d_name(full_prefix)+".d3d"
     bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift)
+    if bounds == None:
+        raise Exception("No dose box bounds returned\n")    
     
     shot   = names_helper.parse_shot(full_prefix)
     radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( full_prefix )
@@ -318,3 +445,4 @@ def process_shot(shot_name, out_dir, zshift):
 
 if __name__ == "__main__":
     process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0)
+

@@ -19,7 +19,7 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
     ----------
         
     cup_tag: string
-        cup tag
+        cup tag (e.g. R8O3IL04)
         
     out_dir: string
         output directory
@@ -33,9 +33,8 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
 
     fname = os.path.join(out_dir, cup_tag + ".d3difo")
     with open(fname, "w") as f:
-    
-	radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C25" )
-    
+	    radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C00" )
+
     	f.write(str(radUnit))
     	f.write("\n")
     	f.write(str(outerCup))
@@ -52,7 +51,8 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
             shX = 0.0
             dmax = 0.0
             
-            s = "{0:+3d}  {1:+14.7e} {2:+14.7e} {3:+14.7e}  {4:+14.7e}  {5:+14.7e} {6:+14.7e} {7:+14.7e} {8:+14.7e} {9:+14.7e} {10:+14.7e}  {11}\n".format(coll, shX, shY, shZ-zshift, dmax, minX, maxX, minY, maxY, minZ-zshift, maxZ-zshift, aname)
+            # dose box supposed to be already shifted
+            s = "{0:+3d}  {1:+14.7e} {2:+14.7e} {3:+14.7e}  {4:+14.7e}  {5:+14.7e} {6:+14.7e} {7:+14.7e} {8:+14.7e} {9:+14.7e} {10:+14.7e}  {11}\n".format(coll, shX, shY, shZ-zshift, dmax, minX, maxX, minY, maxY, minZ, maxZ, aname)
             f.write(s)
             
 def shots_comparer(fname):
@@ -82,6 +82,22 @@ def shots_comparer(fname):
             
 def get_sorted_file_list(cups_dir, cup_tag, coll):
     """
+    Writes .d3difo file for a cup
+        
+    Parameters
+    ----------
+        
+    cups_dir: string
+        directory with multiple cup shots
+        
+    cup_tag: string
+        cup tag (e.g. R8O3IL04)
+        
+    coll: integer
+        collimator diameter
+        
+    returns: array of string
+        list of shot names, sorted Y first, Z second
     """
     
     cl = collimator.collimator(coll)
@@ -98,6 +114,19 @@ def get_sorted_file_list(cups_dir, cup_tag, coll):
     
 def check_invariant(lsof15, lsof25):
     """
+    Checks if lists of shots for C15 and C25 collimators makes sense
+        
+    Parameters
+    ----------
+        
+    lsof15: array of strings
+        list of C15 shots
+        
+    lsof25: array of strings
+        list of C25 shots
+        
+    returns: (bool, string)
+        True if ok, False otherwise with string indicating what happens
     """
     
     if len(lsof15) != len(lsof25):
@@ -133,9 +162,22 @@ def check_invariant(lsof15, lsof25):
     
 def merge_lsofs(lsof15, lsof25):
     """
+    Checks if lists of shots for C15 and C25 collimators makes sense
+        
+    Parameters
+    ----------
+        
+    lsof15: array of strings
+        list of C15 shots
+        
+    lsof25: array of strings
+        list of C25 shots
+        
+    returns: array of strings
+        Merged list of shots with interleaving C15 and C25 shots
     """
     
-    l = len(lsof15) # we assume length is checked and found to be the same
+    l = len(lsof15) # we assume length is checked and found to be the same for C25
     
     # lists are sorted using the same comparator, 
     combined = []
@@ -147,7 +189,22 @@ def merge_lsofs(lsof15, lsof25):
 
 def process_cup(cups_dir, cup_tag, out_dir, zshift):
     """
-    given cups directory and , process all shots in cup
+    Process all shots for both collimators for a given cup tag
+        
+    Parameters
+    ----------
+        
+    cups_dir: string
+        location of the directories with shots for both collimators
+        
+    cup_tag: string
+        cup tag (e.g. R8O3IL04)
+        
+    out_dir: string
+        output directory
+        
+    zshift: float
+        cup Z shift relative to shot, mm
     """
     
     lsof15 = get_sorted_file_list(cups_dir, cup_tag, XcConstants.C15)
@@ -158,6 +215,7 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     allcups = merge_lsofs(lsof15, lsof25)
     
     k = 0
+
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
