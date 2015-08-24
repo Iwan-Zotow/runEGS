@@ -7,7 +7,7 @@ from multiprocessing import Process
 
 import process_cup
 
-def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift):
+def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y = False):
     """
     Process all shots for both collimators for a given cup tag
         
@@ -33,10 +33,11 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift):
         cup Z shift relative to shot, mm
     """
 
+    sy = sym_Y
     pps = []
     for k in range(idx_start, idx_stop + 1):
         cup_tag = "{}{:02d}".format(set_tag, k)
-        p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift)
+        p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift, sy)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift, sy)
         p.start()
         pps.append(p)
 	

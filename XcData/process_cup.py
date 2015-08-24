@@ -188,7 +188,7 @@ def merge_lsofs(lsof15, lsof25):
     
     return combined
 
-def process_cup(cups_dir, cup_tag, out_dir, zshift):
+def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
     """
     Process all shots for both collimators for a given cup tag
         
@@ -215,12 +215,14 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift):
     
     allcups = merge_lsofs(lsof15, lsof25)
     
+    sy = sym_Y
+    
     k = 0
 
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
-        shot_data = process_shot.process_shot(fname, out_dir, zshift)
+        shot_data = process_shot.process_shot(fname, out_dir, zshift, sy)
         ifos.append(shot_data)
         
         head, tail = os.path.split(shot_fname)
