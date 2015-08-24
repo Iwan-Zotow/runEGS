@@ -295,7 +295,7 @@ def read_data(full_prefix):
     
 def writeX_d3d(fname, tddata, zshift):
     """
-    write X averaged dose data, assuming data is X averaged
+    Write X averaged dose data, assuming data is X averaged
     
     Parameters
     ----------
@@ -313,14 +313,14 @@ def writeX_d3d(fname, tddata, zshift):
         dose bounding box (minX, maxX, minY, maxY, minZ, maxZ), in mm, or None in the case of failure
     """
 
-    folderName = os.path.dirname(fname)
-    
     if not tddata.sym_x():
-        raise 
+        raise Exception("Data are NOT x averaged, bailing out...\n")
 
-    if folderName != '':
-        if not os.path.exists(folderName):
-            os.makedirs(folderName)
+    folder_name = os.path.dirname(fname)
+    
+    if folder_name != '':
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
             
     nx = tddata.nx()
     ny = tddata.ny()
@@ -336,7 +336,7 @@ def writeX_d3d(fname, tddata, zshift):
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
         f.write(struct.pack("i", 0)) # Y not sym
-        f.write(struct.pack("i", 0)) # Y not sym
+        f.write(struct.pack("i", 0)) # Z not sym
 
         # write dimensions
         nx_half = nx//2
@@ -354,7 +354,7 @@ def writeX_d3d(fname, tddata, zshift):
             ymm = np.float32( by[iy] )
             f.write(struct.pack("f", ymm))
 
-        # write Y boundaries, full
+        # write Z boundaries, full
         for iz in range(0, nz+1):
             zmm = np.float32( bz[iz] ) - zshift
             f.write(struct.pack("f", zmm))
@@ -367,6 +367,87 @@ def writeX_d3d(fname, tddata, zshift):
                     f.write(struct.pack("f", d))
                     
     return ( bx[0], bx[-1], by[0], by[-1], bz[0] - zshift, bz[-1] - zshift)
+    
+def writeXY_d3d(fname, tddata, zshift):
+    """
+    Write X&Y averaged dose data, assuming data is X&Y averaged
+    
+    Parameters
+    ----------
+    
+    fname: string
+        file name to write
+        
+    tddata: 3d data object
+        holds dose and boundaries to write
+        
+    zshift: float
+        Z shift, mm
+        
+    returns: Tuple of floats
+        dose bounding box (minX, maxX, minY, maxY, minZ, maxZ), in mm, or None in the case of failure
+    """
+
+    if not tddata.sym_x():
+        raise Exception("Data are NOT X averaged, bailing out...\n")
+
+    if not tddata.sym_y():
+        raise Exception("Data are NOT Y averaged, bailing out...\n")
+        
+    folder_name = os.path.dirname(fname)
+    
+    if folder_name != '':
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+            
+    nx = tddata.nx()
+    ny = tddata.ny()
+    nz = tddata.nz()
+
+    bx = tddata.bx()
+    by = tddata.by()
+    bz = tddata.bz()
+    
+    data = tddata.data()
+
+    with open(fname, "wb") as f:
+        # write symmetry flags
+        f.write(struct.pack("i", 1)) # X sym
+        f.write(struct.pack("i", 1)) # Y sym
+        f.write(struct.pack("i", 0)) # Z not sym
+
+        # write dimensions
+        nx_half = nx//2
+        f.write(struct.pack("i", nx_half)) # due to symmetry
+
+        ny_half = ny//2
+        f.write(struct.pack("i", ny_half))
+
+        f.write(struct.pack("i", nz))
+
+        # write X boundaries, symmetric
+        for ix in range(nx_half, nx+1):
+            xmm = np.float32( bx[ix] )
+            f.write(struct.pack("f", xmm))
+
+        # write Y boundaries, symmetric
+        for iy in range(ny_half, ny+1):
+            ymm = np.float32( by[iy] )
+            f.write(struct.pack("f", ymm))
+
+        # write Z boundaries, full
+        for iz in range(0, nz+1):
+            zmm = np.float32( bz[iz] ) - zshift
+            f.write(struct.pack("f", zmm))
+
+        # supposed to be reversed order
+        for ix in range(nx_half, nx):
+            for iy in range(ny_half, ny):
+                for iz in range(0, nz):
+                    d = np.float32(data[ix,iy,iz])
+                    f.write(struct.pack("f", d))
+                    
+    return ( bx[0], bx[-1], by[0], by[-1], bz[0] - zshift, bz[-1] - zshift)                      
                     
 def full_prefix_2_d3d_name(full_prefix):
     """
@@ -376,7 +457,7 @@ def full_prefix_2_d3d_name(full_prefix):
         directory with full prefix name, contains unpacked shot data (e.g R8O3IL08C25_Y10Z15)
         
     returns: string
-        .d3difo compatible file name (e.q. R8O2IM01_Y000Z000C015)
+        .d3difo compatible file name (e.g. R8O2IM01_Y000Z000C015)
     """
     
     radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( full_prefix )
@@ -386,7 +467,7 @@ def full_prefix_2_d3d_name(full_prefix):
     
     return file_prefix + "_Y{0:03d}Z{1:03d}C{2:03d}".format(int(shY), int(shZ), int(coll))
 
-def process_shot(shot_name, out_dir, zshift):
+def process_shot(shot_name, out_dir, zshift, sym_Y = False):
     """
     Process single shot given shot full filename
     
@@ -427,14 +508,32 @@ def process_shot(shot_name, out_dir, zshift):
 
     tddose = read_data(full_prefix)
     
-    can_avX = tddose.could_sym_x()
-    if not can_avX:
+    can_sym_X = tddose.could_sym_x()
+    if not can_sym_X:
         raise Exception("Cannot X AVERAGE, bad X boundaries\n")
     
     tddose.do_sym_x()
+    if not tddose.sym_x():
+        raise Exception("Something went wrong on X symmetrization\n")
+    
+    can_sym_Y = False
+    if sym_Y: # someone wants averaged Y
+        can_sym_Y = tddose.could_sym_y() # check if we can...
+        
+    if can_sym_Y:
+        # yes, we can
+        tddose.do_sym_y()
+        if not tddose.sym_y():
+            raise Exception("Something went wrong on Y symmetrization\n")
 
+    # writing thing out, getting back boundaries
     aname = full_prefix_2_d3d_name(full_prefix)+".d3d"
-    bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift)
+    bounds = None
+    if can_sym_Y:
+        bounds = writeXY_d3d(os.path.join(out_dir, aname), tddose, zshift)
+    else:
+        bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift)
+
     if bounds == None:
         raise Exception("No dose box bounds returned\n")    
     
