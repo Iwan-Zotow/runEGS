@@ -96,7 +96,13 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     
     logging.info("Phantom saved")
     
-    egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl, shot)
+    egsinp_template = None
+    if not XcConstants.IsQACup(innerCupSer):
+        egsinp_template = "template.egsinp"
+    else:
+        egsinp_template = "templateQA.egsinp"
+    
+    egsinp_name = write_egs_input.write_input(wrk_dir, egsinp_template, full_prefix, cl, shot)
     
     logging.info("Making EGS input")
     
