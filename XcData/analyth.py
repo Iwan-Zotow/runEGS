@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import math
-import struct
-import numpy as np
 import os
 import sys
-from matplotlib.colors import colorConverter
+import math
+import struct
+
+import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import colorConverter
 
 from Convert3ddoseToD3d import *
 
@@ -33,33 +34,46 @@ def Read3ddose(filePath):
 
 def main():
 
-    filePathShortSteel = "old/R8O3IL08C25_Y40Z30.3ddose"
-    filePathLongSteel  = "new/R8O3IL08C25_Y40Z30.3ddose"
+    top = "/home/beamuser/Documents/EGS/runEGS/R8O3IL08"
+    clm = "C15"
 
-    [doseL,nxL,nyL,nzL,xbL,ybL,zbL] = Read3ddose(filePathLongSteel)
-    [doseS,nxS,nyS,nzS,xbS,ybS,zbS] = Read3ddose(filePathShortSteel)
-    
-    doseL = averageX_3ddata(nxL,nyL,nzL, doseL, 0.5)
+    file_std = os.path.join(top, clm, "std.3ddose")
+    file_dbl = os.path.join(top, clm, "dblstat.3ddose")
+    file_phs = os.path.join(top, clm, "dblphsf.3ddose")
+    file_rnd = os.path.join(top, clm, "dblphsfrand.3ddose")
 
-    doseS = averageX_3ddata(nxS,nyS,nzS, doseS, 0.5)
+    [dose_std, nx_std, ny_std, nz_std, xb_std, yb_std, zb_std] = Read3ddose(file_std)
+    [dose_dbl, nx_dbl, ny_dbl, nz_dbl, xb_dbl, yb_dbl, zb_dbl] = Read3ddose(file_dbl)
+    [dose_phs, nx_phs, ny_phs, nz_phs, xb_phs, yb_phs, zb_phs] = Read3ddose(file_phs)
+    [dose_rnd, nx_rnd, ny_rnd, nz_rnd, xb_rnd, yb_rnd, zb_rnd] = Read3ddose(file_rnd)
+
+    dose_std = averageX_3ddata(nx_std, ny_std, nz_std, dose_std, 0.5)
+    dose_dbl = averageX_3ddata(nx_dbl, ny_dbl, nz_dbl, dose_dbl, 0.5)
+    dose_phs = averageX_3ddata(nx_phs, ny_phs, nz_phs, dose_phs, 0.5)
+    dose_rnd = averageX_3ddata(nx_rnd, ny_rnd, nz_rnd, dose_rnd, 0.5)
         
     # summing over 4 lines around 0 for a profile 
-    profL = 0.25*(doseL[36,:,40] + doseL[36,:,41] + doseL[37,:,40] + doseL[37,:,41])  
-    profS = 0.25*(doseS[36,:,40] + doseS[36,:,41] + doseS[37,:,40] + doseS[37,:,41])
+    #prof_std = 0.25*(dose_std[36,:,40] + dose_std[36,:,41] + dose_std[37,:,40] + dose_std[37,:,41])  
+    #prof_dbl = 0.25*(dose_dbl[36,:,40] + dose_dbl[36,:,41] + dose_dbl[37,:,40] + dose_dbl[37,:,41])
     
-    topL = np.mean(profL[31:42])
-    topS = np.mean(profS[31:42])
+    prof_std = dose_std[36,:,40]
+    prof_dbl = dose_dbl[36,:,40]
+    prof_phs = dose_phs[36,:,40]
+    prof_rnd = 2.0*dose_rnd[36,:,40]
     
-    profS = profS[:]*1.7383714984342543/1.2919502147722337 #topL/topS # so short and long are normalized in the same way
-    
-    print(topL, topS, np.mean(profS[31:42]))
+    #prof_std = prof_std[:]*1.0/1.0 # so short and long are normalized in the same way
+    #top_std = np.mean(prof_std[31:42])
+    #top_dbl = np.mean(prof_dbl[31:42])
+    #print(topL, topS, np.mean(profS[31:42]))
 
     fig1 = plt.figure(1)
 
     ax = fig1.gca()
 
-    ax.plot(profS,'b')
-    ax.plot(profL,'r')
+    ax.plot(prof_std,'b')
+    ax.plot(prof_dbl,'r')
+    ax.plot(prof_phs,'g')
+    ax.plot(prof_rnd,'y')
 
     plt.show()
 
