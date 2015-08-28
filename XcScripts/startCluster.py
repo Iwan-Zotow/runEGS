@@ -51,7 +51,7 @@ def auth_cluster(CID, ZID):
     given zone id and cluser id, make authentication
     """
 
-    cmd = "gcloud beta container get-credentials --cluster={0} --zone={1}".format(CID, ZID)
+    cmd = "gcloud container clusters get-credentials {0} --zone={1}".format(CID, ZID)
     rc = subprocess.call(cmd, shell=True)
     return rc
     
@@ -173,7 +173,7 @@ if __name__ =='__main__':
 
     if nof_args == 1:
         print("Use: startCluster list_of_KDDs <optional>number_of_nodes")
-        print("Default machine is n1-standard-1 with 1CPUs, so 101nodes=100cpus")
+        print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         print("Default # of nodes is 8")
         sys.exit(1)
 
