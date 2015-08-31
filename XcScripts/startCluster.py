@@ -41,7 +41,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID):
         zone id
     """
     
-    cmd = "gcloud alpha container clusters create {0} --machine-type {1} --zone={3} --num-nodes {2}".format(CID, mach_type, nof_machs, ZID)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2}".format(CID, mach_type, nof_machs, ZID)
     
     rc = subprocess.call(cmd, shell=True)
     return rc
@@ -51,7 +51,7 @@ def auth_cluster(CID, ZID):
     given zone id and cluser id, make authentication
     """
 
-    cmd = "gcloud container clusters get-credentials {0} --zone={1}".format(CID, ZID)
+    cmd = "gcloud container clusters get-credentials {0} --zone {1}".format(CID, ZID)
     rc = subprocess.call(cmd, shell=True)
     return rc
     
