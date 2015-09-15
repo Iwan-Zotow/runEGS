@@ -255,9 +255,9 @@ class inner_cup(object):
         
 if __name__ == "__main__":
     
-    cup = inner_cup("/home/beamuser/Documents/EGS/runEGS/cup_geometry/L04.json")
+    cup = inner_cup("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
     
-    shift = 100.78 - cup.Z2() # 136.78 - cup.Z2()
+    shift = 78.78 - cup.Z2() # 100.78 - cup.Z2() # 136.78 - cup.Z2()
     
     for k in range(0, 1000):
         z = 1.0 * k
@@ -270,5 +270,5 @@ if __name__ == "__main__":
     z = cup.Z2()
     y = cup.get_inner_curve(z)
     print("   {0}   {1}".format(z + shift, y))
-    #print(shift)
+    # print(shift)
 
