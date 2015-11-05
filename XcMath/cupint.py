@@ -3,37 +3,36 @@
 import numpy as np
 import logging
 
-class linint(object):
+class cupint(object):
     """
-    Given the curve, produce linearly interpolated values
+    Given the cup equation, produce computed
     """
     
-    def __init__( self, points ):
+    def __init__( self, cup, zshift ):
         """
-        Construct interpolator from the curve
+        Construct interpolator from the cup and zshift
         
         Parameters
         ----------
-        points: array of points
-            arrays of 2D points
+        
+        cup: inner_cup
+            inner cup object
+            
+        zshift:
+            inner cup Z shift, mm            
         """
         
-        # make copy of points
-        self._points = points[:]
+        self._cup    = cup
+        self._zshift = zhift
         
         if not self.invariant():
-            raise RuntimeError("linint", "invariant is broken in constructor")
+            raise RuntimeError("cupint", "from constructor")
+        self._zmin = self._cup.D1() - zshift
+        self._zmax = self._cup.D2() - zshift
         
-        self._len = len(points)
-        
-        self._zmin = self._points[-1].x()
-        self._zmax = self._points[0].x()
-        
-        if not self.invariant():
-            raise RuntimeError("linint", "from constructor")
-        
-        logging.info("linint constructed")
-        logging.debug(str(points))
+        logging.info("cupint constructed")
+        logging.debug(str(cup))
+        logging.debug(str(zshift))
         
     def invariant(self):
         """
@@ -43,21 +42,11 @@ class linint(object):
             True if ok, False otherwise
         """
 
-        if self._points == None:
+        if self._cup == None:
             return False
 
-        if len(self._points) <= 1:
-            return False
-            
         # shall be descending
-        prev = np.float32(1000000.0)
-        for p in self._points:
-            z = p.x()
-            if z > prev:
-                return False
-            if z == prev:
-                return False
-            prev = z
+        # ...
             
         return True
         
@@ -68,31 +57,8 @@ class linint(object):
         returns: integer
             length
         """
-        return self._len
+        return 10000
 
-    def __getitem__(self, idx):
-        """
-        Indexing operator
-        
-        Parameters
-        ----------
-
-        idx: integer
-            point index
-        
-        returns: point
-            2D point at given index
-        """
-        logging.debug(str(idx))        
-        
-        if idx < 0:
-            raise ValueError("linint", "index is negative")
-        
-        if idx >= self._len:
-            raise ValueError("linint", "index is too large")
-            
-        return self._points[idx]
-        
     def zmin(self):
         """
         Returns interpolator abscissa minimum

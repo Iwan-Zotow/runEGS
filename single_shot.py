@@ -7,6 +7,7 @@ import logging
 import XcConstants
 import names_helper
 import curve as cc
+import inner_cup
 import collimator
 import build_phandim
 import cup_downloader
@@ -73,8 +74,10 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     if not XcConstants.IsQACup(innerCupSer):
         file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+        genr_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, 0)
     else:
         file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
+        genr_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, 0)
 
     liA = None
     liB = None
@@ -83,15 +86,14 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31")
         cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
         cdown.load()
-        #cdown.load()
         if (cdown.rc() != 0):
             raise RuntimeError("run_single_shot", "unable to load files")
 
         logging.info("Cups downloaded")
 
-        cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
-        cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-        cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+        cupA = inner_cup.inner_cup(os.path.join( wrk_dir, fiel_prefix + ".json"))
+        cupB = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveB.txt"))
+        cupC = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveC.txt"))
 
         liA = linint.linint(cupA)
         liB = linint.linint(cupB)
