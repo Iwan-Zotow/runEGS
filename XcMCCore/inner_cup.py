@@ -142,39 +142,75 @@ class inner_cup(object):
         return True
 
     def H0(self):
+        """
+        Return H0
+        """
         return self._H0
         
     def R1(self):
+        """
+        Return R1
+        """
         return self._R1
         
     def H1(self):
+        """
+        Return H1
+        """
         return self._H1
         
     def D1(self):
+        """
+        Return D1
+        """
         return self._D1
 
     def R2(self):
+        """
+        Return R2
+        """
         return self._R2
         
     def H2(self):
+        """
+        Return H2
+        """
         return self._H2
         
     def D2(self):
+        """
+        Return D2
+        """
         return self._D2
         
     def D5(self):
+        """
+        Return D5
+        """
         return self._D5
         
     def L1(self):
+        """
+        Return L1
+        """
         return self._L1
         
     def L2(self):
+        """
+        Return L2
+        """    
         return self._L2
         
     def Z1(self):
+        """
+        Return Z1
+        """
         return self._Z1
         
     def Z2(self):
+        """
+        Return Z2
+        """
         return self._Z2
         
     def get_inner_curve(self, z):
@@ -197,7 +233,31 @@ class inner_cup(object):
         k = 0.5* ( self._D2 - self._D6 ) / (self._H2 - self._H0)
         
         return k * (z - self._H0) + 0.5*self._D6
+        
+    def zmin_inner(self):
+        """
+        Return Z min for inner curve of the cup, mm
+        """
+        return 0.0
             
+    def zmin_outer(self):
+        """
+        Return Z min for outer curve of the cup, mm
+        """
+        return 0.0
+
+    def zmax_inner(self):
+        """
+        Return Z max for inner curve of the cup, mm
+        """
+        return self._Z2
+        
+    def zmax_outer(self):
+        """
+        Return Z max for outer curve of the cup, mm
+        """
+        return self._Z1
+
     def get_outer_curve(self, z):
         """
         For given Z, return positive Y on the inner cup curve
@@ -251,7 +311,7 @@ class inner_cup(object):
         if r <= Rout:
             return 0
             
-        return -1        
+        return -1
         
 if __name__ == "__main__":
     
@@ -268,7 +328,7 @@ if __name__ == "__main__":
         print("   {0}   {1}".format(z + shift, y))
         
     z = cup.Z2()
-    y = cup.get_inner_curve(z)
+    y = cup.get_outer_curve(z)
     print("   {0}   {1}".format(z + shift, y))
     # print(shift)
 

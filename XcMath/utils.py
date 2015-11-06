@@ -12,3 +12,16 @@ def cubed(v):
     """
     return v*v*v
 
+def clamp(v, vmin, vmax):
+    """
+    Return value clamped between vmin and vmax
+    """
+    
+    if v < vmin:
+        return vmin
+        
+    if v > vmax:
+        return vmax
+        
+    return v
+

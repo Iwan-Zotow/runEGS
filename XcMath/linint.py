@@ -25,7 +25,6 @@ class linint(object):
             raise RuntimeError("linint", "invariant is broken in constructor")
         
         self._len = len(points)
-        
         self._zmin = self._points[-1].x()
         self._zmax = self._points[0].x()
         
@@ -65,7 +64,7 @@ class linint(object):
         """
         Length        
         
-        returns: integer
+        returns: integerzmin
             length
         """
         return self._len
@@ -127,11 +126,11 @@ class linint(object):
 
         # above zmax        
         if (idx == -1):
-            raise RuntimeError("interpolate", "index is -1")
+            raise RuntimeError("linint::interpolate", "index is -1")
             
         # below zmin
         if (idx == -2):
-            raise RuntimeError("interpolate", "index is -2")
+            raise RuntimeError("linint::interpolate", "index is -2")
         
         p = (z - self._points[idx+1].x()) / (self._points[idx].x() - self._points[idx+1].x())
         q = 1.0 - p

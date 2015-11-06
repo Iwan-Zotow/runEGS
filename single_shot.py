@@ -12,6 +12,7 @@ import collimator
 import build_phandim
 import cup_downloader
 import linint
+import cupint
 import materials
 import clinical
 import qa
@@ -72,6 +73,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     cl = collimator.collimator(coll)
 
+    # build file prefix and general prefix (where cupNum = 0)
     if not XcConstants.IsQACup(innerCupSer):
         file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
         genr_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, 0)
@@ -91,11 +93,11 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
         logging.info("Cups downloaded")
 
-        cupA = inner_cup.inner_cup(os.path.join( wrk_dir, fiel_prefix + ".json"))
+        cupA = inner_cup.inner_cup(os.path.join( wrk_dir, file_prefix + ".json"))
         cupB = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveB.txt"))
         cupC = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveC.txt"))
 
-        liA = linint.linint(cupA)
+        liA = cupint.cupint(cupA)
         liB = linint.linint(cupB)
         liC = linint.linint(cupC)
 

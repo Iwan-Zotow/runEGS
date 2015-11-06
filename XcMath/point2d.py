@@ -42,5 +42,12 @@ class point2d(object):
         returns: string
             default string representation
         """
-        return "({0},{1})".format(self._x, self._y)
+        return "({0}, {1})".format(self._x, self._y)
+        
+    def __repr__(self):
+        """
+        returns: string
+            default representation
+        """
+        return "{0} {1}".format(self._x, self._y)
 
