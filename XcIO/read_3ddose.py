@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import symdata
 import conversion
 
@@ -102,7 +103,7 @@ def read_data(top, full_prefix):
         all .3ddose data read from shot on success, None on failure
     """
 
-    fname = os.path.join(full_prefix, full_prefix + ".3ddose")
+    fname = os.path.join(top, full_prefix, full_prefix + ".3ddose")
 
     phd = None
     with open(fname, 'r') as f:
