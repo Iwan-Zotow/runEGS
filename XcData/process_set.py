@@ -20,10 +20,10 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y 
     set_tag: string
         set tag (R8O3IL or similar)
         
-    idx_start: integer
+    idx_start: int
         start cup index
         
-    idx_stop: integer
+    idx_stop: int
         stop cup index, inclusive! So cups would be processed in the range [start, stop+1)
         
     out_dir: string

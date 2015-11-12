@@ -66,7 +66,7 @@ def shots_comparer(fname):
     fname: string
         shot file name with encoded shot position
         
-    returns: integer
+    returns: int
         comparison key, favoring Y over Z
     """
     
@@ -83,7 +83,7 @@ def shots_comparer(fname):
             
 def get_sorted_file_list(cups_dir, cup_tag, coll):
     """
-    Writes .d3difo file for a cup
+    Given the location and cup tag, return list of files to process
         
     Parameters
     ----------
@@ -94,7 +94,7 @@ def get_sorted_file_list(cups_dir, cup_tag, coll):
     cup_tag: string
         cup tag (e.g. R8O3IL04)
         
-    coll: integer
+    coll: int
         collimator diameter
         
     returns: array of string

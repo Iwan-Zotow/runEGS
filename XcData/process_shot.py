@@ -23,7 +23,7 @@ def check_archive_integrity(shot_name):
     shot_name: string
         name of the archive with compressed shot data
         
-    returns: integer
+    returns: int
         0 is Ok, non-zero means error
     """
     
