@@ -62,3 +62,5 @@ target/
 pod_*.json
 *.kdds
 
+# phase space files
+*.egsphsp1
