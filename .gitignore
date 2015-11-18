@@ -62,5 +62,8 @@ target/
 pod_*.json
 *.kdds
 
+# Sublime text project files
+*.sublime*
+
 # phase space files
 *.egsphsp1
