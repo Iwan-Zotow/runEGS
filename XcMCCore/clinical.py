@@ -96,12 +96,9 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range):
     for iz in range (0, nz):
         z = 0.5 * (bz[iz] + bz[iz+1])
 
-        print(z)
         ra = liA.extrapolate(z)
         rb = liB.extrapolate(z)
         rc = liC.extrapolate(z)
-        
-        print(ra, rb, rc)
         
         for iy in range (0, ny):
             y = 0.5 * (by[iy] + by[iy+1])
