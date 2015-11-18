@@ -24,8 +24,8 @@ def main():
     liCup = cupint.cupint(cupCup, 11.25)
     liCCC = linint.linint(cupCCC)
     
-    for k in range(0, 150):
-        x = 0.0 + 1.0*float(k)
+    for k in range(0, 300):
+        x = 0.0 + 0.5*float(k)
         
         a = liCup.extrapolate(x)
         b = liCCC.extrapolate(x)

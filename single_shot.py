@@ -76,10 +76,8 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     # build file prefix and general prefix (where cupNum = 0)
     if not XcConstants.IsQACup(innerCupSer):
         file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
-        genr_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, 0)
     else:
         file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
-        genr_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, 0)
 
     liA = None
     liB = None
@@ -94,10 +92,12 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         logging.info("Cups downloaded")
 
         cupA = inner_cup.inner_cup(os.path.join( wrk_dir, file_prefix + ".json"))
-        cupB = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveB.txt"))
-        cupC = cc.curve(os.path.join( wrk_dir, genr_prefix + "_" + "KddCurveC.txt"))
+        ### cupA = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
+        cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+        cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
-        liA = cupint.cupint(cupA)
+        liA = cupint.cupint(cupA, 11.25)
+        ### liA = linint.linint(cupA)
         liB = linint.linint(cupB)
         liC = linint.linint(cupC)
 

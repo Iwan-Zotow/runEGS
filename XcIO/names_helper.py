@@ -27,7 +27,7 @@ def make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum):
         clinical cup name
     """
     
-    return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
+    return "R" + str(radUnit) + "O" + str(outerCup) + "I" + str(innerCupSer) + str(innerCupNum)
 
 def make_qualified_name(file_prefix, cl, shot):
     """

@@ -80,6 +80,7 @@ class cupint(object):
         logging.debug(str(z))
 
         # below zmin
+        print("Interpolate {0} {1}".format(z, self._zmin))
         if (z < self._zmin):
             raise RuntimeError("cupint::interpolate", "z less than zmin")
             
@@ -105,13 +106,13 @@ class cupint(object):
         returns: float
             extrapolated value
         """
-        logging.debug(str(z))
+        logging.debug(str(z))        
         
         if z > self._zmax:
             return 0.0
         
         if z < self._zmin:
-            self.interpolate(0.0)
+            return self.interpolate(0.0)
 
         return self.interpolate(z)
 

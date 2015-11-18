@@ -93,7 +93,7 @@ class cup_downloader(object):
             source = os.path.join(os.getcwd(),up, cups, nameOfFile)
             
             shutil.copy(source, self._cup_dir)
-
+            
             rc = 0
 
         except OSError:
@@ -141,6 +141,14 @@ class cup_downloader(object):
             return
             
         fname = self._file_prefix + "_" + "KddCurveC.txt"
+        src = os.path.join( self._host_dir, fname )
+        rc = self.single_load(src)
+        
+        if rc != 0:
+            self._rc = rc
+            return
+
+        fname = self._file_prefix + ".json"
         src = os.path.join( self._host_dir, fname )
         rc = self.single_load(src)
         
