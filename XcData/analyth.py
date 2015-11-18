@@ -35,10 +35,10 @@ def Read3ddose(filePath):
 def main():
 
     top = "/home/beamuser/Documents/EGS/runEGS/R8O3IL08"
-    clm = "C15"
+    clm = "C25"
 
     file_std = os.path.join(top, clm, "std.3ddose")
-    file_dbl = os.path.join(top, clm, "dblstat.3ddose")
+    file_dbl = "/home/beamuser/Documents/EGS/runEGS/R8O3IL08/R8O3IL08C25_Y0Z0/R8O3IL08C25_Y0Z0.3ddose" # os.path.join(top, clm, "dblstat.3ddose")
     file_phs = os.path.join(top, clm, "dblphsf.3ddose")
     file_rnd = os.path.join(top, clm, "dblphsfrand.3ddose")
 
@@ -72,8 +72,8 @@ def main():
 
     ax.plot(prof_std,'b')
     ax.plot(prof_dbl,'r')
-    ax.plot(prof_phs,'g')
-    ax.plot(prof_rnd,'y')
+    #ax.plot(prof_phs,'g')
+    #ax.plot(prof_rnd,'y')
 
     plt.show()
 
