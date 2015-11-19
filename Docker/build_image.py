@@ -59,12 +59,6 @@ def copy_C15(top):
     """
     shutil.copy("/home/beamuser/C15.egsphsp1", os.path.join(top, "C15.egsphsp1"))
 
-def copy_SSH(top):
-    """
-    Copy SSH key file
-    """
-    shutil.copy("/home/beamuser/known_hosts", os.path.join(top, "known_hosts"))
-    
 def copy_CUPS(top):
     """
     Copy all cups
@@ -88,13 +82,13 @@ def copy_CUPS(top):
     os.chdir(cwd)
 
     return rc
-    
+
 def get_repo(top):
     """
     Get python scripts from repository
     """
-    # rc = subprocess.call(["git", "clone", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/branches/cloudTest/trunk", "runEGS"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    rc = subprocess.call(["git", "clone", "-b", "nurEGS", "--single-branch", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/branches/cloudTest/trunk", "runEGS"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     return rc
 
@@ -135,10 +129,9 @@ def main():
     copy_C15(top)
     
     # step 5 - copy SSH key
-    #copy_SSH(top)
     
     # step 6 - copy all cups
-    rc = copy_CUPS(top)
+    rc = 0 #rc = copy_CUPS(top)
     if rc != 0:
         raise RuntimeError("Unable to fetch all cups main scripts from Server, aborting")    
     
