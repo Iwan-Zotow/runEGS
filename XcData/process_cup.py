@@ -105,7 +105,10 @@ def get_sorted_file_list(cups_dir, cup_tag, coll):
     sdir = os.path.join(cups_dir, cup_tag + str(cl))
     
     lsof = []
-    
+
+    if not os.path.isdir(sdir):
+        return lsof
+
     for shot_name in os.listdir(sdir):
         if fnmatch.fnmatch(shot_name, "*.xz"):
             fname = os.path.join(sdir, shot_name)
@@ -236,4 +239,4 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
     write_ifo(cup_tag, out_dir, ifos, zshift)
             
 if __name__ == "__main__":
-    process_cup("/home/sphinx/gcloud", "R8O3IL08", "qqq", 140.0)
+    process_cup("/home/sphinx/gcloud", "R8O3IL08",  "qqq",  153.0, True)
