@@ -98,7 +98,7 @@ def write_cup(rh, cup):
     data = dict()
 
     data["cup_series"] = IS[cup]
-    data["cup_number"] = cup
+    data["cup_number"] = cupnum
     data["units"]      = "mm"
 
     data["H0"] = H0[cup]
