@@ -59,7 +59,7 @@ def read_single_cup(f):
 
 def read_cup_series(f, cup):
     """
-    Given file f, read whole cup series
+    Given file f and a cup, read whole cup series
     """
 
     while True:
@@ -77,10 +77,10 @@ def make_fname(cup, cupnum):
     assert( is_a_good_cup(cup) )
 
     fname  = "R8"
-    fname += "O" + str(cup) + "I" + IS[cup]
+    fname += "O" + str(cup+1) + "I" + IS[cup]
 
     if cupnum < 10:
-        fname += " "
+        fname += "0"
 
     fname += str(cupnum)
 
@@ -116,7 +116,7 @@ def write_cup(rh, cup):
     fname = make_fname(cup, cupnum) + ".json"
 
     with open(fname, "w") as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=4, sort_keys=True)
 
 def read_all_cups(fname):
     """
@@ -148,3 +148,4 @@ if __name__ == "__main__":
     #    sys.exit(0)
 
     read_all_cups("allcupsLMS.txt")
+    sys.exit(0)
