@@ -1,8 +1,11 @@
 {
-    "inner_diameter": 100.0,
-    "outer_diameter": 160.0,
+    "title": "Table",
     "units": "mm",
+    "outer_radius": 160.0,
+    "inner_top_radius": 120.0,
+    "inner_bot_radius": 100.0,
+    "top_position": 15.0,
+    "bot_position": 25.0,
     "material": "Al",
     "density": 2.81
 }
-
