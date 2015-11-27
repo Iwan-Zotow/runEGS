@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 class table(object):
     """
     Representation of the table outside the cup
@@ -20,7 +22,7 @@ class table(object):
 
         self._thickness        = -1.0
 
-        otr, itr, ibr, tp, bp, mat, den = read_json(fname)
+        otr, itr, ibr, tp, bp, mat, den = table.read_json(fname)
 
         self._outer_radius     = otr
         self._inner_top_radius = itr
@@ -111,7 +113,7 @@ class table(object):
         # build intermediate inner radius
         p = (z - self._top_position) / self._thickness
         q = 1.0 - p
-        assert(p >= 0.0 && p <= 1.0)
+        assert(p >= 0.0 and p <= 1.0)
 
         ir = p * self._bot_position + q * self._top_position
 
@@ -119,3 +121,22 @@ class table(object):
             return False
 
         return True
+
+    def __str__(self):
+        """
+        Return string representation
+        """
+        return str(self._outer_radius) + " " + \
+               str(self._inner_top_radius) + " " + \
+               str(self._inner_bot_radius) + " " + \
+               str(self._top_position) + " " + \
+               str(self._bot_position) + " " + \
+               str(self._material) + " " + \
+               str(self._density) + " " + \
+               str(self._thickness)
+
+    def __repr__(self):
+        """
+        Return internal representation
+        """
+        return self.__str__()
