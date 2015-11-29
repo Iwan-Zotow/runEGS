@@ -13,10 +13,9 @@ def main():
     """
 
     wrk_dir = "/home/kriol/Documents/EGS/runEGS/cup_geometry"
-    prefix = "R8O3IL08"
+    prefix = "R8O3IL07" # "R8O1IS07" # "R8O3IL07"
 
     fname = os.path.join( wrk_dir, prefix + ".json")
-    print(fname)
     cupCup = inner_cup.inner_cup( fname )
 
     fname = os.path.join( "/home/kriol/Documents/EGS/CUPS", prefix + "_" + "KddCurveA.txt")
@@ -25,9 +24,9 @@ def main():
     liCup = cupint.cupint(cupCup, 0.5 + 10.28)
     liCCC = linint.linint(cupCCC)
 
-    print(liCup.zmax())
+    print("Tips drawings vs cups: {0} {1}".format(liCup.zmax(), liCCC.zmax()))
 
-    for k in range(0, 300):
+    for k in range(0, 400):
         x = 0.0 + 0.5*float(k)
 
         a = liCup.extrapolate(x)
@@ -44,4 +43,3 @@ def main():
 if __name__ == "__main__":
 
     sys.exit(main())
-
