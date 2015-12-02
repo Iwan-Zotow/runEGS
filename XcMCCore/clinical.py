@@ -117,11 +117,13 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
     water = mats[2]
     ss    = mats[3]
     poly  = mats[4]
+    alum  = mats[6]
 
     d_air   = air[1]
     d_water = water[1]
     d_ss    = ss[1]
     d_poly  = poly[1]
+    d_alum  = alum[1]
 
     z_min, z_max = z_range
 
@@ -155,9 +157,11 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
                         m = 4 # poly
                         d = d_poly
                     else:
-                        if not (z <= z_max and z > (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS)):
-                            m = 4 # poly
-                            d = d_poly
+                        if z > XcConstants.COUCH_BOTTOM and z <= (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS):
+                            ral = 88.0 - (z - XcConstants.COUCH_BOTTOM) * 0.6 # from L09 cup
+                            if r > ral:
+                                m = 6 # aluminum
+                                d = d_alum
 
                 elif z <= XcConstants.COUCH_BOTTOM:
                     m = 2 # water

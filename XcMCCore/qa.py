@@ -82,12 +82,14 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
     ss    = mats[3]
     poly  = mats[4]
     pmma  = mats[5]
+    alum  = mats[6]
 
     d_air   = air[1]
     d_water = water[1]
     d_ss    = ss[1]
     d_poly  = poly[1]
     d_pmma  = pmma[1]
+    d_alum  = alum[1]
 
     z_min, z_max = z_range
 
@@ -106,9 +108,15 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
 
                 # as lifted from qa/make_cups
                 # all units are in mm
-                if z > 15.0 and z <= 15.0+46.0 and r <= 77.0:
-                    m = 5 # PMMA
-                    d = d_pmma
+                if z > 15.0 and z <= 15.0+46.0:
+                    if r <= 77.0:
+                        m = 5 # PMMA
+                        d = d_pmma
+                    elif z > 15.0 and z <= 25.0:
+                        ral = 88.0 - (z - 15.0) * 0.6 # from L09 cup
+                        if r > ral:
+                            m = 6 # aluminum
+                            d = d_alum
                 elif z > 15.0+46.0 and z <= 15.0+115.0 and math.sqrt(squared(r)+squared(z-(15.0+46.0))) <= 77.0:
                     m = 5 # PMMA
                     d = d_pmma
