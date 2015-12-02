@@ -159,6 +159,9 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
                     else:
                         if z > XcConstants.COUCH_BOTTOM and z <= (XcConstants.COUCH_BOTTOM+XcConstants.COUCH_THICKNESS):
                             ral = 88.0 - (z - XcConstants.COUCH_BOTTOM) * 0.6 # from L09 cup
+                            m = 4 # poly
+                            d = d_poly
+
                             if r > ral:
                                 m = 6 # aluminum
                                 d = d_alum

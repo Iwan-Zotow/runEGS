@@ -114,6 +114,8 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
                         d = d_pmma
                     elif z > 15.0 and z <= 25.0:
                         ral = 88.0 - (z - 15.0) * 0.6 # from L09 cup
+                        m = 4 # poly
+                        d = d_poly
                         if r > ral:
                             m = 6 # aluminum
                             d = d_alum
