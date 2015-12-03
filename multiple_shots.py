@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
 
-    fname = file_prefix + str(cl) + ".kdds"
+    fname = file_prefix + str(cl) + ".shots"
     with open(fname, "wt") as f:
         for shot in shots:
             sname = names_helper.make_qualified_name(file_prefix, cl, shot)
