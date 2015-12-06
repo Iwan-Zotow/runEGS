@@ -5,7 +5,6 @@ import os
 import math
 import fnmatch
 import numpy as np
-import matplotlib.pyplot as plt
 
 import collimator
 import dmax_shot
@@ -30,10 +29,10 @@ def shots_comparator(fname):
     full_prefix, qq = os.path.splitext(tail)
     full_prefix, qq = os.path.splitext(full_prefix)
 
-    (shY, shZ) = names_helper.parse_shot(full_prefix)
+    (shot_y, shot_z) = names_helper.parse_shot(full_prefix)
 
     # sorting over Y is preffered, Z is second order sort key
-    return 1000*int(shY) + shZ
+    return 1000*int(shot_y) + int(shot_z)
 
 def get_file_list(cups_dir, cup_tag, coll):
     """
@@ -108,7 +107,7 @@ def minmax(dmax):
         list of shot positions and dose
 
     returns: tuple of floats
-        shot Y min, Y max, Z min, Z max 
+        shot Y min, Y max, Z min, Z max
     """
 
     ymin =  10000.0
@@ -165,16 +164,3 @@ if __name__ == "__main__":
             y = float(iy) * step
 
             sh_dm[iz, iy] = find_nearby_shot(y, z, dmax)
-
-    img = None
-    fig, axes = plt.subplots(1, 2, figsize=(12, 7), subplot_kw={'xticks': [], 'yticks': []})
-    for ax in axes.flat:
-        img = ax.imshow(sh_dm, interpolation="none")
-        title = "R8O1IS01C25"
-        ax.set_title(title)
-
-    fig.subplots_adjust(right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.25, 0.05, 0.5])
-    fig.colorbar(img, cax=cbar_ax)
-
-    plt.show()
