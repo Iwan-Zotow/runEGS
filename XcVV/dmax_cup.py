@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import os
 import math
 import fnmatch
 import numpy as np
 
 import collimator
+import names_helper
 import dmax_shot
 
 def shots_comparator(fname):
@@ -65,11 +68,12 @@ def get_file_list(cups_dir, cup_tag, coll):
                 path = os.path.join(dir, f)
                 lsof.append( path )
 
-    return lsof
+    return sorted(lsof, key = shots_comparator)
 
-def dmax_all_cups(lsof):
+def process_cup(lsof):
     """
-    Find dmax for all cups, give list of files
+    Find dmax, other parameters for all shots,
+    given the list of files
 
     Parameters
     ----------
@@ -77,34 +81,35 @@ def dmax_all_cups(lsof):
     lsof: arrays of strings
         list of files with one shot per file
 
-    returns: Tuple of (int, int, int)
-        Dimensions of the 3ddose files
+    returns: list of tuples
+        list of shot parameters
     """
 
     k = 0
-    dmax = []
+    dmax_cup = []
     for f in lsof:
         head, fname = os.path.split(f)
         fname, qq = os.path.splitext(fname)
         head, qq = os.path.split(head)
 
-        dmax.append(dmax_shot.dmax_shot(head, fname))
+        shinfo = dmax_shot.process_shot(head, fname)
+        dmax_cup.append(shinfo)
 
         k += 1
         #if k > 10:
         #    break
 
-    return dmax
+    return dmax_cup
 
-def minmax(dmax):
+def minmax(dmax_cup):
     """
     Find min and max position of the all shots
 
     Parameters
     ----------
 
-    dmax: list of (shot_x, shot_y, shot_z, dosemax)
-        list of shot positions and dose
+    dmax_cup: list of tuples
+        each tuples has shot parameters
 
     returns: tuple of floats
         shot Y min, Y max, Z min, Z max
@@ -116,51 +121,50 @@ def minmax(dmax):
     zmin =  10000.0
     zmax = -10000.0
 
-    for (shx, shy, shz, dm) in dmax:
-        if ymin > shy:
-            ymin = shy
+    for shinfo in dmax_cup:
 
-        if ymax < shy:
-            ymax = shy
+        shot_y = shinfo[3]
+        shot_z = shinfo[4]
 
-        if zmin > shz:
-            zmin = shz
+        if ymin > shot_y:
+            ymin = shot_y
 
-        if zmax < shz:
-            zmax = shz
+        if ymax < shot_y:
+            ymax = shot_y
+
+        if zmin > shot_z:
+            zmin = shot_z
+
+        if zmax < shot_z:
+            zmax = shot_z
 
     return (ymin, ymax, zmin, zmax)
 
 def find_nearby_shot(y, z, dmax):
     """
+    For a given position, find and return
+    best dose max
 
+    dmax_cup: list of tuples
+        each tuples has shot parameters
+
+    returns: tuple of floats
+        shot Y min, Y max, Z min, Z max
     """
 
-    for (shx, shy, shz, dm) in dmax:
-        if math.fabs(shy - y) < 0.5:
-            if math.fabs(shz - z) < 0.5:
-                return dm
+    for shinfo in dmax:
+        shot_y = shinfo[3]
+        shot_z = shinfo[4]
+
+        if math.fabs(shot_y - y) < 0.5:
+            if math.fabs(shot_z - z) < 0.5:
+                return shinfo[5]
 
     return 0.0
 
 if __name__ == "__main__":
-
     lsof = get_file_list("/home/kriol/data", "R8O1IS01", 25)
-    dmax = dmax_all_cups(lsof)
+    dmax = process_cup(lsof)
 
-    ymin, ymax, zmin, zmax = minmax(dmax)
-    #print(ymin, ymax, zmin, zmax)
-
-    step = 5.0
-    ny = int( np.around((ymax - ymin)/step) ) + 1
-    nz = int( np.around((zmax - zmin)/step) ) + 1
-    print(ny, nz)
-
-    sh_dm = np.empty((nz, ny))
-
-    for iz in range(0, nz):
-        z = float(iz) * step
-        for iy in range(0, ny):
-            y = float(iy) * step
-
-            sh_dm[iz, iy] = find_nearby_shot(y, z, dmax)
+    for d in dmax:
+        print(*d)

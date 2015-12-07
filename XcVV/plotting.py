@@ -3,6 +3,28 @@
 
 import matplotlib.pyplot as plt
 
+def plot_cup():
+    """
+    """
+
+    ymin, ymax, zmin, zmax = minmax(dmax)
+    #print(ymin, ymax, zmin, zmax)
+
+    step = 5.0
+    ny = int( np.around((ymax - ymin)/step) ) + 1
+    nz = int( np.around((zmax - zmin)/step) ) + 1
+    print(ny, nz)
+
+    sh_dm = np.empty((nz, ny))
+
+    for iz in range(0, nz):
+        z = float(iz) * step
+        for iy in range(0, ny):
+            y = float(iy) * step
+
+            sh_dm[iz, iy] = find_nearby_shot(y, z, dmax)
+
+
 def plot_shot(top, full_prefix):
     """
     Read data, process it and plot it
