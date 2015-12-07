@@ -6,7 +6,7 @@ from multiprocessing import Process
 
 import process_cup
 
-def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y = False):
+def process_set(cups_dir, set_tag, idx_start, idx_stop, sym_Y = False):
     """
     Process all shots for both collimators for a given cup tag
 
@@ -36,6 +36,9 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y 
     pps = []
     for k in range(idx_start, idx_stop + 1):
         cup_tag = "{}{:02d}".format(set_tag, k)
+
+
+
         p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift, sy)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift, sy)
         p.start()
         pps.append(p)
@@ -44,7 +47,6 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y 
     	p.join()
 
 if __name__ == "__main__":
-    process_set("/home/sphinx/gcloud", "R8O1IS", 1, 9,  "Out", 116.0)
-    process_set("/home/sphinx/gcloud", "R8O2IM", 1, 10, "Out", 140.0)
-    process_set("/home/sphinx/gcloud", "R8O3IL", 1, 9,  "Out", 153.0)
-    process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", 15.0)
+    process_set("/home/sphinx/gcloud", "R8O1IS", 1, 9)
+    process_set("/home/sphinx/gcloud", "R8O2IM", 1, 10)
+    process_set("/home/sphinx/gcloud", "R8O3IL", 1, 9)
