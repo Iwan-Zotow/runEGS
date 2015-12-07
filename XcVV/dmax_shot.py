@@ -193,7 +193,6 @@ def dmax_curve_z(tddose, shot_y, shot_z):
     """
 
     six = find_shot_index(tddose.bx(), SHOT_X)
-
     siy = find_shot_index(tddose.by(), float(shot_y))
     siz = find_shot_index(tddose.bz(), float(shot_z))
 
@@ -317,17 +316,17 @@ def process_shot(top, full_prefix):
     by, cy = dmax_curve_y(tddose, shot_y, shot_z)
     bz, cz = dmax_curve_z(tddose, shot_y, shot_z)
 
-    for k in range(0, len(cx)):
-        print(bx[k], bx[k+1], cx[k])
-    print("=====================\n")
+#    for k in range(0, len(cx)):
+#        print(bx[k], bx[k+1], cx[k])
+#    print("=====================\n")
 
-    for k in range(0, len(cy)):
-        print(by[k], by[k+1], cy[k])
-    print("=====================\n")
+#    for k in range(0, len(cy)):
+#        print(by[k], by[k+1], cy[k])
+#    print("=====================\n")
 
-    for k in range(0, len(cz)):
-        print(bz[k], bz[k+1], cz[k])
-    print("=====================\n")
+#    for k in range(0, len(cz)):
+#        print(bz[k], bz[k+1], cz[k])
+#    print("=====================\n")
 
     xw25 = calc_window(bx, cx, 0.20*dm)
     xw50 = calc_window(bx, cx, 0.50*dm)
