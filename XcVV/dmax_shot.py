@@ -200,7 +200,7 @@ def dmax_curve_z(tddose, shot_y, shot_z):
     data = tddose.data()
 
     curve = ( data[six, siy  , :] + data[six-1, siy  , :] +
-              data[six, siz-1, :] + data[six-1, siy-1, :]  )/4.0
+              data[six, siy-1, :] + data[six-1, siy-1, :]  )/4.0
 
     return (tddose.bz(), curve)
 
@@ -317,6 +317,18 @@ def process_shot(top, full_prefix):
     by, cy = dmax_curve_y(tddose, shot_y, shot_z)
     bz, cz = dmax_curve_z(tddose, shot_y, shot_z)
 
+    for k in range(0, len(cx)):
+        print(bx[k], bx[k+1], cx[k])
+    print("=====================\n")
+
+    for k in range(0, len(cy)):
+        print(by[k], by[k+1], cy[k])
+    print("=====================\n")
+
+    for k in range(0, len(cz)):
+        print(bz[k], bz[k+1], cz[k])
+    print("=====================\n")
+
     xw25 = calc_window(bx, cx, 0.20*dm)
     xw50 = calc_window(bx, cx, 0.50*dm)
     xw75 = calc_window(bx, cx, 0.80*dm)
@@ -343,5 +355,6 @@ def process_shot(top, full_prefix):
 
 if __name__ == "__main__":
 
-     ttt = process_shot("/home/kriol/data/R8O1IS01C25", "R8O1IS01C25_Y45Z30")
+#     ttt = process_shot("/home/kriol/data/R8O1IS01C25", "R8O1IS01C25_Y45Z30")
+     ttt = process_shot("/home/kriol/Documents/EGS/runEGS/XcVV", "R8O3IL09C15_Y10Z140")
      print(*ttt)
