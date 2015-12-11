@@ -105,7 +105,7 @@ def get_sorted_file_list(cups_dir, cup_tag, coll):
     sdir = os.path.join(cups_dir, cup_tag + str(cl))
 
     lsof = []
-
+    
     for shot_name in os.listdir(sdir):
         if fnmatch.fnmatch(shot_name, "*.xz"):
             fname = os.path.join(sdir, shot_name)
