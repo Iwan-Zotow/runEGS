@@ -26,6 +26,8 @@ def make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum):
     returns: string
         clinical cup name
     """
+    
+    return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
 
     return "R" + radUnit + "O" + outerCup + "I" + innerCupSer + innerCupNum
 
