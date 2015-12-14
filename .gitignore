@@ -67,3 +67,6 @@ pod_*.json
 
 # phase space files
 *.egsphsp1
+
+# pictures
+*.png
