@@ -3,6 +3,11 @@
 import math
 import json
 
+
+OUTSIDE  = -1
+INTHECUP =  0
+INSIDE   = +1
+
 class inner_cup(object):
     """
     class to describe inner cup
@@ -160,6 +165,17 @@ class inner_cup(object):
         if self._D2 > 2.0*self._R2:
             return False
 
+        if self.is_zero_cup(): # this is 0 cup
+            # check if second transition is higher and wider than the first one
+            if self._H3 > self._H1:
+                return False
+            if self._H4 > self._H2:
+                return False
+            if self._D3 < self._D1:
+                return False
+            if self._D4 < self._D2:
+                return False
+
         return True
 
     def H0(self):
@@ -210,6 +226,30 @@ class inner_cup(object):
         """
         return self._D5
 
+    def D3(self):
+        """
+        Returns D3
+        """
+        return self._D3
+
+    def D4(self):
+        """
+        Returns D4
+        """
+        return self._D4
+
+    def H3(self):
+        """
+        Returns H3
+        """
+        return self._H3
+
+    def H4(self):
+        """
+        Returns H4
+        """
+        return self._H4
+
     def L1(self):
         """
         Return L1
@@ -234,35 +274,11 @@ class inner_cup(object):
         """
         return self._Z2
 
-    def get_inner_curve(self, z):
+    def is_zero_cup(self):
         """
-        For given Z, return positive Y on the inner cup curve
-
-        Parameters
-        ----------
-
-            z: double
-                position along the axis
-
-            returns: double
-                Radial position
+        If 0 cup returns True, otherwise False
         """
-
-        if z < 0.0:
-            return -2.0
-
-        if z > self._Z2:
-            return -1.0
-
-        if z == self._Z2:
-            return 0.0
-
-        if z >= self._H2:
-            return math.sqrt( (self._R2 - (z - (self._H2 - self._L2)))*(self._R2 + (z - (self._H2 - self._L2))) )
-
-        k = 0.5* ( self._D2 - self._D6 ) / (self._H2 - self._H0)
-
-        return k * (z - self._H0) + 0.5*self._D6
+        return self._cup_number == 0 and None != self._D3
 
     def zmin_inner(self):
         """
@@ -288,9 +304,51 @@ class inner_cup(object):
         """
         return self._Z1
 
+    def get_inner_curve(self, z):
+        """
+        For given Z, return positive Y/R on the inner cup curve
+
+        Parameters
+        ----------
+
+            z: double
+                position along the axis
+
+            returns: double
+                Radial position
+        """
+
+        if z < 0.0:
+            return -2.0
+
+        if z > self._Z2:
+            return -1.0
+
+        if z == self._Z2:
+            return 0.0
+
+        if z >= self._H2: # this is radial part
+            return math.sqrt( (self._R2 - (z - (self._H2 - self._L2)))*(self._R2 + (z - (self._H2 - self._L2))) )
+
+        # this is linear part
+
+        # first, check if we have second transition due to 0 cup data
+        if self.is_zero_cup():
+            if z >= self._H4:
+                k = 0.5* ( self._D2 - self._D4 ) / (self._H2 - self._H4)
+                return k * (z - self._H2) + 0.5*self._D2
+
+            k = 0.5* ( self._D4 - self._D6 ) / (self._H4 - self._H0)
+            return k * (z - self._H0) + 0.5*self._D6
+
+        # general linear part
+        k = 0.5* ( self._D2 - self._D6 ) / (self._H2 - self._H0)
+
+        return k * (z - self._H0) + 0.5*self._D6
+
     def get_outer_curve(self, z):
         """
-        For given Z, return positive Y on the inner cup curve
+        For given Z, return positive Y/R on the outer cup curve
         """
 
         if z < 0.0:
@@ -302,9 +360,19 @@ class inner_cup(object):
         if z == self._Z1:
             return 0.0
 
-        if z >= self._H1:
+        if z >= self._H1: # this is radial part
             return math.sqrt( (self._R1 - (z - (self._H1 - self._L1)))*(self._R1 + (z - (self._H1 - self._L1))) )
 
+        # first, check if we have second transition due to 0 cup data
+        if self.is_zero_cup():
+            if z >= self._H3:
+                k = 0.5* ( self._D1 - self._D3 ) / (self._H1 - self._H3)
+                return k * (z - self._H1) + 0.5*self._D1
+
+            k = 0.5* ( self._D3 - self._D5 ) / (self._H3 - self._H0)
+            return k * (z - self._H0) + 0.5*self._D5
+
+        # this is general linear part
         k = 0.5* ( self._D1 - self._D5 ) / (self._H1 - self._H0)
 
         return k * (z - self._H0) + 0.5*self._D5
@@ -328,20 +396,20 @@ class inner_cup(object):
 
         Rin = self.get_inner_curve(z)
         if Rin == -2.0:
-            return -1
+            return OUTSIDE
         if Rin == 0.0:
-            return 0
+            return INTHECUP
         if r <= Rin:
-            return +1
+            return INSIDE
 
         # could be inside the outer curve
         Rout = self.get_outer_curve(z)
         if Rout == -2.0:
-            return -1
+            return OUTSIDE
         if r <= Rout:
-            return 0
+            return INTHECUP
 
-        return -1
+        return OUTSIDE
 
 if __name__ == "__main__":
 

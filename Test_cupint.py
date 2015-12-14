@@ -13,15 +13,15 @@ def main():
     """
 
     wrk_dir = "/home/kriol/Documents/EGS/runEGS/cup_geometry"
-    prefix = "R8O3IL07" # "R8O1IS07" # "R8O3IL07"
+    prefix = "R8O1IS01" # "R8O1IS07" # "R8O3IL07"
 
-    fname = os.path.join( wrk_dir, prefix + ".json")
+    fname = os.path.join( wrk_dir, "R8O1IS00" + ".json")
     cupCup = inner_cup.inner_cup( fname )
 
     fname = os.path.join( "/home/kriol/Documents/EGS/CUPS", prefix + "_" + "KddCurveA.txt")
     cupCCC = cc.curve( fname )
 
-    liCup = cupint.cupint(cupCup, 0.5 + 10.28)
+    liCup = cupint.cupint(cupCup, 0.5 + 10.28 + 10.0)
     liCCC = linint.linint(cupCCC)
 
     print("Tips drawings vs cups: {0} {1}".format(liCup.zmax(), liCCC.zmax()))
