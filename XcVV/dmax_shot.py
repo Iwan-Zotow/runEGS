@@ -73,7 +73,7 @@ def get_3ddose(top, full_prefix):
 
     return tddose
 
-def dmax_shot(tddose, shot_y, shot_z):
+def dmax_shot(tddose, shot_y, shot_z, nvox=2):
     """
     Find dmax for a shot
 
@@ -88,6 +88,11 @@ def dmax_shot(tddose, shot_y, shot_z):
 
     shot_z: float
         Z shot position, mm
+        
+    nvox: int
+        number of +- voxels around to do averaging
+        1 means 2x2x2
+        2 means 8x8x8
 
     returns: tuple of shot position and dose
         dose averaged around the shot, using 2x2x2 voxels volume,
@@ -99,11 +104,15 @@ def dmax_shot(tddose, shot_y, shot_z):
     siz = find_shot_index(tddose.bz(), float(shot_z))
 
     data = tddose.data()
-
-    dmax = (data[six  , siy, siz  ] + data[six  , siy-1, siz  ] +
-            data[six  , siy, siz-1] + data[six  , siy-1, siz-1] +
-            data[six-1, siy, siz  ] + data[six-1, siy-1, siz  ] +
-            data[six-1, siy, siz-1] + data[six-1, siy-1, siz-1])/8.0
+    
+    nvtot = (nvox*2)**3
+    
+    dmax = 0.0
+    for iz in range(siz-nvox, siz+nvox):
+        for iy in range(siy-nvox, siy+nvox):
+            for ix in range(six-nvox, six+nvox):
+                dmax += data[ix, iy, iz]
+    dmax = dmax / float(nvtot)
 
     return SHOT_X, shot_y, shot_z, dmax
 
@@ -286,7 +295,7 @@ def calc_window(b, d, v):
     """
 
     return (calc_window_left(b, d, v), calc_window_right(b, d, v))
-
+    
 def process_shot(top, full_prefix):
     """
     Given the top directory and full prefix,
