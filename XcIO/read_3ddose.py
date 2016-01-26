@@ -125,9 +125,12 @@ def read_data(top, full_prefix):
         phd = symdata.symdata(bx, by, bz)
 
         data = phd.data()
-
         line = f.readline()
         get_3ddata(nx, ny, nz, line, data)
+
+        error = phd.error()
+        line = f.readline()
+        get_3ddata(nx, ny, nz, line, error)
 
     return phd
 
