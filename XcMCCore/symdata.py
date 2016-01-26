@@ -37,6 +37,9 @@ class symdata(phdata.phdata):
         self._sym_y = False
         self._sym_z = False
         
+        # error data, 0 by default
+        self._error = np.empty((self.nx(), self.ny(), self.nz()), dtype=np.float32)
+
         logging.info("symdata object constructed")
                         
     def data(self):
@@ -44,6 +47,12 @@ class symdata(phdata.phdata):
         Returns phantom data
         """
         return self._data
+
+    def error(self):
+        """
+        Returns phantom error grid
+        """
+        return self._error
 
     def sym_x(self):
         """
