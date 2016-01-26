@@ -34,7 +34,7 @@ def shots_comparator(fname):
     (shot_y, shot_z) = names_helper.parse_shot(full_prefix)
 
     # sorting over Y is preffered, Z is second order sort key
-    return 1000*int(shot_y) + int(shot_z)
+    return int(shot_y) + 1000*int(shot_z)
 
 def get_file_list(cups_dir, cup_tag, coll):
     """
@@ -63,7 +63,7 @@ def get_file_list(cups_dir, cup_tag, coll):
 
     for (dir, _, files) in os.walk(cups_dir):
         for f in files:
-            if fnmatch.fnmatch(f, "*.3ddose"):
+            if fnmatch.fnmatch(f, cup_tag + str(cl) + "*.3ddose"):
                 path = os.path.join(dir, f)
                 lsof.append( path )
 
@@ -162,8 +162,27 @@ def find_nearby_shot(y, z, dmax):
     return 0.0
 
 if __name__ == "__main__":
-    lsof = get_file_list("/home/kriol/data", "R8O1IS01", 25)
+    lsof = get_file_list("/home/sphinx/Documents/Data/backup/Raw/2015-Aug-31/data", "R8O3IL08", 25)
+    # print("List of shots: {0}".format(len(lsof)))
+    
     dmax = process_cup(lsof)
 
+#    for d in dmax:
+#        print(*d)
+
+    z_prev = -1000.0
+    s = ""
     for d in dmax:
-        print(*d)
+        shot_y = d[3]
+        shot_z = d[4]
+        dm     = d[5] # / 1.65525e-16
+        
+        if shot_z != z_prev:
+            if len(s) > 0:
+                print(s)
+            s = ""
+            z_prev = shot_z
+
+        v = "{0:.5f}".format(dm)
+        s = s + v + ", "
+
