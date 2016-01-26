@@ -103,18 +103,22 @@ def dmax_shot(tddose, shot_y, shot_z, nvox=2):
     siy = find_shot_index(tddose.by(), float(shot_y))
     siz = find_shot_index(tddose.bz(), float(shot_z))
 
-    data = tddose.data()
+    data  = tddose.data()
+    error = tddose.error()
     
     nvtot = (nvox*2)**3
     
     dmax = 0.0
+    emax = 0.0
     for iz in range(siz-nvox, siz+nvox):
         for iy in range(siy-nvox, siy+nvox):
             for ix in range(six-nvox, six+nvox):
                 dmax += data[ix, iy, iz]
+                emax += error[ix, iy, iz]
     dmax = dmax / float(nvtot)
+    emax = emax / float(nvtot)
 
-    return SHOT_X, shot_y, shot_z, dmax
+    return SHOT_X, shot_y, shot_z, dmax # emax*100.0/math.sqrt(2.0)
 
 def dmax_curve_x(tddose, shot_y, shot_z):
     """
@@ -363,6 +367,7 @@ def process_shot(top, full_prefix):
 
 if __name__ == "__main__":
 
-#     ttt = process_shot("/home/kriol/data/R8O1IS01C25", "R8O1IS01C25_Y45Z30")
-     ttt = process_shot("/home/kriol/Documents/EGS/runEGS/XcVV", "R8O3IL09C15_Y10Z140")
-     print(*ttt)
+#     res = process_shot("/home/kriol/data/R8O1IS01C25", "R8O1IS01C25_Y45Z30")
+     res = process_shot("/home/kriol/Documents/EGS/runEGS/XcVV", "R8O3IL09C15_Y10Z140")
+     print(*res)
+
