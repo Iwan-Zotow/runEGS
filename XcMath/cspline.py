@@ -1,42 +1,61 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import sys
+import copy
 
 X = 0 # coordinate index
-D = 1 # dose index
+D = 1 # data index
 
-F =  0 # first
-L = -1 # last
+F =  0 # first idx
+L = -1 # last  idx
 
 class cspline(object):
     """
-    cubic spline class, data required to be in ascending X order
+    Cubic spline class,
+    data could be in any order, but sorted, internally would be
+    in the ascending X order
     """
 
     def __init__( self, pts ):
         """
-        constructor, takes array of points as an argument
+        Spline constructor
+
+        Parameters
+        ----------
+
+        pts: array
+            array of points as an argument
         """
 
-        self._pts  = pts
+        self._pts  = copy.deepcopy(pts)
 
         self._xmin = self._pts[F][X]
         self._xmax = self._pts[L][X]
 
         if self._xmin >= self._xmax:
-            raise ValueError("Error in cspline constructor, min/max {0} {1} ".format(self._xmin, self._xmax))
+            # revert array
+            self._pts.reverse()
+            print(self._pts)
+
+            self._xmin = self._pts[F][X]
+            self._xmax = self._pts[L][X]
 
         lpts = len(self._pts)
         for i in range( 1, lpts ):
             if self._pts[i] <= self._pts[i-1]:
                 raise ValueError("Non monotonic input data detected in cspline: index {0}".format(i))
 
-        self.slope_ = []
+        self._slope = []
         self.calc_slope()
 
     def calc_slope( self ):
         """
-        calculate slope parameters
+        Calculate spline slope parameters
+
+        Parameters
+        ----------
+
+        self: cspline
+            this
         """
 
         lpts = len(self._pts)
@@ -73,11 +92,23 @@ class cspline(object):
             a  = (c1 * b2 - c2 * b1)/d
             b  = (a1 * c2 - a2 * c1)/d
 
-            self.slope_.append( 2.0 * a * self._pts[i][X] + b )
+            self._slope.append( 2.0 * a * self._pts[i][X] + b )
 
     def find_bin( self, x ):
         """
-        given X value, find spline bin using binary search
+        Given X value, find spline bin using binary search
+
+        Parameters
+        ----------
+
+        self: cspline
+            this
+
+        x: double
+            point where to find bin
+
+        returns: int
+            bin index
         """
         lo = 0
         hi = len(self._pts) - 1
@@ -94,10 +125,22 @@ class cspline(object):
             if hi - lo <= 1:
                 return lo
 
-    def calc_data( self, x ):
+    def calculate( self, x ):
         """
-        given X value, returns computed Y value
+        Given X value, returns computed Y value
         using precomputed cubic spline coefficients
+
+        Parameters
+        ----------
+
+        self: cspline
+            this
+
+        x: double
+            point where to find bin
+
+        returns: double
+            computed value
         """
         if ( x > self._xmax ):
             raise ValueError("cspline: More than max {0} ({1} {2})".format(x, self._xmin, self._xmax))
@@ -116,7 +159,7 @@ class cspline(object):
         pl = self._pts[l]
         pn = self._pts[l+1]
 
-        sl = self.slope_
+        sl = self._slope
 
         c  = 1.0/( pn[X] - pl[X] )
         x1 = x - pl[X]
@@ -135,32 +178,120 @@ class cspline(object):
     def pts( self ):
         return self._pts
 
+    def slope( self ):
+        return self._slope
+
     def __len__( self ):
         return len( self._pts )
+
+    def invariant(self):
+        """
+        Self consistency check
+
+        Parameters
+        ----------
+
+        self: cspline
+            this
+
+        returns: boolean
+            True on ok, False otherwise
+        """
+
+        if self._pts == None:
+            return False
+
+        if self._slope == None:
+            return False
+
+        if self._xmin >= self._xmax:
+            return False
+
+        if len(self._pts) <= 3:
+            return False
+
+        return True
 
 if __name__ == "__main__":
 
     import sys
+    import math
+    import random
 
-    pts = []
-    for i in range(0, 10):
-        x = float(i)
-        y = float(10 - i)
+    def linear_test():
+        pts = []
+        for i in range(0, 10):
+            x = float(i)
+            y = float(10 - i)
 
-        print("  {0} {1} ".format(x, y))
+            print("  {0} {1} ".format(x, y))
 
-        pts.append( (x, y) )
+            pts.append( (x, y) )
 
-    print(" ")
+        print(" ")
 
-    cs = cspline( pts )
+        cs = cspline( pts )
 
-    for i in range(0, 11):
-        x = float(i) - 0.5
-        try:
-            y = cs.calc_data( x )
-            print("{0}  {1} {2} ".format(i, x, y))
-        except ValueError:
-            pass
+        for i in range(0, 11):
+            x = float(i) - 0.5
+            try:
+                y = cs.calculate( x )
+                print("{0}  {1} {2}".format(i, x, y))
+            except ValueError as e:
+                print("Exception: {0}  {1}".format(x, y))
+                print("Exception: " + str(e))
+                print(" ")
+
+    def sinus_test(n):
+        pts = []
+        for i in range(0, n+1):
+            x = float(i)/float(n) * (math.pi/2.0)
+            y = math.sin(x)
+
+            print("  {0} {1} ".format(x, y))
+
+            pts.append( (x, y) )
+
+        print(" ")
+
+        cs = cspline( pts )
+
+        for i in range(0, 3*n+1):
+            x = 0.0 + (math.pi/2.0)*random.random()
+            try:
+                y = cs.calculate( x )
+                print("{0}  {1}".format(x, y))
+            except ValueError as e:
+                print("Exception: {0}  {1}".format(x, y))
+                print("Exception: " + str(e))
+
+    def invsinus_test(n):
+        pts = []
+        for i in range(0, n+1):
+            x = float(n-i)/float(n) * (math.pi/2.0)
+            y = math.sin(x)
+
+            print("  {0} {1} ".format(x, y))
+
+            pts.append( (x, y) )
+
+        print(" ")
+
+        cs = cspline( pts )
+
+        for i in range(0, 3*n+1):
+            x = 0.0 + (math.pi/2.0)*random.random()
+            try:
+                y = cs.calculate( x )
+                print("{0}  {1}".format(x, y))
+            except ValueError as e:
+                print("Exception: {0}  {1}".format(x, y))
+                print("Exception: " + str(e))
+
+#    linear_test()
+
+#    sinus_test(10)
+
+    invsinus_test(20)
 
     sys.exit(0)
