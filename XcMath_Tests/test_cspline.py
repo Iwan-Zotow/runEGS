@@ -1,41 +1,97 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import math
 import os
-import curve
-import clinical
+import cspline
 
-class TestCupCurve(unittest.TestCase):
+class TestCSpline(unittest.TestCase):
     """
-    Unit tests to check cup curve class
+    Unit tests to check cubic spline class
     """
-    
+
     @staticmethod
-    def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
+    def make_linear(n):
         """
-        Makes cup name out of unit, inner cup, outer cup series and number
+        Makes linear aray of points, ascending order
         """
-        return clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)        
-        
-    def test_constructor(self):
+        pts = []
+        pts = []
+        for i in range(0, n+1):
+            x = float(i)
+            y = float(n - i)
+
+            pts.append( (x, y) )
+
+        retunr pts
+
+    @staticmethod
+    def make_sinus(n):
+        """
+        Makes sinus aray of points, ascending order
+        """
+        pts = []
+        for i in range(0, n+1):
+            x = float(i)/float(n) * (math.pi/2.0)
+            y = math.sin(x)
+
+            pts.append( (x, y) )
+
+        return pts
+
+    @staticmethod
+    def make_inverse(func, n):
+        """
+        Inverse the poins made by func
+        """
+
+        pts = func(n)
+        pts.reverse()
+        return pts
+
+    def test_constructor1(self):
         """
         Constructor test 1
         """
-        cupdir = "cup_geometry"     
-        radUnit  = "8"
-        outerCup = "2"
-        innerCupSer = "M"
-        innerCupNum = "01"
-    
-        fname  = TestCupCurve.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
-        fname += "_" + "KddCurveA.txt"
-        filename = os.path.join(cupdir, fname)
-        
-        print(filename)
-    
-        cup = curve.curve(filename)
-        
-        self.assertTrue(cup.curve() != None)
+
+        pts = TestCSpline.make_linear(20)
+
+        cs = cspline.cspline(pts)
+
+        self.assertTrue(cs.invariant())
+
+    def test_constructor2(self):
+        """
+        Constructor test 2
+        """
+
+        pts = TestCSpline.make_sinus(20)
+
+        cs = cspline.cspline(pts)
+
+        self.assertTrue(cs.invariant())
+
+    def test_constructor3(self):
+        """
+        Constructor test 3
+        """
+
+        pts = TestCSpline.make_inverse(TestCSpline.make_linear, 20)
+
+        cs = cspline.cspline(pts)
+
+        self.assertTrue(cs.invariant())
+
+    def test_constructor4(self):
+        """
+        Constructor test 4
+        """
+
+        pts = TestCSpline.make_inverse(TestCSpline.make_sinus, 20)
+
+        cs = cspline.cspline(pts)
+
+        self.assertTrue(cs.invariant())
 
 if __name__ == '__main__':
     unittest.main()

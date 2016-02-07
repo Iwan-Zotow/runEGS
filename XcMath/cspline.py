@@ -218,11 +218,11 @@ if __name__ == "__main__":
     import math
     import random
 
-    def linear_test():
+    def linear_test(n):
         pts = []
-        for i in range(0, 10):
+        for i in range(0, n+1):
             x = float(i)
-            y = float(10 - i)
+            y = float(n - i)
 
             print("  {0} {1} ".format(x, y))
 
@@ -232,7 +232,7 @@ if __name__ == "__main__":
 
         cs = cspline( pts )
 
-        for i in range(0, 11):
+        for i in range(0, n+1):
             x = float(i) - 0.5
             try:
                 y = cs.calculate( x )
@@ -288,9 +288,9 @@ if __name__ == "__main__":
                 print("Exception: {0}  {1}".format(x, y))
                 print("Exception: " + str(e))
 
-#    linear_test()
+    linear_test(10)
 
-#    sinus_test(10)
+    sinus_test(10)
 
     invsinus_test(20)
 
