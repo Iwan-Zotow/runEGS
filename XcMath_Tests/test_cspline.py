@@ -93,5 +93,44 @@ class TestCSpline(unittest.TestCase):
 
         self.assertTrue(cs.invariant())
 
+    def test_underflow(self):
+        """
+        Underflow test
+        """
+
+        pts = TestCSpline.make_linear(20)
+        cs = cspline.cspline(pts)
+
+        with self.assertRaises(ValueError):
+            cs.calculate(cs.ximn() - 1.0)
+
+    def test_underflow(self):
+        """
+        Underflow test
+        """
+
+        pts = TestCSpline.make_linear(20)
+        cs = cspline.cspline(pts)
+
+    def test_underflow(self):
+        """
+        Underflow test
+        """
+
+        pts = TestCSpline.make_linear(20)
+        cs = cspline.cspline(pts)
+
+        self.assertRaises(ValueError, cs.calculate(cs.xmin() - 1.0))
+
+    def test_overflow(self):
+        """
+        Overflow test
+        """
+
+        pts = TestCSpline.make_linear(20)
+        cs = cspline.cspline(pts)
+
+        self.assertRaises(ValueError, cs.calculate(cs.xmax() + 1.0))
+
 if __name__ == '__main__':
     unittest.main()

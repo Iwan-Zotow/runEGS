@@ -3,14 +3,14 @@
 import math
 import json
 
+import cup
 
-OUTSIDE  = -1
-INTHECUP =  0
-INSIDE   = +1
-
-class inner_cup(object):
+class inner_cup(cup):
     """
-    class to describe inner cup
+    Class to provide specialized inner cup,
+    where model is made from curves and lines
+
+    Contains curves for both inner cup and outer cup
     """
 
     def __init__(self, fname):
@@ -24,7 +24,7 @@ class inner_cup(object):
             JSON file name
         """
 
-        self._fname = fname
+        super(inner_cup, self).__init__(fname)
 
         self._cup_series = None
         self._cup_number = -1
@@ -62,6 +62,8 @@ class inner_cup(object):
 
         self.init_from_file()
 
+        self._zmax = self._Z1
+
     @staticmethod
     def get_units_multiplier(data):
         """
@@ -92,6 +94,9 @@ class inner_cup(object):
 
         Parameters
         ----------
+
+            self: inner_cup
+                this
         """
 
         fname = self._fname
@@ -348,7 +353,16 @@ class inner_cup(object):
 
     def get_outer_curve(self, z):
         """
-        For given Z, return positive Y/R on the outer cup curve
+        For given Z, return positive R on the outer cup curve
+
+        Parameters
+        ----------
+
+            z: double
+                position along the axis
+
+            returns: double
+                Radial position
         """
 
         if z < 0.0:
@@ -384,32 +398,36 @@ class inner_cup(object):
 
         classification of the point relative to the cup
 
-        -1 - outside
-         0 - in the cup
-        +1 - inside
+        OUTSIDE  - outside
+        INTHECUP - in the cup
+        INSIDE   - inside
         """
 
         # using symmetry to set radial coordinate
-        r = y
-        if r < 0.0:
-            r = -r
+        r = math.fabs(y)
 
         Rin = self.get_inner_curve(z)
         if Rin == -2.0:
-            return OUTSIDE
+            return cup.OUTSIDE
         if Rin == 0.0:
-            return INTHECUP
+            return cup.INTHECUP
         if r <= Rin:
-            return INSIDE
+            return cup.INSIDE
 
         # could be inside the outer curve
         Rout = self.get_outer_curve(z)
         if Rout == -2.0:
-            return OUTSIDE
+            return cup.OUTSIDE
         if r <= Rout:
-            return INTHECUP
+            return cup.INTHECUP
 
         return OUTSIDE
+
+    def curve(self, z):
+        """
+        overrifing inherited curve method
+        """
+        return self.outer_curve(z)
 
 if __name__ == "__main__":
 

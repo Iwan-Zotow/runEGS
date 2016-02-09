@@ -3,7 +3,9 @@
 import math
 import cspline
 
-class spline_cup(object):
+import cup
+
+class spline_cup(cup):
     """
     This class is used to model cup with few points describing
     """
@@ -19,12 +21,9 @@ class spline_cup(object):
             base points file name
         """
 
-        self._fname = fname
+        super(inner_cup, self).__init__(fname)
 
         self._cspline = None
-
-        # maximum Z value
-        self._zmax = None
 
         self._zmin = None
 
@@ -97,10 +96,7 @@ class spline_cup(object):
     def cspline(self):
         return self._cspline
 
-    def zmax(self):
-        return self._zmax
-
-    def get_outer_curve(self, z):
+    def curve(self, z):
         """
         For given Z, return positive Y on the inner cup curve
 
@@ -157,15 +153,15 @@ class spline_cup(object):
         # using symmetry to set radial coordinate
         r = math.fabs(r)
 
-        Rin = self.get_outer_curve(z)
+        Rin = self.curve(z)
         if Rin == -2.0:
-            return -1
+            return cup.OUTSIDE
         if Rin == 0.0:
-            return 0
+            return cup.INTHECUP
         if r <= Rin:
-            return +1
+            return cup.INSIDE
 
-        return -1
+        return cup.OUTSIDE
 
 if __name__ == "__main__":
 
