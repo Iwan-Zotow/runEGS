@@ -1,27 +1,29 @@
 #!/usr/bin/python
 
-import os
 import sys
+import os
 
-import linint
-import curve as cc
-import inner_cup
-import cupint
+from XcMath import linint
+from XcMath import curve
+from XcMath import cupint
+
+from XcMCCore import inner_cup
 
 def main():
     """
+    Test different cups logic
     """
 
-    wrk_dir = "/home/kriol/Documents/EGS/runEGS/cup_geometry"
-    prefix = "R8O1IS01" # "R8O1IS07" # "R8O3IL07"
+    wrk_dir = "C:/Users/kriol/Documents/Python/runEGS/cup_geometry"
+    prefix = "R8O3IL07" # "R8O1IS07" # "R8O3IL07"
 
-    fname = os.path.join( wrk_dir, "R8O1IS00" + ".json")
-    cupCup = inner_cup.inner_cup( fname )
+    fname = os.path.join(wrk_dir, prefix + ".json")
+    cupCup = inner_cup.inner_cup(fname)
 
-    fname = os.path.join( "/home/kriol/Documents/EGS/CUPS", prefix + "_" + "KddCurveA.txt")
-    cupCCC = cc.curve( fname )
+    fname = os.path.join( "C:/Users/kriol/Documents/Linux/CUPS", prefix + "_" + "KddCurveA.txt")
+    cupCCC = curve.curve( fname )
 
-    liCup = cupint.cupint(cupCup, 0.5 + 10.28 + 10.0)
+    liCup = cupint.cupint(cupCup, 0.5 + 10.28)
     liCCC = linint.linint(cupCCC)
 
     print("Tips drawings vs cups: {0} {1}".format(liCup.zmax(), liCCC.zmax()))
@@ -38,7 +40,6 @@ def main():
             break
 
     return 0
-
 
 if __name__ == "__main__":
 

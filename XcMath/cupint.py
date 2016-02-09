@@ -1,7 +1,8 @@
-
 # -*- coding: utf-8 -*-
-import utils
+
 import logging
+
+from XcMath import utils
 
 class cupint(object):
     """

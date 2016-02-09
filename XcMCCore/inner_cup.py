@@ -3,7 +3,7 @@
 import math
 import json
 
-import cup
+from XcMCCore.cup import cup
 
 class inner_cup(cup):
     """
