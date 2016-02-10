@@ -7,7 +7,7 @@ from XcMath import linint
 from XcMath import curve
 from XcMath import cupint
 
-from XcMCCore import inner_cup
+from XcMCCore import cup_cad
 
 def main():
     """
@@ -18,20 +18,20 @@ def main():
     prefix = "R8O3IL07" # "R8O1IS07" # "R8O3IL07"
 
     fname = os.path.join(wrk_dir, prefix + ".json")
-    cupCup = inner_cup.inner_cup(fname)
+    cupCup = cup_cad.cup_cad(fname, zshift = 0.5 + 10.28)
 
     fname = os.path.join( "C:/Users/kriol/Documents/Linux/CUPS", prefix + "_" + "KddCurveA.txt")
-    cupCCC = curve.curve( fname )
 
-    liCup = cupint.cupint(cupCup, 0.5 + 10.28)
-    liCCC = linint.linint(cupCCC)
+    #liCup = cupint.cupint(cupCup, 0.5 + 10.28)
+    liCCC = linint.linint(curve.curve( fname ))
 
-    print("Tips drawings vs cups: {0} {1}".format(liCup.zmax(), liCCC.zmax()))
+    print("Tips drawings vs cups: {0} {1}".format(cupCup.zmax(), liCCC.zmax()))
 
     for k in range(0, 400):
         x = 0.0 + 0.5*float(k)
 
-        a = liCup.extrapolate(x)
+        #a = liCup.extrapolate(x)
+        a = cupCup.curve(x)
         b = liCCC.extrapolate(x)
 
         print("{0}   {1}  {2}".format(x, a, b))

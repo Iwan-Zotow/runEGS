@@ -3,14 +3,21 @@
 import math
 import cspline
 
-import cup
+import logging
+
+from XcMCCore.cup import cup
+from XcMath import utils
 
 class spline_cup(cup):
     """
-    This class is used to model cup with few points describing
+    Class to provide specialized cup,
+    where model is made from spline approximation between
+    base points
+
+    Contains curves for both inner cup and outer cup
     """
 
-    def __init__(self, fname):
+    def __init__(self, fname, zshift):
         """
         Init spline cup from the file
 
@@ -21,16 +28,63 @@ class spline_cup(cup):
             base points file name
         """
 
-        super(inner_cup, self).__init__(fname)
+        super(spline_cup, self).__init__(fname, zshift)
+
+        logging.info("spline_cad::__init__ started")
+        logging.debug(str(fname))
+        logging.debug(str(zshift))
 
         self._cspline = None
 
+        self._grad = None
+
         self._zmin = None
 
-        self._k = None
-        self._b = None
-
         self.init_from_file()
+
+        # done wih computing, now logging
+        logging.info("spline_cad::__init__ constructed")
+        logging.debug(str(self._zmax))
+        logging.debug(str(self._grad))
+
+    def init_from_file(self):
+        """
+        Read cup spline base points data from text file
+        """
+
+        lines = None
+        with open(self._fname) as f:
+            lines = f.readlines()
+
+        if lines == None:
+            self._cspline = None
+            return
+
+        pts = []
+        for line in lines:
+            s  = line.split()
+            x = float(s[0])
+            d = float(s[1])
+            pts.append((x, d))
+
+        self._cspline = cspline.cspline(pts)
+
+        if not self.invariant():
+            raise RuntimeError("cup_cad::__init__", "bad invariant")
+
+        # min and max value where we could
+        # compute
+        self._zmin = 0.0
+        self._zmax = self._cspline.xmax() + self._zshift
+
+        # compute gradient and slope
+        za = self._cspline.xmin()
+        zb = za + 0.5
+        va = self._cspline.calculate(za)
+        vb = self._cspline.calculate(zb)
+
+        self._grad = (vb - va) / (zb - za)
+
 
     def invariant(self):
         """
@@ -53,45 +107,6 @@ class spline_cup(cup):
 
         return True
 
-    def init_from_file(self):
-        """
-        Read cup data from text file
-
-        Parameters
-        ----------
-
-        self: inner_cup
-            this
-        """
-
-        lines = None
-        with open(self._fname) as f:
-            lines = f.readlines()
-
-        if lines == None:
-            self._cspline = None
-            return
-
-        pts = []
-        for line in lines:
-            s  = line.split()
-            x = float(s[0])
-            d = float(s[1])
-            pts.append((x, d))
-
-        self._cspline = cspline.cspline(pts)
-
-        # min and max value where we could
-        # compute
-        self._zmax = self._cspline.xmax()
-        self._zmin = self._cspline.xmin()
-
-        # compute gradient and slope
-        self._k = (self._cspline.calculate(self._zmin + 0.5) - self._cspline.calculate(self._zmin)) / 0.5
-        self._b = self._cspline.calculate(self._zmin)
-
-        if not self.invariant():
-            raise Exception("Data ARE INCONSISTENT")
 
     def cspline(self):
         return self._cspline
