@@ -11,7 +11,7 @@ class cupint(object):
     Given the cup data from drawings, produce computed (r, z) curve
     """
 
-    def __init__( self, cup, zshift ):
+    def __init__(self, cup, zshift):
         """
         Construct interpolator from the cup and zshift
 
