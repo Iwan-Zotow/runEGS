@@ -14,6 +14,7 @@ class linint(object):
 
         Parameters
         ----------
+
         points: array of points
             arrays of 2D points
         """
@@ -218,5 +219,3 @@ if __name__ == "__main__":
     v  = li.extrapolate(0.1)
 
     print(v)
-
-

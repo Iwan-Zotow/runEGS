@@ -18,7 +18,7 @@ class cup_cad(cup):
 
     def __init__(self, fname, zshift = 0.0):
         """
-        Inner cup data constructor
+        CAD cup data constructor
 
         Parameters
         ----------
@@ -26,7 +26,7 @@ class cup_cad(cup):
         fname: string
             JSON file name
 
-        zshift: double
+        zshift: float
             inner cup Z shift, mm
         """
 
@@ -129,7 +129,7 @@ class cup_cad(cup):
             um = cup_cad.get_units_multiplier(data)
 
             if um < 0.0:
-                raise Exception("No units in the cup JSON")
+                raise RuntimeError("cup_cad::init_from_file", "No units in the cup JSON")
 
             self._cup_series = data["cup_series"]
             self._cup_number = data["cup_number"]
@@ -161,7 +161,7 @@ class cup_cad(cup):
                 self._H4 = h4
 
             if not self.invariant():
-                raise Exception("Data ARE INCONSISTENT")
+                raise RuntimError("cup_cad::init_from_file", "Invariant failed")
 
             self._L1 = math.sqrt( (self._R1 - 0.5*self._D1)*(self._R1 + 0.5*self._D1) )
             self._L2 = math.sqrt( (self._R2 - 0.5*self._D2)*(self._R2 + 0.5*self._D2) )
@@ -466,7 +466,7 @@ class cup_cad(cup):
         if r <= Rout:
             return cup.INTHECUP
 
-        return OUTSIDE
+        return cup.OUTSIDE
 
     def interpolate(self, z):
         """
@@ -486,11 +486,11 @@ class cup_cad(cup):
 
         # below zmin
         if (z < self._zmin):
-            raise RuntimeError("cupint::interpolate", "z less than zmin")
+            raise RuntimeError("cup_cad::interpolate", "z less than zmin")
 
         # above zmax
         if z > self._zmax:
-            raise RuntimeError("cupint::interpolate", "z greate than zmax")
+            raise RuntimeError("cup_cad::interpolate", "z greate than zmax")
 
         if z <= self._zshift: # here use gradient
             return self.outer_curve(0.0) + self._grad*(z - self._zshift)
@@ -500,9 +500,6 @@ class cup_cad(cup):
     def curve(self, z):
         """
         For given Z, return positive R on the external cup curve
-
-        Parameters
-        ----------
 
         Parameters
         ----------
@@ -527,12 +524,14 @@ class cup_cad(cup):
 
 if __name__ == "__main__":
 
+    import sys
+
     cup = cup_cad("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
 
     shift = 78.78 - cup.Z2() # 100.78 - cup.Z2() # 136.78 - cup.Z2()
 
     for k in range(0, 1000):
-        z = 1.0 * k
+        z = 1.0 * float(k)
         y = cup.inner_curve(z)
         if y < 0.0:
             break
@@ -543,3 +542,5 @@ if __name__ == "__main__":
     y = cup.outer_curve(z)
     print("   {0}   {1}".format(z + shift, y))
     # print(shift)
+
+    sys.exit(0)

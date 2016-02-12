@@ -34,7 +34,6 @@ class cspline(object):
         if self._xmin >= self._xmax:
             # revert array
             self._pts.reverse()
-            print(self._pts)
 
             self._xmin = self._pts[F][X]
             self._xmax = self._pts[L][X]

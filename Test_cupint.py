@@ -5,9 +5,10 @@ import os
 
 from XcMath import linint
 from XcMath import curve
-from XcMath import cupint
 
 from XcMCCore import cup_cad
+from XcMCCore import cup_linint
+from XcMCCore import cup_spline
 
 def main():
     """
@@ -23,7 +24,11 @@ def main():
     fname = os.path.join( "C:/Users/kriol/Documents/Linux/CUPS", prefix + "_" + "KddCurveA.txt")
 
     #liCup = cupint.cupint(cupCup, 0.5 + 10.28)
-    liCCC = linint.linint(curve.curve( fname ))
+    liCCC = linint.linint(curve.curve(fname))
+
+    cl = cup_linint.cup_linint(fname)
+
+    cs = cup_spline.cup_spline(os.path.join(wrk_dir, "R8O3IL07_SplineA.txt"))
 
     print("Tips drawings vs cups: {0} {1}".format(cupCup.zmax(), liCCC.zmax()))
 
@@ -33,8 +38,10 @@ def main():
         #a = liCup.extrapolate(x)
         a = cupCup.curve(x)
         b = liCCC.extrapolate(x)
+        c = cl.curve(x)
+        e = cs.curve(x)
 
-        print("{0}   {1}  {2}".format(x, a, b))
+        print("{0}   {1}  {2}  {3}  {4}".format(x, a, b, c, e))
 
         if a == 0.0 and b == 0.0:
             break

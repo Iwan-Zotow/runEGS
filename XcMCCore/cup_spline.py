@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import math
-import cspline
 
 import logging
 
 from XcMCCore.cup import cup
+from XcMath import cspline
 from XcMath import utils
 
-class spline_cup(cup):
+class cup_spline(cup):
     """
     Class to provide specialized cup,
     where model is made from spline approximation between
@@ -17,7 +17,7 @@ class spline_cup(cup):
     Contains curves for both inner cup and outer cup
     """
 
-    def __init__(self, fname, zshift):
+    def __init__(self, fname, zshift = 0.0):
         """
         Init spline cup from the file
 
@@ -28,22 +28,21 @@ class spline_cup(cup):
             base points file name
         """
 
-        super(spline_cup, self).__init__(fname, zshift)
+        super(cup_spline, self).__init__(fname, zshift)
 
-        logging.info("spline_cad::__init__ started")
+        logging.info("cup_spline::__init__ constructed")
         logging.debug(str(fname))
         logging.debug(str(zshift))
 
         self._cspline = None
 
-        self._grad = None
-
         self._zmin = None
+        self._grad = None
 
         self.init_from_file()
 
         # done wih computing, now logging
-        logging.info("spline_cad::__init__ constructed")
+        logging.info("cup_spline::__init__ constructed")
         logging.debug(str(self._zmax))
         logging.debug(str(self._grad))
 
@@ -74,17 +73,16 @@ class spline_cup(cup):
 
         # min and max value where we could
         # compute
-        self._zmin = 0.0
         self._zmax = self._cspline.xmax() + self._zshift
+        self._zmin = self._cspline.xmin()
 
         # compute gradient and slope
-        za = self._cspline.xmin()
+        za = self._zmin
         zb = za + 0.5
         va = self._cspline.calculate(za)
         vb = self._cspline.calculate(zb)
 
         self._grad = (vb - va) / (zb - za)
-
 
     def invariant(self):
         """
@@ -93,7 +91,7 @@ class spline_cup(cup):
         Parameters
         ----------
 
-        self: spline_cup
+        self: cup_spline
             this
         returns: boolean
             True if ok, False otherwise
@@ -102,13 +100,12 @@ class spline_cup(cup):
         if (not self._cspline.invariant()):
             return False
 
-        if self._zmin < 0.0:
-            return False
-
         return True
 
-
     def cspline(self):
+        """
+        Returns undelying cubic spline
+        """
         return self._cspline
 
     def curve(self, z):
@@ -129,20 +126,18 @@ class spline_cup(cup):
         """
 
         if z < 0.0:
-            return -2.0
-
-        if z > self._zmax:
-            return -1.0
-
-        if z == self._zmax:
             return 0.0
 
-        if z < self._zmin: # linear interpolation
-            return self._b + self._k * (z - self._zmin)
+        if z >= self._zmax:
+            return 0.0
+
+        zz = z - self._zshift
+
+        if zz < self._zmin: # linear interpolation
+            return self._cspline.calculate(self._zmin) + self._grad * (z - self._zmin)
 
         # in the spline region
         return self._cspline.calculate(z)
-
 
     def classify(self, r, z):
         """
@@ -180,7 +175,7 @@ class spline_cup(cup):
 
 if __name__ == "__main__":
 
-    cup = spline_cup("C:/Users/kriol/Documents/Python/runEGS/cup_geometry/R8O2IM01_KddCurveA _Spline.txt")
+    cup = cup_spline("C:/Users/kriol/Documents/Python/runEGS/cup_geometry/R8O2IM01_KddCurveA _Spline.txt")
 
     for k in range(0, 1000):
         z = 1.0 * float(k)
