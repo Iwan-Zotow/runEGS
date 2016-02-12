@@ -6,8 +6,8 @@ import sys
 import logging
 import multiprocessing
 
-import XcConstants
-import clinical
+from XcDefinitions import XcConstants
+from XcMCCore import clinical
 import qa
 import collimator
 import names_helper
