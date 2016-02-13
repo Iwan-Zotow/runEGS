@@ -33,7 +33,7 @@ def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):
     """
     return names_helper.make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum)
 
-def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
+def make_phantom(pdim, cupA, cupB, cupC, mats, z_range, table = None):
     """
     Make phantom given dimensions and curves.
     Pretty much follows original simple design logic
@@ -44,13 +44,13 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
         pdim: phandim
             phantom dimensions
 
-        liA: linint
+        cupA: linint
             inner cup curve
 
-        liB: linint
+        cupB: linint
             outer cup inner curve
 
-        liC: linint
+        cupC: linint
             outer cup outer curve
 
         mats: materials
@@ -65,9 +65,9 @@ def make_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
     returns: phantom
         pahntom filled with materials and densities
     """
-    return make_simple_phantom(pdim, liA, liB, liC, mats, z_range)
+    return make_simple_phantom(pdim, cupA, cupB, cupC, mats, z_range)
 
-def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
+def make_simple_phantom(pdim, cupA, cupB, cupC, mats, z_range, table = None):
     """
     Make phantom given dimensions and curves.
     Pretty much follows original simple design logic
@@ -78,13 +78,13 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
         pdim: phandim
             phantom dimensions
 
-        liA: linint
+        cupA: linint
             inner cup curve
 
-        liB: linint
+        cupB: linint
             outer cup inner curve
 
-        liC: linint
+        cupC: linint
             outer cup outer curve
 
         mats: materials
@@ -130,9 +130,9 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
     for iz in range (0, nz):
         z = 0.5 * (bz[iz] + bz[iz+1])
 
-        ra = liA.extrapolate(z)
-        rb = liB.extrapolate(z)
-        rc = liC.extrapolate(z)
+        ra = cupA.curve(z)
+        rb = cupB.curve(z)
+        rc = cupC.curve(z)
 
         for iy in range (0, ny):
             y = 0.5 * (by[iy] + by[iy+1])
@@ -175,7 +175,7 @@ def make_simple_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
 
     return phntom
 
-def make_complex_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
+def make_complex_phantom(pdim, cupA, cupB, cupC, mats, z_range, table = None):
     """
     Make phantom given dimensions and curves.
     Partial voxel volumes
@@ -188,13 +188,13 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
         pdim: phandim
             phantom dimensions
 
-        liA: linint
+        cupA: linint
             inner cup curve
 
-        liB: linint
+        cupB: linint
             outer cup inner curve
 
-        liC: linint
+        cupC: linint
             outer cup outer curve
 
         mats: materials
@@ -235,9 +235,9 @@ def make_complex_phantom(pdim, liA, liB, liC, mats, z_range, table = None):
     for iz in range (0, nz):
         z = 0.5 * (bz[iz] + bz[iz+1])
 
-        ra = liA.extrapolate(z)
-        rb = liB.extrapolate(z)
-        rc = liC.extrapolate(z)
+        ra = cupA.curve(z)
+        rb = cupB.curve(z)
+        rc = cupC.curve(z)
 
         for iy in range (0, ny):
             ymin = by[iy]

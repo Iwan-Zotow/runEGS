@@ -6,9 +6,8 @@ import logging
 
 from XcDefinitions import XcConstants
 from XcIO          import names_helper
-from XcMath        import curve as cc
 from XcMCCore      import cup_cad
-from XcMath        import linint
+from XcMCCore      import cup_linint
 from XcMCCore      import collimator
 from XcMCCore      import build_phandim
 from XcIO          import cup_downloader
@@ -78,9 +77,9 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     else:
         file_prefix = qa.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
 
-    liA = None
-    liB = None
-    liC = None
+    cupA = None
+    cupB = None
+    cupC = None
     if not XcConstants.IsQACup(innerCupSer):
         #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31")
         cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
@@ -91,12 +90,8 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         logging.info("Cups downloaded")
 
         cupA = cup_cad.cup_cad(os.path.join( wrk_dir, file_prefix + ".json"))
-        cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-        cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
-
-        liA = cupA
-        liB = linint.linint(cupB)
-        liC = linint.linint(cupC)
+        cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+        cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
         logging.info("Interpolators done")
 
@@ -107,7 +102,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     z_max = z_range[1]
     if not XcConstants.IsQACup(innerCupSer):
-        z_max = liA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
+        z_max = cupA.zmax() # z_max = max(liA.zmax(), liB.zmax(), liC.zmax())
 
     # phantom dimensions and boundaries
     pdim = build_phandim.build_phandim(shot, x_range, y_range, (z_range[0], z_max), steps, nr)
@@ -116,9 +111,9 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     # phantom in memory
     if not XcConstants.IsQACup(innerCupSer):
-        phntom = clinical.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
+        phntom = clinical.make_phantom(pdim, cupA, cupB, cupC, mats, (z_range[0], z_max))
     else:
-        phntom = qa.make_phantom(pdim, liA, liB, liC, mats, (z_range[0], z_max))
+        phntom = qa.make_phantom(pdim, cupA, cupB, cupC, mats, (z_range[0], z_max))
 
     full_prefix = names_helper.make_qualified_name(file_prefix, cl, shot)
 
