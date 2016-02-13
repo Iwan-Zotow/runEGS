@@ -8,11 +8,10 @@ from XcDefinitions import XcConstants
 from XcIO          import names_helper
 from XcMath        import curve as cc
 from XcMCCore      import cup_cad
+from XcMath        import linint
 from XcMCCore      import collimator
 from XcMCCore      import build_phandim
 from XcIO          import cup_downloader
-from XcMath        import linint
-from XcMath        import cupint
 from XcMCCore      import materials
 from XcMCCore      import clinical
 from XcMCCore      import qa
@@ -91,11 +90,11 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
         logging.info("Cups downloaded")
 
-        cupA = inner_cup.inner_cup(os.path.join( wrk_dir, file_prefix + ".json"))
+        cupA = cup_cad.cup_cad(os.path.join( wrk_dir, file_prefix + ".json"))
         cupB = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
         cupC = cc.curve(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
-        liA = cupint.cupint(cupA, 0.5 + 10.28)
+        liA = cupA
         liB = linint.linint(cupB)
         liC = linint.linint(cupC)
 

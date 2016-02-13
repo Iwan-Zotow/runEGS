@@ -23,7 +23,6 @@ def main():
 
     fname = os.path.join( "C:/Users/kriol/Documents/Linux/CUPS", prefix + "_" + "KddCurveA.txt")
 
-    #liCup = cupint.cupint(cupCup, 0.5 + 10.28)
     liCCC = linint.linint(curve.curve(fname))
 
     cl = cup_linint.cup_linint(fname)
@@ -35,7 +34,6 @@ def main():
     for k in range(0, 400):
         x = 0.0 + 0.5*float(k)
 
-        #a = liCup.extrapolate(x)
         a = cupCup.curve(x)
         b = liCCC.extrapolate(x)
         c = cl.curve(x)

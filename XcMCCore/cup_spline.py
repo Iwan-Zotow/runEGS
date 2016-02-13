@@ -115,7 +115,7 @@ class cup_spline(cup):
         Parameters
         ----------
 
-        self: inner_cup
+        self: cup_spline
             this
 
         z: double
