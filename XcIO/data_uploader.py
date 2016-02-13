@@ -7,7 +7,7 @@ import subprocess
 import logging
 import paramiko
 
-import names_helper
+from XcIO import names_helper
 
 class data_uploader(object):
     """

@@ -13,10 +13,11 @@ For now, this is used for quick (integration) testing
 
 """
 
-from XcIO import ReadICPparam
-from XcIO import ReadOCPparam
-from XcIO import ReadRDUparam
 from XcDefinitions import XcConstants
+
+from XcIO          import ReadICPparam
+from XcIO          import ReadOCPparam
+from XcIO          import ReadRDUparam
 
 outputResult = ReadICPparam.ReadICPparam("D:\Python_tests\R8O2IM01.icpparam")
 

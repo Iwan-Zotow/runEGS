@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import Read3ddose
+
+from XcIO import Read3ddose
 
 class Test_Read3ddose(unittest.TestCase):
-    
+
     def test_Read3ddose_calledWithInvalidFileName_shouldRaiseException(self):
         """
         """

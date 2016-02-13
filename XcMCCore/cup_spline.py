@@ -4,9 +4,9 @@ import math
 
 import logging
 
+from XcMath       import cspline
+from XcMath       import utils
 from XcMCCore.cup import cup
-from XcMath import cspline
-from XcMath import utils
 
 class cup_spline(cup):
     """

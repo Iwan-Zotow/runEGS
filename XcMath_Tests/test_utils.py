@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import utils
+
+from XcMath import utils
 
 class TestUtils(unittest.TestCase):
     """
     Unit tests to check utils
     """
-    
+
     def test_squared(self):
         """
         test passable squaring
@@ -15,7 +16,7 @@ class TestUtils(unittest.TestCase):
         v = 2.0
         r = utils.squared(v)
         self.assertTrue(r == 2.0*2.0)
-        
+
     def test_cubed(self):
         """
         test passable cubing

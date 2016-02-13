@@ -4,22 +4,22 @@ import os
 import json
 import logging
 
-import XcConstants
-import names_helper
-import curve as cc
-import inner_cup
-import collimator
-import build_phandim
-import cup_downloader
-import linint
-import cupint
-import materials
-import clinical
-import qa
-import write_egs_phantom
-import write_egs_input
-import run_dosxyz
-import data_uploader
+from XcDefinitions import XcConstants
+from XcIO          import names_helper
+from XcMath        import curve as cc
+from XcMCCore      import cup_cad
+from XcMCCore      import collimator
+from XcMCCore      import build_phandim
+from XcIO          import cup_downloader
+from XcMath        import linint
+from XcMath        import cupint
+from XcMCCore      import materials
+from XcMCCore      import clinical
+from XcMCCore      import qa
+from XcIO          import write_egs_phantom
+from XcIO          import write_egs_input
+from XcIO          import run_dosxyz
+from XcIO          import data_uploader
 
 def read_credentials(creds):
     """

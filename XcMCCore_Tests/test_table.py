@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import table
+
+from XcMCCore  import table
 
 class TestTable(unittest.TestCase):
     """

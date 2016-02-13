@@ -2,9 +2,10 @@
 
 import math
 
-import names_helper
-from utils import squared
-import phantom
+from XcIO         import names_helper
+from XcMath.utils import squared
+
+from XcMCCore     import phantom
 
 # for a moment we use the same scheme for clinical and QA cups
 def make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum):

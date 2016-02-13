@@ -3,32 +3,33 @@
 
 import os
 import fnmatch
+
 from multiprocessing import Process
 
-import process_cup
+from XcData import process_cup
 
 def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y = False):
     """
     Process all shots for both collimators for a given cup tag
-        
+
     Parameters
     ----------
-        
+
     cups_dir: string
         location of the directories with shots for all cups for both collimators
-        
+
     set_tag: string
         set tag (R8O3IL or similar)
-        
+
     idx_start: integer
         start cup index
-        
+
     idx_stop: integer
         stop cup index, inclusive! So cups would be processed in the range [start, stop+1)
-        
+
     out_dir: string
         output directory
-        
+
     zshift: float
         cup Z shift relative to shot, mm
     """
@@ -40,7 +41,7 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y 
         p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift, sy)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift, sy)
         p.start()
         pps.append(p)
-	
+
     for p in pps:
     	p.join()
 

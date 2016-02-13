@@ -2,10 +2,10 @@
 
 import math
 
-import XcConstants
-import names_helper
-import phantom
-import voxarea
+from XcDefinitions import XcConstants
+from XcIO          import names_helper
+from XcMCCore      import phantom
+from XcMath        import voxarea
 
 EPS = 1.0e-4
 

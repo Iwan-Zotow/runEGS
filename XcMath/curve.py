@@ -4,6 +4,7 @@ import os
 import logging
 
 import numpy as np
+
 from XcMath import point2d as pt
 
 class curve(object):

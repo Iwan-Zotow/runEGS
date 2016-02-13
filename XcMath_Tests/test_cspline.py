@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import math
+
 import os
-import cspline
+import math
+
+from XcMath import cspline
 
 class TestCSpline(unittest.TestCase):
     """

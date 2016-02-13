@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import materials
+
+from XcMCCore import materials
 
 class TestMaterials(unittest.TestCase):
     """
     Unit tests to check materials
     """
-    
+
     def test_constructor(self):
         fname = "Materials.txt"
-        
+
         mat = materials.materials(fname)
-        
+
         self.assertTrue(mat.mats() != None)
 
     def test_constructor2(self):
         fname = "Materials.txt"
-        
+
         mat = materials.materials(fname)
-        
+
         self.assertTrue(len(mat) == 5)
 
     def test_constructor3(self):
         fname = "Materials.txt"
-        
+
         mat = materials.materials(fname)
 
         for k in range(0, len(mat)):
@@ -32,7 +33,7 @@ class TestMaterials(unittest.TestCase):
 
     def test_constructor4(self):
         fname = "Materials.txt"
-        
+
         mat = materials.materials(fname)
 
         for k in range(0, len(mat)):

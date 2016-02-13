@@ -4,13 +4,12 @@
 import os
 import sys
 
-import names_helper
-import curve as cc
-import collimator
-import linint
-import clinical
-import inner_cup
-import cupint
+from XcIO     import names_helper
+from XcMath   import linint
+
+from XcMCCore import collimator
+from XcMCCore import clinical
+from XcMCCore import cup_cad
 
 def get_clinical_X_range():
     """
@@ -53,9 +52,7 @@ def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, x_range, y_rang
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
 
     fname = os.path.join( cup_dir, file_prefix + ".json")
-    cup   = inner_cup.inner_cup( fname )
-
-    liA = cupint.cupint(cup, 0.5 + 10.28)
+    liA   = cup_cad.cup_cad( fname, 0.5 + 10.28 )
 
     z_max = liA.zmax()
 
@@ -77,7 +74,7 @@ def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, x_range, y_rang
             if z < 0.0:
                 continue
 
-            r = liA.extrapolate(z)
+            r = liA.curve(z)
 
             if y < r: # we're inside the inner cup
                 shot = (y, z)

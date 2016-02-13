@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from XcIO import ReadOCPparam
 
 class Test_ReadICPparam(unittest.TestCase):
-    
+
     def test_ReadICPparam_invalidFileName_shouldRaiseException(self):
         with self.assertRaises(IOError) as context:
             ReadOCPparam.ReadOCPparam("D:\Python_tests\pathtounknownfile.3ddose")
         self.assertTrue('Invalid file name' in context.exception)
-    
+
 #    def test_ReadICPparam_fileContainsInvalidParameters_shouldRaiseException(self):
 #        with self.assertRaises(ValueError) as context:
 #            ReadICPparam.ReadICPparam("D:\Python_tests\R8O2IM01_fake.icpparam")

@@ -6,7 +6,7 @@ import json
 import logging
 
 from XcMCCore.cup import cup
-from XcMath import utils
+from XcMath       import utils
 
 class cup_cad(cup):
     """

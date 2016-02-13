@@ -11,7 +11,7 @@
 {
     "version": "0.1.0",
     "command": "c:\\Anaconda3\\python.exe",
-    "args": ["${file}"]
+    "args": ["main.py", "R8O3IL08C25_Y0Z0"]
 }
 
 // A task runner that calls the Typescript compiler (tsc) and

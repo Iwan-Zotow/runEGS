@@ -8,9 +8,9 @@ import multiprocessing
 
 from XcDefinitions import XcConstants
 from XcMCCore import clinical
-import qa
-import collimator
-import names_helper
+from XcMCCore import qa
+from XcMCCore import collimator
+from XcIO     import names_helper
 
 import single_shot
 
