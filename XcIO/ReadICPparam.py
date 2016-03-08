@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May 25 14:47:19 2015 by Florin.Neacsu
 
-Copyright Xcision LLC.
-"""
+from __future__ import print_function
 
 from XcDefinitions import XcConstants as XcC
 from XcIOCommon import *
@@ -12,44 +9,44 @@ def ReadICPparam(fname):
     """
     Reads the file provided as input, assuming the
     following format
-    
+
         |Radiation unit type: int
-    
+
         |Outer cup size: int
-    
+
         |Inner cup size: string and int
-    
+
         |Distance from the bottom of the OC to the bottom of the IC: float
-    
-        |Origin of the coordinate system: 3 floats    
-    
+
+        |Origin of the coordinate system: 3 floats
+
         |Path encoding type: int
-    
+
         |Path of the inner wall: usually 5 lines; with the 5th containing
         only the keyword 'closepath'
-    
+
         |Empty line
-    
+
         |Path of the outer wall: usually 5 lines; with the 5th containing
         only the keyword 'closepath'
-    
-    
+
+
     For a path of type 1, it looks like:
         |newpath 0.000 0.000
-        
+
         |arcto 38.668 14.074
-        
+
         |       |59.244 49.711
-    
+
         |lineto 60.669 57.793
-    
+
         |closepath
-    
+
     Parameters
     ----------
     fname: string
         A string pointing to a file on the hdd
-    
+
     Returns
     -------
     RU: int
@@ -67,10 +64,10 @@ def ReadICPparam(fname):
     ICWallEncodingType: int
         The path type enconding
     ICInsideWallDescription: string
-        A string containing the description of the inside wall. Each line is 
+        A string containing the description of the inside wall. Each line is
         separated by a ';'
     ICOutsideWallDescription: string
-        A string containing the description of the outside wall. Each line is 
+        A string containing the description of the outside wall. Each line is
         separated by a ';'
     Raises
     ------
@@ -81,56 +78,55 @@ def ReadICPparam(fname):
         there is an inconsitency in the values within the file
     IndexError:
         Wrong (as in unexpected) number of elements in a vector
-    
+
     """
-    
-    
+
     try:
         fileHandle = open(fname, 'r')
     except IOError, e:
         e.args += ('Invalid file name',)
-        raise 
-    
+        raise
+
     with fileHandle:
         try:
-            
+
             line = fileHandle.readline()
             RU = int(line)
-            
+
             line = fileHandle.readline()
             OC = int(line)
-            
+
             line = fileHandle.readline()
             ICType = line[0];
             ICSize = int(line[1:])
-            
-            #some sanity checks            
+
+            #some sanity checks
             if (OC!=XcC.InnerCupSize(ICType)):
-                raise ValueError('Invalid file format')       
+                raise ValueError('Invalid file format')
             if (ICSize>XcC.MaximumInnerCupSize()) or (ICSize<XcC.MinimumInnerCupSize()):
                 raise ValueError('Invalid file format')
-            
+
             line = fileHandle.readline()
             ZOffset = float(line)
-            
+
             line = fileHandle.readline()
-            split = line.split(" ")         
+            split = line.split(" ")
             ICOrigin=[]
             ICOrigin.append(float(split[0]))
             ICOrigin.append(float(split[1]))
             ICOrigin.append(float(split[2]))
-        
+
             line = fileHandle.readline()
             ICWallEncodingType = int(line)
-            
+
             ICInsideWallDescription = GetWallDescription(fileHandle)
-            #there is an empty line between the 2 wall descriptions            
-            #so reading it, and discarding
-            line = fileHandle.readline() 
+            # there is an empty line between the 2 wall descriptions
+            # so reading it, and discarding
+            line = fileHandle.readline()
             ICOutsideWallDescription = GetWallDescription(fileHandle)
-        
+
             return (RU,OC,ICType,ICSize,ZOffset,ICOrigin,ICWallEncodingType,ICInsideWallDescription, ICOutsideWallDescription)
-            
+
         except ValueError, e:
             #raise ValueError('Invalid file format {0}\n{1}'.format(e.args, e.args))
             e.args += ('Invalid file format',)
@@ -139,4 +135,16 @@ def ReadICPparam(fname):
             e.args += ('Invalid file format',)
             raise
 
-             
+if __name__ == "__main__":
+    RU, OC, ICType, ICSize, ZOffset, ICOrigin, ICWallEncodingType, ICInsideWallDescription, ICOutsideWallDescription = ReadICPparam("D:/Dev/InnerCups/In/R8O3IL08.icpparam") #ReadICPparam("D:/Ceres/Resource/PlanEngine/R8/Cup/R8O3IL08.icp")
+
+    print("Print data")
+    print(RU)
+    print(OC)
+    print(ICType)
+    print(ICSize)
+    print(ZOffset)
+    print(ICOrigin)
+    print(ICWallEncodingType)
+    print(ICInsideWallDescription)
+    print(ICOutsideWallDescription)
