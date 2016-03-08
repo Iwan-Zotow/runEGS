@@ -93,8 +93,8 @@ def get_repo(top):
     """
     Get python scripts from repository
     """
-    rc = subprocess.call(["git", "clone", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/branches/cloudTest/trunk", "runEGS"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # rc = subprocess.call(["git", "clone", "https://github.com/Iwan-Zotow/runEGS.git"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    rc = subprocess.call(["svn", "checkout", "https://192.168.1.230/svn/XCSW/MC_simulation/MC_code/branches/cloudTest/trunk", "runEGS"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     return rc
 
@@ -138,7 +138,7 @@ def main():
     #copy_SSH(top)
     
     # step 6 - copy all cups
-    rc = 0 # copy_CUPS(top)
+    rc = copy_CUPS(top)
     if rc != 0:
         raise RuntimeError("Unable to fetch all cups main scripts from Server, aborting")    
     
