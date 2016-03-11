@@ -8,12 +8,12 @@ import logging
 from XcMCCore.cup import cup
 from XcMath       import utils
 
-class cup_curves(cup):
+class cup_inner_cad(cup):
     """
     Class to provide specialized cup,
     where model is made from spherical curves and lines
 
-    Contains curves for both inner cup and outer cup
+    Contains curves for both inner cup and inner cup
     """
 
     def __init__(self, fname, zshift = 0.0):
@@ -30,9 +30,9 @@ class cup_curves(cup):
             inner cup Z shift, mm
         """
 
-        super(cup_curves, self).__init__(fname, zshift)
+        super(cup_inner_cad, self).__init__(fname, zshift)
 
-        logging.info("cup_curves::__init__ started")
+        logging.info("cup_inner_cad::__init__ started")
         logging.debug(str(fname))
         logging.debug(str(zshift))
 
@@ -42,7 +42,7 @@ class cup_curves(cup):
         # fixed distance from top, 2.53 mm
         self._H0 = None
 
-        # outer curve
+        # inner curve
         self._R1 = None
         self._D1 = None
         self._H1 = None
@@ -72,21 +72,21 @@ class cup_curves(cup):
 
         self.init_from_file()
         if not self.invariant():
-            raise RuntimeError("cup_curves::__init__", "bad invariant")
+            raise RuntimeError("cup_inner_cad::__init__", "bad invariant")
 
         self._zmin = 0.0
         self._zmax = self._Z1 + self._zshift
 
-        # compute gradient at the cup edge for outer extrapolation
-        za = self.zmin_outer()
+        # compute gradient at the cup edge for inner extrapolation
+        za = self.zmin_inner()
         zb = za + 0.5
-        va = self.outer_curve(za)
-        vb = self.outer_curve(zb)
+        va = self.inner_curve(za)
+        vb = self.inner_curve(zb)
 
         self._grad = (vb - va) / (zb - za)
 
         # done wih computing, now logging
-        logging.info("cup_curves::__init__ constructed")
+        logging.info("cup_inner_cad::__init__ constructed")
         logging.debug(str(self._zmax))
         logging.debug(str(self._grad))
 
@@ -119,17 +119,17 @@ class cup_curves(cup):
         Read cup data from JSON file
         """
 
-        logging.info("cup_curves::init_from_file enter")
+        logging.info("cup_inner_cad::init_from_file enter")
 
         data = None
         with open(self._fname) as f:
             data = json.load(f)
 
             # units multiplier
-            um = cup_curves.get_units_multiplier(data)
+            um = cup_inner_cad.get_units_multiplier(data)
 
             if um < 0.0:
-                raise RuntimeError("cup_curves::init_from_file", "No units in the cup JSON")
+                raise RuntimeError("cup_inner_cad::init_from_file", "No units in the cup JSON")
 
             self._cup_series = data["cup_series"]
             self._cup_number = data["cup_number"]
@@ -161,7 +161,7 @@ class cup_curves(cup):
                 self._H4 = h4
 
             if not self.invariant():
-                raise RuntimError("cup_curves::init_from_file", "Invariant failed")
+                raise RuntimError("cup_inner_cad::init_from_file", "Invariant failed")
 
             self._L1 = math.sqrt( (self._R1 - 0.5*self._D1)*(self._R1 + 0.5*self._D1) )
             self._L2 = math.sqrt( (self._R2 - 0.5*self._D2)*(self._R2 + 0.5*self._D2) )
@@ -172,7 +172,7 @@ class cup_curves(cup):
             # need angle correction?
             self._D6 = self._D5 - 2.0*(self._R1 - self._R2)
 
-        logging.info("cup_curves::init_from_file done")
+        logging.info("cup_inner_cad::init_from_file done")
 
     def invariant(self):
         """
@@ -185,7 +185,7 @@ class cup_curves(cup):
                 True if ok, False otherwise
         """
 
-        logging.info("cup_curves::invariant")
+        logging.info("cup_inner_cad::invariant")
 
         # external radius shall be bigger
         if self._R1 <= self._R2:
@@ -326,15 +326,15 @@ class cup_curves(cup):
         """
         return self._Z2
 
-    def zmin_outer(self):
+    def zmin_inner(self):
         """
-        Return Z min for outer curve of the cup, mm
+        Return Z min for inner curve of the cup, mm
         """
         return 0.0
 
-    def zmax_outer(self):
+    def zmax_inner(self):
         """
-        Return Z max for outer curve of the cup, mm
+        Return Z max for inner curve of the cup, mm
         """
         return self._Z1
 
@@ -380,9 +380,9 @@ class cup_curves(cup):
 
         return k * (z - self._H0) + 0.5*self._D6
 
-    def outer_curve(self, z):
+    def inner_curve(self, z):
         """
-        For given Z, return positive R on the outer cup curve
+        For given Z, return positive R on the inner cup curve
 
         Parameters
         ----------
@@ -394,7 +394,7 @@ class cup_curves(cup):
                 Radial position
         """
 
-        logging.info("cup_curves::outer_curve")
+        logging.info("cup_inner_cad::inner_curve")
         logging.debug(str(z))
 
         if z < 0.0:
@@ -444,7 +444,7 @@ class cup_curves(cup):
                 classification
         """
 
-        logging.info("cup_curves::classify")
+        logging.info("cup_inner_cad::classify")
         logging.debug(str(z))
         logging.debug(str(rr))
 
@@ -459,8 +459,8 @@ class cup_curves(cup):
         if r <= Rin:
             return cup.INSIDE
 
-        # could be inside the outer curve
-        Rout = self.outer_curve(z)
+        # could be inside the inner curve
+        Rout = self.inner_curve(z)
         if Rout == -2.0:
             return cup.OUTSIDE
         if r <= Rout:
@@ -486,16 +486,16 @@ class cup_curves(cup):
 
         # below zmin
         if (z < self._zmin):
-            raise RuntimeError("cup_curves::interpolate", "z less than zmin")
+            raise RuntimeError("cup_inner_cad::interpolate", "z less than zmin")
 
         # above zmax
         if z > self._zmax:
-            raise RuntimeError("cup_curves::interpolate", "z greate than zmax")
+            raise RuntimeError("cup_inner_cad::interpolate", "z greate than zmax")
 
         if z <= self._zshift: # here use gradient
-            return self.outer_curve(0.0) + self._grad*(z - self._zshift)
+            return self.inner_curve(0.0) + self._grad*(z - self._zshift)
 
-        return self.outer_curve( utils.clamp(z - self._zshift, self.zmin_outer(), self.zmax_outer() ) )
+        return self.inner_curve( utils.clamp(z - self._zshift, self.zmin_inner(), self.zmax_inner() ) )
 
     def curve(self, z):
         """
@@ -510,7 +510,7 @@ class cup_curves(cup):
         returns: float
             Radial position, negative value if outside the cup`
         """
-        #logging.info("cup_curves::curve")
+        #logging.info("cup_inner_cad::curve")
         logging.debug(str(z))
 
         if z > self._zmax:
@@ -526,7 +526,7 @@ if __name__ == "__main__":
 
     import sys
 
-    cup = cup_curves("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
+    cup = cup_inner_cad("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
 
     shift = 78.78 - cup.Z2() # 100.78 - cup.Z2() # 136.78 - cup.Z2()
 
@@ -539,7 +539,7 @@ if __name__ == "__main__":
         print("   {0}   {1}".format(z + shift, y))
 
     z = cup.Z2()
-    y = cup.outer_curve(z)
+    y = cup.inner_curve(z)
     print("   {0}   {1}".format(z + shift, y))
     # print(shift)
 
