@@ -68,7 +68,7 @@ class cup_linint(cup):
                 True if ok, False otherwise
         """
 
-        logging.info("cup_cad::invariant")
+        logging.info("cup_linint::invariant")
 
         if not self._linint.invariant():
             return False
@@ -97,7 +97,7 @@ class cup_linint(cup):
         returns: float
             Radial position, negative value if outside the cup`
         """
-        #logging.info("cup_cad::curve")
+        #logging.info("cup_linint::curve")
         logging.debug(str(z))
 
         if z > self._zmax:
@@ -126,7 +126,7 @@ class cup_linint(cup):
                 classification
         """
 
-        logging.info("cup_cad::classify")
+        logging.info("cup_linint::classify")
         logging.debug(str(z))
         logging.debug(str(rr))
 

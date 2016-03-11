@@ -6,7 +6,7 @@ import os
 from XcMath import linint
 from XcMath import curve
 
-from XcMCCore import cup_cad
+from XcMCCore import cup_curves
 from XcMCCore import cup_linint
 from XcMCCore import cup_spline
 
@@ -19,7 +19,7 @@ def main():
     prefix = "R8O3IL07" # "R8O1IS07" # "R8O3IL07"
 
     fname = os.path.join(wrk_dir, prefix + ".json")
-    cupCup = cup_cad.cup_cad(fname, zshift = 0.5 + 10.28)
+    cupCup = cup_curves.cup_curves(fname, zshift = 0.5 + 10.28)
 
     fname = os.path.join( "C:/Users/kriol/Documents/Linux/CUPS", prefix + "_" + "KddCurveA.txt")
 

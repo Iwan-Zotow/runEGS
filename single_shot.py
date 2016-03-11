@@ -6,7 +6,7 @@ import logging
 
 from XcDefinitions import XcConstants
 from XcIO          import names_helper
-from XcMCCore      import cup_cad
+from XcMCCore      import cup_curves
 from XcMCCore      import cup_linint
 from XcMCCore      import collimator
 from XcMCCore      import build_phandim
@@ -89,7 +89,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
         logging.info("Cups downloaded")
 
-        cupA = cup_cad.cup_cad(os.path.join( wrk_dir, file_prefix + ".json"))
+        cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"))
         cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
         cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 

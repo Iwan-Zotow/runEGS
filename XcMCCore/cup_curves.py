@@ -8,7 +8,7 @@ import logging
 from XcMCCore.cup import cup
 from XcMath       import utils
 
-class cup_cad(cup):
+class cup_curves(cup):
     """
     Class to provide specialized cup,
     where model is made from spherical curves and lines
@@ -18,7 +18,7 @@ class cup_cad(cup):
 
     def __init__(self, fname, zshift = 0.0):
         """
-        CAD cup data constructor
+        Curves cup data constructor
 
         Parameters
         ----------
@@ -30,9 +30,9 @@ class cup_cad(cup):
             inner cup Z shift, mm
         """
 
-        super(cup_cad, self).__init__(fname, zshift)
+        super(cup_curves, self).__init__(fname, zshift)
 
-        logging.info("cup_cad::__init__ started")
+        logging.info("cup_curves::__init__ started")
         logging.debug(str(fname))
         logging.debug(str(zshift))
 
@@ -72,7 +72,7 @@ class cup_cad(cup):
 
         self.init_from_file()
         if not self.invariant():
-            raise RuntimeError("cup_cad::__init__", "bad invariant")
+            raise RuntimeError("cup_curves::__init__", "bad invariant")
 
         self._zmin = 0.0
         self._zmax = self._Z1 + self._zshift
@@ -86,7 +86,7 @@ class cup_cad(cup):
         self._grad = (vb - va) / (zb - za)
 
         # done wih computing, now logging
-        logging.info("cup_cad::__init__ constructed")
+        logging.info("cup_curves::__init__ constructed")
         logging.debug(str(self._zmax))
         logging.debug(str(self._grad))
 
@@ -119,17 +119,17 @@ class cup_cad(cup):
         Read cup data from JSON file
         """
 
-        logging.info("cup_cad::init_from_file enter")
+        logging.info("cup_curve::init_from_file enter")
 
         data = None
         with open(self._fname) as f:
             data = json.load(f)
 
             # units multiplier
-            um = cup_cad.get_units_multiplier(data)
+            um = cup_curves.get_units_multiplier(data)
 
             if um < 0.0:
-                raise RuntimeError("cup_cad::init_from_file", "No units in the cup JSON")
+                raise RuntimeError("cup_curves::init_from_file", "No units in the cup JSON")
 
             self._cup_series = data["cup_series"]
             self._cup_number = data["cup_number"]
@@ -161,7 +161,7 @@ class cup_cad(cup):
                 self._H4 = h4
 
             if not self.invariant():
-                raise RuntimError("cup_cad::init_from_file", "Invariant failed")
+                raise RuntimError("cup_curves::init_from_file", "Invariant failed")
 
             self._L1 = math.sqrt( (self._R1 - 0.5*self._D1)*(self._R1 + 0.5*self._D1) )
             self._L2 = math.sqrt( (self._R2 - 0.5*self._D2)*(self._R2 + 0.5*self._D2) )
@@ -172,7 +172,7 @@ class cup_cad(cup):
             # need angle correction?
             self._D6 = self._D5 - 2.0*(self._R1 - self._R2)
 
-        logging.info("cup_cad::init_from_file done")
+        logging.info("cup_curves::init_from_file done")
 
     def invariant(self):
         """
@@ -185,7 +185,7 @@ class cup_cad(cup):
                 True if ok, False otherwise
         """
 
-        logging.info("cup_cad::invariant")
+        logging.info("cup_curves::invariant")
 
         # external radius shall be bigger
         if self._R1 <= self._R2:
@@ -394,7 +394,7 @@ class cup_cad(cup):
                 Radial position
         """
 
-        logging.info("cup_cad::outer_curve")
+        logging.info("cup_curves::outer_curve")
         logging.debug(str(z))
 
         if z < 0.0:
@@ -444,7 +444,7 @@ class cup_cad(cup):
                 classification
         """
 
-        logging.info("cup_cad::classify")
+        logging.info("cup_curves::classify")
         logging.debug(str(z))
         logging.debug(str(rr))
 
@@ -486,11 +486,11 @@ class cup_cad(cup):
 
         # below zmin
         if (z < self._zmin):
-            raise RuntimeError("cup_cad::interpolate", "z less than zmin")
+            raise RuntimeError("cup_curves::interpolate", "z less than zmin")
 
         # above zmax
         if z > self._zmax:
-            raise RuntimeError("cup_cad::interpolate", "z greate than zmax")
+            raise RuntimeError("cup_curves::interpolate", "z greate than zmax")
 
         if z <= self._zshift: # here use gradient
             return self.outer_curve(0.0) + self._grad*(z - self._zshift)
@@ -510,7 +510,7 @@ class cup_cad(cup):
         returns: float
             Radial position, negative value if outside the cup`
         """
-        #logging.info("cup_cad::curve")
+        #logging.info("cup_curves::curve")
         logging.debug(str(z))
 
         if z > self._zmax:
@@ -526,7 +526,7 @@ if __name__ == "__main__":
 
     import sys
 
-    cup = cup_cad("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
+    cup = cup_curves("/home/beamuser/Documents/EGS/runEGS/cup_geometry/M03.json")
 
     shift = 78.78 - cup.Z2() # 100.78 - cup.Z2() # 136.78 - cup.Z2()
 

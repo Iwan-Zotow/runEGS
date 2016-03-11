@@ -69,7 +69,7 @@ class cup_spline(cup):
         self._cspline = cspline.cspline(pts)
 
         if not self.invariant():
-            raise RuntimeError("cup_cad::__init__", "bad invariant")
+            raise RuntimeError("cup_spline::__init__", "bad invariant")
 
         # min and max value where we could
         # compute

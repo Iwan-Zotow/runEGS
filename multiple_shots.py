@@ -9,7 +9,7 @@ from XcMath   import linint
 
 from XcMCCore import collimator
 from XcMCCore import clinical
-from XcMCCore import cup_cad
+from XcMCCore import cup_curves
 
 def get_clinical_X_range():
     """
@@ -52,7 +52,7 @@ def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, x_range, y_rang
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
 
     fname = os.path.join( cup_dir, file_prefix + ".json")
-    liA   = cup_cad.cup_cad( fname, 0.5 + 10.28 )
+    liA   = cup_curves.cup_curves( fname, 0.5 + 10.28 )
 
     z_max = liA.zmax()
 
