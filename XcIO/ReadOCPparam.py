@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from XcIOCommon import *
+from XcIO import XcIOCommon
 
 def ReadOCPparam(fname):
     """
@@ -63,7 +63,7 @@ def ReadOCPparam(fname):
 
     try:
         fileHandle = open(fname, 'r')
-    except IOError, e:
+    except IOError as e:
         e.args += ('Invalid file name',)
         raise
 
@@ -78,22 +78,22 @@ def ReadOCPparam(fname):
             line = fileHandle.readline()
             DistanceBottomOCToCouch = float(line)
 
-            OCInsideWallDescription = GetWallDescription(fileHandle)
+            OCInsideWallDescription = XcIOCommon.GetWallDescription(fileHandle)
             #there is an empty line between the wall description
             #so read and discard
             line = fileHandle.readline()
-            OCOutsideWallDescription = GetWallDescription(fileHandle)
+            OCOutsideWallDescription = XcIOCommon.GetWallDescription(fileHandle)
             #empty line again, read and discard
             line = fileHandle.readline()
-            FiducialCurveDescription = GetFiducialDescription(fileHandle)
+            FiducialCurveDescription = XcIOCommon.GetFiducialDescription(fileHandle)
 
             return (RU,OC,DistanceBottomOCToCouch,OCInsideWallDescription,OCOutsideWallDescription,FiducialCurveDescription)
 
-        except ValueError, e:
+        except ValueError as e:
             #raise ValueError('Invalid file format {0}\n{1}'.format(e.args, e.args))
             e.args += ('Invalid file format',)
             raise
-        except IndexError, e:
+        except IndexError as e:
             e.args += ('Invalid file format',)
             raise
 

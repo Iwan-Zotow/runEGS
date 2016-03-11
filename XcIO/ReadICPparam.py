@@ -3,7 +3,7 @@
 from __future__ import print_function
 
 from XcDefinitions import XcConstants as XcC
-from XcIOCommon import *
+from XcIO import XcIOCommon
 
 def ReadICPparam(fname):
     """
@@ -83,7 +83,7 @@ def ReadICPparam(fname):
 
     try:
         fileHandle = open(fname, 'r')
-    except IOError, e:
+    except IOError as e:
         e.args += ('Invalid file name',)
         raise
 
@@ -119,19 +119,19 @@ def ReadICPparam(fname):
             line = fileHandle.readline()
             ICWallEncodingType = int(line)
 
-            ICInsideWallDescription = GetWallDescription(fileHandle)
+            ICInsideWallDescription = XcIOCommon.GetWallDescription(fileHandle)
             # there is an empty line between the 2 wall descriptions
             # so reading it, and discarding
             line = fileHandle.readline()
-            ICOutsideWallDescription = GetWallDescription(fileHandle)
+            ICOutsideWallDescription = XcIOCommon.GetWallDescription(fileHandle)
 
             return (RU,OC,ICType,ICSize,ZOffset,ICOrigin,ICWallEncodingType,ICInsideWallDescription, ICOutsideWallDescription)
 
-        except ValueError, e:
+        except ValueError as e:
             #raise ValueError('Invalid file format {0}\n{1}'.format(e.args, e.args))
             e.args += ('Invalid file format',)
             raise
-        except IndexError, e:
+        except IndexError as e:
             e.args += ('Invalid file format',)
             raise
 
