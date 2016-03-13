@@ -10,7 +10,7 @@ import numpy as np
 from XcMath import nullspace
 from XcMath import ispolycw
 
-def disc_line_segment(sx, sy, ex, ey, tol):
+def disc_line_segment(xs, ys, xe, ye, tol):
     """
     Given start (x,y) point and end (x,y) point
     return discretized array of points
@@ -18,16 +18,16 @@ def disc_line_segment(sx, sy, ex, ey, tol):
     Parameter
     ---------
 
-        sx: float
+        xs: float
             start X
 
-        sy: float
+        ys: float
             start Y
 
-        ex: float
+        xe: float
             end X
 
-        ey: float
+        ye: float
             end Y
 
         tol: float
@@ -37,12 +37,12 @@ def disc_line_segment(sx, sy, ex, ey, tol):
     x = []
     y = []
 
-    if sx == None or sy == None:
-        return (None,None)
-    if ex == None or ey == None:
+    if xs == None or ys == None:
+        return (None, None)
+    if xe == None or ye == None:
         return (None, None)
 
-    d = math.sqrt((xe-xs)**2 + (ye-ys)**2)
+    d = math.sqrt((xe - xs)**2 + (ye - ys)**2)
     K = int(d/tol) + 2
 
     return (np.linspace(xs, xe, num=K), np.linspace(ys, ye, num=K))
@@ -100,22 +100,21 @@ def disc_arc_segment(x1, y1, x2, y2, x3, y3, tol):
     # determine clockwiseness
     clockwise = ispolycw.ispolycw([x1, x2, x3], [y1, y2, y3])
 
-    atan2(imag(z),real(z))
     thetas = math.atan2( y1 - yo, x1 - xo )
     thetae = math.atan2( y3 - yo, x3 - xo )
 
     if clockwise:
         if thetae > thetas:
-            thetas += 2.0 * math.pi;
+            thetas += 2.0 * math.pi
     else:
         if thetae < thetas:
-            thetae += 2.0 * math.pi;
+            thetae += 2.0 * math.pi
 
-    K = int( r * math.abs(thetas - thetae) / tol ) + 2
+    K = int( r * math.fabs(thetas - thetae) / tol ) + 2
     q = np.linspace(thetas, thetae, num=K)
 
-    xd = xo + r * math.cos(q)
-    yd = yo + r * math.sin(q)
+    xd = xo + r * np.cos(q)
+    yd = yo + r * np.sin(q)
 
     return (xd, yd)
 
@@ -155,50 +154,49 @@ def disc_elliptical_segment(x1, y1, x2, y2, x3, y3, x4, y4, tol):
             tolerance
     """
 
-    A = np.array([[x1*x1 y1*y1 x1 y1 1.0],
-                  [x2*x2 y2*y2 x2 y2 1],
-                  [x3*x3+y3*y3, x3, y3, 1.0]])
+    A = np.array([[x1*x1, y1*y1, x1, y1, 1.0],
+                  [x2*x2, y2*y2, x2, y2, 1.0],
+                  [x3*x3, y3*y3, x3, y3, 1.0],
+                  [x4*x4, y4*y4, x4, y4, 1.0]])
     Z = nullspace.nullspace(A)
 
-    # (x*x+y*y) + bx + cy + d = 0;
+    # Z(0)*x**2 + Z(1)*y**2 + Z(2)*x + Z(3)*y + Z(4) = 0
     if Z[0,0] == 0.0:
         return (None, None)
+    if Z[1,0] == 0.0:
+        return (None, None)
+    if Z[0,0]*Z[1,0] < 0.0: # sign check
+        return (None, None)
 
-    b = Z[1,0] / Z[0,0]
-    c = Z[2,0] / Z[0,0]
-    d = Z[3,0] / Z[0,0]
+    # convert to (x-xo)^2/a^2 + (y-yo)^2/b^2 = 1
+    xo = -0.5 * Z[2, 0] / Z[0, 0]
+    yo = -0.5 * Z[3, 0] / Z[1, 0]
 
-    # center of the supporting circle (x-xo)^2 + (y-yo)^2 = r^2
-    # determine the polar form
-    #  x = xo + r cos(theta)
-    #  y = yo + r sin(theta)
-
-    xo = - 0.5 * b
-    yo = - 0.5 * c
-    r  = math.sqrt( xo*xo + yo*yo - d)
+    a = math.sqrt( (Z[0, 0]*xo*xo + Z[1, 0]*yo*yo - Z[4, 0])/Z[0, 0] )
+    b = math.sqrt( (Z[0, 0]*xo*xo + Z[1, 0]*yo*yo - Z[4, 0])/Z[1, 0] )
 
     # determine clockwiseness
     clockwise = ispolycw.ispolycw([x1, x2, x3], [y1, y2, y3])
+    if clockwise != ispolycw.ispolycw([x2, x3, x4], [y2, y3, y4]): # check all points
+        return (None, None)
 
-    atan2(imag(z),real(z))
-    thetas = math.atan2( y1 - yo, x1 - xo )
-    thetae = math.atan2( y3 - yo, x3 - xo )
+    thetas = math.atan2( (y1 - yo)/b, (x1 - xo)/a )
+    thetae = math.atan2( (y4 - yo)/b, (x4 - xo)/a )
 
     if clockwise:
         if thetae > thetas:
-            thetas += 2.0 * math.pi;
+            thetas += 2.0 * math.pi
     else:
         if thetae < thetas:
-            thetae += 2.0 * math.pi;
+            thetae += 2.0 * math.pi
 
-    K = int( r * math.abs(thetas - thetae) / tol ) + 2
+    K = int( math.sqrt( a*a + b*b ) * math.fabs(thetas - thetae) / tol ) + 2
     q = np.linspace(thetas, thetae, num=K)
 
-    xd = xo + r * math.cos(q)
-    yd = yo + r * math.sin(q)
+    xd = xo + a * np.cos(q)
+    yd = yo + b * np.sin(q)
 
     return (xd, yd)
-
 
 def disc_2d(curve, tol):
     """
@@ -218,7 +216,9 @@ def disc_2d(curve, tol):
     for command in commands:
         s = command.split("")
 
-        if (s[0].contains("newpath")):
+        cmd = s[0]
+
+        if (cmd.contains("newpath")):
             px = float(s[1])
             py = float(s[2])
             x.append(px)
@@ -228,7 +228,7 @@ def disc_2d(curve, tol):
             cur_x = px
             cur_y = py
 
-        elif (s[0].contains("lineto")):
+        elif (cmd.contains("lineto")):
             px = float(s[1])
             py = float(s[2])
 
@@ -240,7 +240,7 @@ def disc_2d(curve, tol):
             cur_x = px
             cur_y = py
 
-        elif (s[0].contains("arcto")):
+        elif (cmd.contains("arcto")):
             x2 = float(s[1])
             y2 = float(s[2])
             x3 = float(s[3])
@@ -256,7 +256,7 @@ def disc_2d(curve, tol):
             cur_x = x3
             cur_y = y3
 
-        elif (s[0].contains("ellipseto")):
+        elif (cmd.contains("ellipseto")):
             x2 = float(s[1])
             y2 = float(s[2])
             x3 = float(s[3])
@@ -264,5 +264,41 @@ def disc_2d(curve, tol):
             x4 = float(s[5])
             y4 = float(s[6])
 
+            xs, ys = disc_elliptical_segment(cur_x, cur_y, x2, y2, x3, y3, x4, y4, tol)
+            x.extend(xs)
+            y.extend(ys)
 
+            xc.extend([x2, x3, x4])
+            yc.extend([y2, y3, y4])
 
+            cur_x = x4
+            cur_y = y4
+
+        elif (cmd.contains("closepath")):
+            break
+
+        else:
+            raise RuntimeError("disc_2d::unknown command {0}".format(cmd))
+
+    return (x, y, xc, yc)
+
+if __name__ == "__main__":
+
+    xs, ys = disc_line_segment(0.0, 0.0, 1.0, 1.0, 0.05)
+    for x, y in map(lambda x, y: (x,y), xs, ys):
+        print(x, y)
+
+    print("========================")
+
+    xs, ys = disc_arc_segment(0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.05)
+    for x, y in map(lambda x, y: (x,y), xs, ys):
+        print(x, y)
+
+    print("========================")
+
+    xs, ys = disc_elliptical_segment(0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 2.0, -1.0, 0.05)
+    print(xs)
+    print(ys)
+
+    for x, y in map(lambda x, y: (x,y), xs, ys):
+        print(x, y)

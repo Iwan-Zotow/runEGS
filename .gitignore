@@ -70,6 +70,3 @@ pod_*.json
 
 # pictures
 *.png
-
-# CAD cups
-CADCups/

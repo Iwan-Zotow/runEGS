@@ -55,7 +55,7 @@ while 1
             %axis, and the DiscretizeSpiralSegment3 requires Z-axis to be
             %the rotational axis, we map X->Y', Y->Z', Z->X' so that the
             %Z-axis is now the rotational axis
-            [Zspiral, Xspiral, Yspiral ] = DiscretizeSpiralSegment3(GC, zcurrent, xcurrent, ycurrent, z, x, y, Tol);
+            [Zspiral, Xspiral, Yspiral] = DiscretizeSpiralSegment3(GC, zcurrent, xcurrent, ycurrent, z, x, y, Tol);
             %plot3(Xspiral, Yspiral, Zspiral, 'b-',[xcurrent; x], [ycurrent; y], [zcurrent; z], 'rx--');
 
             X = [X; Xspiral]; Y = [Y; Yspiral]; Z = [Z; Zspiral];
