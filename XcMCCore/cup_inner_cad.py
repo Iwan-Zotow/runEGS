@@ -78,13 +78,23 @@ class cup_inner_cad(cup):
 
         self._RU = RU
         self._OC = OC
-        self._ICType = ICType
-        self._ICSize = ICSize
-        self._ZOffset = ZOffset
+        self._ICType   = ICType
+        self._ICSize   = ICSize
+        self._ZOffset  = ZOffset
         self._ICOrigin = ICOrigin
         self._ICWallEncodingType       = ICWallEncodingType
         self._ICInsideWallDescription  = ICInsideWallDescription
         self._ICOutsideWallDescription = ICOutsideWallDescription
+
+        self._xiw, self._yiw, self._xciw, self._yciw = disc_2d.disc_2d(self._ICInsideWallDescription, 0.5)
+        self._xow, self._yow, self._xcow, self._ycow = disc_2d.disc_2d(self._ICOutsideWallDescription, 0.5)
+
+        # ? all data we have is of type 1
+        if self._ICWallEncodingType == 2:
+            self._xow = self.xow - self._ICOrigin[0]
+            self._yow = self.yow - self._ICOrigin[1]
+            self._xcow = self.xcow - self._ICOrigin[0]
+            self._ycow = self.ycow - self._ICOrigin[1]
 
         logging.info("cup_inner_cad::init_from_file done")
 
@@ -173,11 +183,8 @@ if __name__ == "__main__":
     print(cup._ICInsideWallDescription)
     print(cup._ICOutsideWallDescription)
 
-    xiw, yiw, xiwc, yiwc = disc_2d.disc_2d(cup._ICInsideWallDescription, 0.1)
-    xow, yow, xowc, yowc = disc_2d.disc_2d(cup._ICOutsideWallDescription, 0.1)
-
-    for x, y in map(lambda x, y: (x,y), xiw, yiw):
+    for x, y in map(lambda x, y: (x,y), cup._xiw, cup._yiw):
         print(x, y)
     print("========================")
-    for x, y in map(lambda x, y: (x,y), xow, yow):
+    for x, y in map(lambda x, y: (x,y), cup._xow, cup._yow):
         print(x, y)

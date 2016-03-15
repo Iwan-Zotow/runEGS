@@ -9,6 +9,12 @@ function  IcpGen(RadiationUnitType, OuterCupType, InnerCupType)
     assert(IcpParam.octype == OuterCupType);
     assert(strcmp(IcpParam.ictype, InnerCupType) == true);
 
+    %fcrv = fopen('zzz.dat', 'wt', 'native');
+    %for i = 1 : size(IcpParam.GCi, 1)
+    %    fprintf(fcrv, '%e   %e\n', IcpParam.GCi(i,1), IcpParam.GCi(i,2));
+    %end
+    %fclose(fcrv);
+
     %Plot for verification
     scrsz = get(0,'ScreenSize');
     set(gcf,'position',[1 1 1024 768])
@@ -49,7 +55,7 @@ function  IcpGen(RadiationUnitType, OuterCupType, InnerCupType)
     if fid == -1
         error('fail to open file for write: %s', owtxtfilename);
     end
-    
+
     for i = 2 : size(IcpParam.GCo, 1)
         xtemp = linspace(IcpParam.GCo(i-1,1),IcpParam.GCo(i,1))+ IcpParam.icdOrigin(1);
         ytemp = linspace(IcpParam.GCo(i-1,2),IcpParam.GCo(i,2))+ IcpParam.icdOrigin(2);
