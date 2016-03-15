@@ -234,7 +234,7 @@ def disc_3d(curve, tol):
         else:
             raise RuntimeError("disc_3d::unknown command {0}".format(cmd))
 
-    return (x, y, z, xc, yc, zc)
+    return (np.asarray(x), np.asarray(y, np.asarray(z), np.asarray(xc), np.asarray(yc), np.asarray(zc))
 
 def disc_fiducial(curve, tol):
     """
@@ -335,4 +335,4 @@ def disc_fiducial(curve, tol):
         else:
             raise RuntimeError("disc_3d::unknown command {0}".format(cmd))
 
-    return (x, y, z, xc, yc, zc)
+    return (np.asarray(x), np.asarray(y, np.asarray(z), np.asarray(xc), np.asarray(yc), np.asarray(zc))

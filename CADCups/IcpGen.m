@@ -10,6 +10,9 @@ function  IcpGen(RadiationUnitType, OuterCupType, InnerCupType)
     assert(strcmp(IcpParam.ictype, InnerCupType) == true);
 
     %fcrv = fopen('zzz.dat', 'wt', 'native');
+    %if fcrv == -1
+    %    error('fail to open file for write: %s', 'zzz.dat');
+    %end
     %for i = 1 : size(IcpParam.GCi, 1)
     %    fprintf(fcrv, '%e   %e\n', IcpParam.GCi(i,1), IcpParam.GCi(i,2));
     %end

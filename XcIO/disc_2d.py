@@ -280,7 +280,7 @@ def disc_2d(curve, tol):
         else:
             raise RuntimeError("disc_2d::unknown command {0}".format(cmd))
 
-    return (x, y, xc, yc)
+    return (np.asarray(x), np.asarray(y), np.asarray(xc), np.asarray(yc))
 
 if __name__ == "__main__":
 

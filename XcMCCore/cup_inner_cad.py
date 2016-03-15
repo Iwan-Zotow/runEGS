@@ -90,13 +90,26 @@ class cup_inner_cad(cup):
         self._xow, self._yow, self._xcow, self._ycow = disc_2d.disc_2d(self._ICOutsideWallDescription, 0.5)
 
         # ? all data we have is of type 1
+        # ? no chenches to outer wall
         if self._ICWallEncodingType == 2:
             self._xow = self.xow - self._ICOrigin[0]
             self._yow = self.yow - self._ICOrigin[1]
             self._xcow = self.xcow - self._ICOrigin[0]
             self._ycow = self.ycow - self._ICOrigin[1]
 
+        self.convert_to_ICP()
+
         logging.info("cup_inner_cad::init_from_file done")
+
+    def convert_to_ICP(self):
+        """
+        Take digitized curves and convert then to .ICP format
+        """
+
+        yo = self._yiw[0]
+
+        self._xx = -(self._yiw - yo) - self._ZOffset
+        self._yy = self._xiw[:]
 
     def invariant(self):
         """
@@ -183,8 +196,8 @@ if __name__ == "__main__":
     print(cup._ICInsideWallDescription)
     print(cup._ICOutsideWallDescription)
 
-    for x, y in map(lambda x, y: (x,y), cup._xiw, cup._yiw):
+    for x, y in map(lambda x, y: (x,y), cup._xx, cup._yy):
         print(x, y)
-    print("========================")
-    for x, y in map(lambda x, y: (x,y), cup._xow, cup._yow):
-        print(x, y)
+    #print("========================")
+    #for x, y in map(lambda x, y: (x,y), cup._xow, cup._yow):
+    #    print(x, y)
