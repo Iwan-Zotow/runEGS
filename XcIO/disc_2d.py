@@ -98,7 +98,7 @@ def disc_arc_segment(x1, y1, x2, y2, x3, y3, tol):
     r  = math.sqrt( xo*xo + yo*yo - d)
 
     # determine clockwiseness
-    clockwise = ispolycw.ispolycw([x1, x2, x3], [y1, y2, y3])
+    clockwise, area = ispolycw.ispolycw([x1, x2, x3], [y1, y2, y3])
 
     thetas = math.atan2( y1 - yo, x1 - xo )
     thetae = math.atan2( y3 - yo, x3 - xo )
@@ -214,21 +214,21 @@ def disc_2d(curve, tol):
     cur_x = None
     cur_y = None
     for command in commands:
-        s = command.split("")
+        s = command.split(" ")
 
         cmd = s[0]
 
-        if (cmd.contains("newpath")):
+        if "newpath" in cmd:
             px = float(s[1])
             py = float(s[2])
             x.append(px)
             y.append(py)
-            xc.appned(px)
-            yc.appned(py)
+            xc.append(px)
+            yc.append(py)
             cur_x = px
             cur_y = py
 
-        elif (cmd.contains("lineto")):
+        elif "lineto" in cmd:
             px = float(s[1])
             py = float(s[2])
 
@@ -240,7 +240,7 @@ def disc_2d(curve, tol):
             cur_x = px
             cur_y = py
 
-        elif (cmd.contains("arcto")):
+        elif "arcto" in cmd:
             x2 = float(s[1])
             y2 = float(s[2])
             x3 = float(s[3])
@@ -256,7 +256,7 @@ def disc_2d(curve, tol):
             cur_x = x3
             cur_y = y3
 
-        elif (cmd.contains("ellipseto")):
+        elif "ellipseto" in cmd:
             x2 = float(s[1])
             y2 = float(s[2])
             x3 = float(s[3])
@@ -274,7 +274,7 @@ def disc_2d(curve, tol):
             cur_x = x4
             cur_y = y4
 
-        elif (cmd.contains("closepath")):
+        elif "closepath" in cmd:
             break
 
         else:
@@ -300,5 +300,6 @@ if __name__ == "__main__":
     print(xs)
     print(ys)
 
-    for x, y in map(lambda x, y: (x,y), xs, ys):
-        print(x, y)
+    if xs != None and ys != None:
+        for x, y in map(lambda x, y: (x,y), xs, ys):
+            print(x, y)

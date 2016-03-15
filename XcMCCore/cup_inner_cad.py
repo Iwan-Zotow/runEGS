@@ -8,6 +8,7 @@ import logging
 from XcMCCore.cup import cup
 from XcMath       import utils
 from XcIO         import ReadICPparam
+from XcIO         import disc_2d
 
 class cup_inner_cad(cup):
     """
@@ -171,3 +172,12 @@ if __name__ == "__main__":
     print(cup._ICWallEncodingType)
     print(cup._ICInsideWallDescription)
     print(cup._ICOutsideWallDescription)
+
+    xiw, yiw, xiwc, yiwc = disc_2d.disc_2d(cup._ICInsideWallDescription, 0.1)
+    xow, yow, xowc, yowc = disc_2d.disc_2d(cup._ICOutsideWallDescription, 0.1)
+
+    for x, y in map(lambda x, y: (x,y), xiw, yiw):
+        print(x, y)
+    print("========================")
+    for x, y in map(lambda x, y: (x,y), xow, yow):
+        print(x, y)

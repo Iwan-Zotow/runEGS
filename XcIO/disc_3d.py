@@ -141,7 +141,6 @@ def disc_arc_segment(x1, y1, z1, x2, y2, z2, x3, y3, z3, tol):
 
     return (X, Y, Z)
 
-
 # REQUIREMENTS
 # (1) Z-axis is the rotational axis
 # (2) GC[:,0]: Z-axis
@@ -150,5 +149,190 @@ def disc_spiral_segment(GC, x0, y0, z0, x, y, z, tol):
     """
     Discretize spiral segment
     """
+
+    # not implemented
     return (None, None, None)
 
+
+def disc_3d(curve, tol):
+    """
+    Given the curve and the tolerance, produce discretized arrays for 3d
+    """
+
+    # discretized curve
+    x = []
+    y = []
+    z = []
+    # control points
+    xc = []
+    yc = []
+    zc = []
+
+    commands = curve.split(";")
+    cur_x = None
+    cur_y = None
+    cur_z = None
+    for command in commands:
+        s = command.split(" ")
+
+        cmd = s[0]
+
+        if "newpath" in cmd:
+            px = float(s[1])
+            py = float(s[2])
+            pz = float(s[3])
+            x.append(px)
+            y.append(py)
+            z.append(pz)
+            xc.appned(px)
+            yc.appned(py)
+            zc.appned(pz)
+            cur_x = px
+            cur_y = py
+            cur_z = pz
+
+        elif "lineto" in cmd:
+            px = float(s[1])
+            py = float(s[2])
+            pz = float(s[3])
+
+            xs, ys, zs = disc_line_segment(cur_x, cur_y, cur_z, px, py, pz, tol)
+            x.extend(xs)
+            y.extend(ys)
+            z.extend(zs)
+            xc.append(px)
+            yc.append(py)
+            zc.append(pz)
+            cur_x = px
+            cur_y = py
+            cur_z = pz
+
+        elif "arcto" in cmd:
+            x2 = float(s[1])
+            y2 = float(s[2])
+            z2 = float(s[3])
+            x3 = float(s[4])
+            y3 = float(s[5])
+            z3 = float(s[6])
+
+            xs, ys, zs = disc_arc_segment(cur_x, cur_y, cur_z, x2, y2, z2, x3, y3, z3, tol)
+            x.extend(xs)
+            y.extend(ys)
+            z.extend(zs)
+
+            xc.extend([x2, x3])
+            yc.extend([y2, y3])
+            zc.extend([z2, z3])
+
+            cur_x = x3
+            cur_y = y3
+            cur_z = z3
+
+        elif "closepath" in cmd:
+            break
+
+        else:
+            raise RuntimeError("disc_3d::unknown command {0}".format(cmd))
+
+    return (x, y, z, xc, yc, zc)
+
+def disc_fiducial(curve, tol):
+    """
+    Given the curve and the tolerance, produce discretized arrays
+    """
+
+    # discretized curve
+    x = []
+    y = []
+    z = []
+    # control points
+    xc = []
+    yc = []
+    zc = []
+
+    commands = curve.split(";")
+    cur_x = None
+    cur_y = None
+    cur_z = None
+
+    for command in commands:
+        s = command.split(" ")
+
+        cmd = s[0]
+
+        if "newfcsegment" in cmd:
+            px = float(s[1])
+            py = float(s[2])
+            pz = float(s[3])
+            x.append(px)
+            y.append(py)
+            z.append(pz)
+            xc.appned(px)
+            yc.appned(py)
+            zc.appned(pz)
+            cur_x = px
+            cur_y = py
+            cur_z = pz
+
+        elif "lineto" in cmd:
+            px = float(s[1])
+            py = float(s[2])
+            pz = float(s[3])
+
+            xs, ys, zs = disc_line_segment(cur_x, cur_y, cur_z, px, py, pz, tol)
+            x.extend(xs)
+            y.extend(ys)
+            z.extend(zs)
+            xc.append(px)
+            yc.append(py)
+            zc.append(pz)
+            cur_x = px
+            cur_y = py
+            cur_z = pz
+
+        elif "arcto" in cmd:
+            x2 = float(s[1])
+            y2 = float(s[2])
+            z2 = float(s[3])
+            x3 = float(s[4])
+            y3 = float(s[5])
+            z3 = float(s[6])
+
+            xs, ys, zs = disc_arc_segment(cur_x, cur_y, cur_z, x2, y2, z2, x3, y3, z3, tol)
+            x.extend(xs)
+            y.extend(ys)
+            z.extend(zs)
+
+            xc.extend([x2, x3])
+            yc.extend([y2, y3])
+            zc.extend([z2, z3])
+
+            cur_x = x3
+            cur_y = y3
+            cur_z = z3
+
+        elif "spiralto" in cmd:
+            n = float(s[1])
+
+            for k range(0, n):
+                pass # read all data
+            xs, ys, zs = disc_spiral_segment(None, tol)
+            x.extend(xs)
+            y.extend(ys)
+            z.extend(zs)
+
+            xc.extend(None)
+            yc.extend(None)
+            zc.extend(None)
+
+            cur_x = x3
+            cur_y = y3
+            cur_z = z3
+
+        elif "closefcsegment" in cmd:
+            break
+
+        else:
+            raise RuntimeError("disc_3d::unknown command {0}".format(cmd))
+
+    return (x, y, z, xc, yc, zc)
