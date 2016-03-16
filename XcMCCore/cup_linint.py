@@ -88,9 +88,6 @@ class cup_linint(cup):
         Parameters
         ----------
 
-        Parameters
-        ----------
-
         z: float
             position along the axis
 
@@ -104,51 +101,6 @@ class cup_linint(cup):
             return 0.0
 
         return self._linint.extrapolate(z - self._zshift)
-
-    def classify(self, rr, z):
-        """
-        Classification of the point relative to the cup
-
-        -1 - outside
-         0 - in the cup
-        +1 - inside
-
-        Parameters
-        ----------
-
-            rr: double
-                radial coordinate
-
-            z: double
-                vertical coordinate, going down from top to the tip of the cup
-
-            returns: int
-                classification
-        """
-
-        logging.info("cup_linint::classify")
-        logging.debug(str(z))
-        logging.debug(str(rr))
-
-        # using symmetry to set radial coordinate
-        r = math.fabs(rr)
-
-        Rin = self.inner_curve(z - self._zshift)
-        if Rin == -2.0:
-            return cup.OUTSIDE
-        if Rin == 0.0:
-            return cup.INTHECUP
-        if r <= Rin:
-            return cup.INSIDE
-
-        # could be inside the outer curve
-        Rout = self.outer_curve(z)
-        if Rout == -2.0:
-            return cup.OUTSIDE
-        if r <= Rout:
-            return cup.INTHECUP
-
-        return cup.OUTSIDE
 
     def classify(self, rr, z):
         """
