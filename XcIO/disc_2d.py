@@ -210,11 +210,12 @@ def disc_2d(curve, tol):
     xc = []
     yc = []
 
-    commands = curve.split(";")
+    commands = curve.split(";") # get list of separate commands
     cur_x = None
     cur_y = None
     for command in commands:
         s = command.split(" ")
+        s = [x for x in s if x] # remove empty strings
 
         cmd = s[0]
 

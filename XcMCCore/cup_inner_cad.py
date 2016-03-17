@@ -72,11 +72,11 @@ class cup_inner_cad(cup):
 
         pts = [point2d.point2d(np.float32(x), np.float32(y)) for x, y in zip(self._xxiw,  self._yyiw)]
 
-        self._linint_iw = linint.linint(cup_inner_cad.remove_dupes(pts))
+        self._linint_iw = linint.linint(point2d.point2d.remove_dupes(pts, np.float32(0.00001)))
 
         pts = [point2d.point2d(np.float32(x), np.float32(y)) for x, y in zip(self._xxow,  self._yyow)]
 
-        self._linint_ow = linint.linint(cup_inner_cad.remove_dupes(pts))
+        self._linint_ow = linint.linint(point2d.point2d.remove_dupes(pts, np.float32(0.00001)))
 
         self._zmax = self._linint_ow.zmax() + self._zshift
 
@@ -139,26 +139,6 @@ class cup_inner_cad(cup):
 
         self._xxow = -(self._yow - yo) - self._ZOffset
         self._yyow = self._xow[:]
-
-    @staticmethod
-    def remove_dupes(pts):
-        """
-        Given list of points, remove duplicates
-        """
-        tol = np.float32(0.00001)
-
-        l = len(pts)
-        rc = []
-        pt_prev = pts[0]
-        rc.append(pt_prev)
-        for k in range(1, l):
-            pt = pts[k]
-            if math.fabs(pt_prev.x() - pt.x()) > tol:
-                rc.append(pt)
-
-            pt_prev = pt
-
-        return rc
 
     def invariant(self):
         """

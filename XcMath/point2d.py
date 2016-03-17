@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import math
 import numpy as np
 
 class point2d(object):
@@ -51,3 +52,21 @@ class point2d(object):
         """
         return "{0} {1}".format(self._x, self._y)
 
+    @staticmethod
+    def remove_dupes(pts, tol):
+        """
+        Given list of points, remove duplicates
+        """
+
+        l = len(pts)
+        rc = []
+        pt_prev = pts[0]
+        rc.append(pt_prev)
+        for k in range(1, l):
+            pt = pts[k]
+            if math.fabs(pt_prev.x() - pt.x()) > tol:
+                rc.append(pt)
+
+            pt_prev = pt
+
+        return rc

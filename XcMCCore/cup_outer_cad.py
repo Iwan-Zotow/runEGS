@@ -9,7 +9,7 @@ from XcMCCore.cup import cup
 
 from XcMath       import utils
 from XcMath       import point2d
-from XcIO         import ReadICPparam
+from XcIO         import ReadOCPparam
 from XcIO         import disc_2d
 from XcMath       import linint
 
@@ -43,13 +43,12 @@ class cup_outer_cad(cup):
 
         self._RU = None
         self._OC = None
-        self._ICType = None
-        self._ICSize = None
-        self._ZOffset  = None
-        self._ICOrigin = None
-        self._ICWallEncodingType       = None
-        self._ICInsideWallDescription  = None
-        self._ICOutsideWallDescription = None
+        self._DistanceBottomOCToCouch = None
+        self._OCOrigin                = None
+        self._OCWallEncodingType      = None
+        self._OCInsideWallDescription  = None
+        self._OCOutsideWallDescription = None
+        self._FiducialCurveDescription = None
 
         self._xiw  = None
         self._yiw  = None
@@ -72,11 +71,11 @@ class cup_outer_cad(cup):
 
         pts = [point2d.point2d(np.float32(x), np.float32(y)) for x, y in zip(self._xxiw,  self._yyiw)]
 
-        self._linint_iw = linint.linint(cup_outer_cad.remove_dupes(pts))
+        self._linint_iw = linint.linint(point2d.point2d.remove_dupes(pts, np.float32(0.00001)))
 
         pts = [point2d.point2d(np.float32(x), np.float32(y)) for x, y in zip(self._xxow,  self._yyow)]
 
-        self._linint_ow = linint.linint(cup_outer_cad.remove_dupes(pts))
+        self._linint_ow = linint.linint(point2d.point2d.remove_dupes(pts, np.float32(0.00001)))
 
         self._zmax = self._linint_ow.zmax() + self._zshift
 
@@ -96,24 +95,24 @@ class cup_outer_cad(cup):
         data = None
         with open(self._fname) as f:
             try:
-                RU, OC, ICType, ICSize, ZOffset, ICOrigin, ICWallEncodingType, ICInsideWallDescription, ICOutsideWallDescription = ReadICPparam.ReadICPparam(self._fname)
+                RU, OC, DistanceBottomOCToCouch, OCOrigin, OCWallEncodingType, OCInsideWallDescription, OCOutsideWallDescription, FiducialCurveDescription = ReadOCPparam.ReadOCPparam(self._fname)
             except Exception as e:
                 e.args += ('cup_outer_cad::Bad read of inner cup',)
                 raise
 
         self._RU = RU
         self._OC = OC
-        self._ICType   = ICType
-        self._ICSize   = ICSize
-        self._ZOffset  = ZOffset
-        self._ICOrigin = ICOrigin
-        self._ICWallEncodingType       = ICWallEncodingType
-        self._ICInsideWallDescription  = ICInsideWallDescription
-        self._ICOutsideWallDescription = ICOutsideWallDescription
+        self._DistanceBottomOCToCouch  = DistanceBottomOCToCouch
+        self._OCOrigin                 = OCOrigin
+        self._OCWallEncodingType       = OCWallEncodingType
+
+        self._OCInsideWallDescription  = OCInsideWallDescription
+        self._OCOutsideWallDescription = OCOutsideWallDescription
+        self._FiducialCurveDescription = FiducialCurveDescription
 
         # those arrays are NumPy arrays
-        self._xiw, self._yiw, self._xciw, self._yciw = disc_2d.disc_2d(self._ICInsideWallDescription, 0.5)
-        self._xow, self._yow, self._xcow, self._ycow = disc_2d.disc_2d(self._ICOutsideWallDescription, 0.5)
+        self._xiw, self._yiw, self._xciw, self._yciw = disc_2d.disc_2d(self._OCInsideWallDescription, 0.5)
+        self._xow, self._yow, self._xcow, self._ycow = disc_2d.disc_2d(self._OCOutsideWallDescription, 0.5)
 
         # ? all data we have is of type 1
         # ? no chenches to outer wall
@@ -123,42 +122,22 @@ class cup_outer_cad(cup):
         #    self._xcow = self.xcow - self._ICOrigin[0]
         #    self._ycow = self.ycow - self._ICOrigin[1]
 
-        self.convert_to_ICP()
+        self.convert_to_OCP()
 
         logging.info("cup_outer_cad::init_from_file done")
 
-    def convert_to_ICP(self):
+    def convert_to_OCP(self):
         """
         Take digitized curves and convert then to .ICP format
         """
 
         yo = self._yiw[0]
 
-        self._xxiw = -(self._yiw - yo) - self._ZOffset
+        self._xxiw = -(self._yiw - yo)
         self._yyiw = self._xiw[:]
 
-        self._xxow = -(self._yow - yo) - self._ZOffset
+        self._xxow = -(self._yow - yo)
         self._yyow = self._xow[:]
-
-    @staticmethod
-    def remove_dupes(pts):
-        """
-        Given list of points, remove duplicates
-        """
-        tol = np.float32(0.00001)
-
-        l = len(pts)
-        rc = []
-        pt_prev = pts[0]
-        rc.append(pt_prev)
-        for k in range(1, l):
-            pt = pts[k]
-            if math.fabs(pt_prev.x() - pt.x()) > tol:
-                rc.append(pt)
-
-            pt_prev = pt
-
-        return rc
 
     def invariant(self):
         """
@@ -316,17 +295,16 @@ if __name__ == "__main__":
 
     import sys
 
-    cup = cup_outer_cad("C:/Users/kriol/Documents/Python/runEGS/CADCups/InnerCups/In/R8O3IL08.icpparam")
+    cup = cup_outer_cad("C:/Users/kriol/Documents/Python/runEGS/CADCups/OuterCups/In/R8O3.ocpparam")
 
     print(cup._RU)
     print(cup._OC)
-    print(cup._ICType)
-    print(cup._ICSize)
-    print(cup._ZOffset)
-    print(cup._ICOrigin)
-    print(cup._ICWallEncodingType)
-    print(cup._ICInsideWallDescription)
-    print(cup._ICOutsideWallDescription)
+    print(cup._DistanceBottomOCToCouch)
+    print(cup._OCOrigin)
+    print(cup._OCWallEncodingType)
+    #print(cup._OCInsideWallDescription)
+    #print(cup._OCOutsideWallDescription)
+    #print(cup._FiducialCurveDescription)
 
     for x, y in map(lambda x, y: (x,y), cup._xxiw, cup._yyiw):
         print(x, y)

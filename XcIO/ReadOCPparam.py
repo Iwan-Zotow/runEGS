@@ -78,7 +78,18 @@ def ReadOCPparam(fname):
             line = fileHandle.readline()
             DistanceBottomOCToCouch = float(line)
 
+            line = fileHandle.readline()
+            split = line.split(" ")
+            OCOrigin=[]
+            OCOrigin.append(float(split[0]))
+            OCOrigin.append(float(split[1]))
+            OCOrigin.append(float(split[2]))
+
+            line = fileHandle.readline()
+            OCWallEncodingType = int(line)
+
             OCInsideWallDescription = XcIOCommon.GetWallDescription(fileHandle)
+
             #there is an empty line between the wall description
             #so read and discard
             line = fileHandle.readline()
@@ -87,7 +98,7 @@ def ReadOCPparam(fname):
             line = fileHandle.readline()
             FiducialCurveDescription = XcIOCommon.GetFiducialDescription(fileHandle)
 
-            return (RU,OC,DistanceBottomOCToCouch,OCInsideWallDescription,OCOutsideWallDescription,FiducialCurveDescription)
+            return (RU,OC,DistanceBottomOCToCouch,OCOrigin,OCWallEncodingType,OCInsideWallDescription,OCOutsideWallDescription,FiducialCurveDescription)
 
         except ValueError as e:
             #raise ValueError('Invalid file format {0}\n{1}'.format(e.args, e.args))
@@ -98,7 +109,7 @@ def ReadOCPparam(fname):
             raise
 
 if __name__ == "__main__":
-    RU,OC,DistanceBottomOCToCouch,OCInsideWallDescription,OCOutsideWallDescription,FiducialCurveDescription = ReadOCPparam("D:/Dev/InnerCups/In/R8O3IL08.ocpparam")
+    RU,OC,DistanceBottomOCToCouch,OCOrigin,OCWallEncodingType,OCInsideWallDescription,OCOutsideWallDescription,FiducialCurveDescription = ReadOCPparam("C:/Users/kriol/Documents/Python/runEGS/CADCups/OuterCups/In/R8O3.ocpparam")
 
     print("Print data")
     print(RU)
@@ -108,4 +119,3 @@ if __name__ == "__main__":
     print(OCInsideWallDescription)
     print(OCOutsideWallDescription)
     print(FiducialCurveDescription)
-
