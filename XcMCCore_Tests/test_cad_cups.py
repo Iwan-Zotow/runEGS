@@ -23,7 +23,7 @@ def main():
     kB = cup_outer_cad.cup_outer_cad(fname_outer, shift_z, use_cup = cup_outer_cad.cup_outer_cad.USE_INNER)
     kC = cup_outer_cad.cup_outer_cad(fname_outer, shift_z, use_cup = cup_outer_cad.cup_outer_cad.USE_OUTER)
 
-    for z in range(0, 151, 1):
+    for z in range(0, 156, 1):
         zz = float(z)
         ra = kA.curve(zz)
         rb = kB.curve(zz)
