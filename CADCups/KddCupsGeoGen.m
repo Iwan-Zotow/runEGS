@@ -33,7 +33,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
 
         %Export Curve A
         CurveAFileName = sprintf('Kdd_CupGeometry\\Out\\R%dO%dI%s_KddCurveA.txt', ...
-            RadiationUnitType, OuterCupType, InnerCupType);
+                                  RadiationUnitType, OuterCupType, InnerCupType);
         fid = fopen(CurveAFileName, 'wt', 'native');
         if fid == -1
             error('fail to open file for write: %s', CurveAFileName);
@@ -43,7 +43,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
 
         %Export Curve B
         CurveBFileName = sprintf('Kdd_CupGeometry\\Out\\R%dO%dI%s_KddCurveB.txt', ...
-            RadiationUnitType, OuterCupType, InnerCupType);
+                                  RadiationUnitType, OuterCupType, InnerCupType);
         fid = fopen(CurveBFileName, 'wt', 'native');
         if fid == -1
             error('fail to open file for write: %s', CurveBFileName);
@@ -53,7 +53,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
 
         %Export Curve C
         CurveCFileName = sprintf('Kdd_CupGeometry\\Out\\R%dO%dI%s_KddCurveC.txt', ...
-            RadiationUnitType, OuterCupType, InnerCupType);
+                         RadiationUnitType, OuterCupType, InnerCupType);
         fid = fopen(CurveCFileName, 'wt', 'native');
         if fid == -1
             error('fail to open file for write: %s', CurveCFileName);
@@ -70,7 +70,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
         xlabel('Z (mm)');
         ylabel('Y (mm)');
         title(sprintf('RadiationUnit %d / OuterCup %d / InnerCup %s \n', ...
-            RadiationUnitType, OuterCupType, InnerCupType));
+                       RadiationUnitType, OuterCupType, InnerCupType));
         grid on;
         axis equal;
         scrsz = get(0,'ScreenSize');
@@ -78,7 +78,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
         pause(0.5);       %wait 0.5 second
 
         saveas(gcf, sprintf('Kdd_CupGeometry\\Out\\R%dO%dI%s_Kdd.fig',RadiationUnitType,OuterCupType, InnerCupType));
-        plot2svg('QQQ.svg');
+        %plot2svg('QQQ.svg');
         close all
     else
         Icp.rutype = RadiationUnitType;
@@ -88,7 +88,7 @@ function KddCupsGeoGen(RadiationUnitType, OuterCupType, InnerCupType, UpperMargi
 
     %Save *.kddparam
     KddParamFilePath = sprintf('Kdd_CupGeometry\\Out\\R%dO%dI%s.kddparam', ...
-        RadiationUnitType,OuterCupType, InnerCupType);
+                       RadiationUnitType,OuterCupType, InnerCupType);
     CwSaveAsKddParam(KddParamFilePath, Ocp, Icp, UpperMargin);
 
 end
