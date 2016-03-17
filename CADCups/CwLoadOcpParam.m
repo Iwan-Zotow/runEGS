@@ -18,15 +18,12 @@ function OcpParam = CwLoadOcpParam(OcpParamFilePath)
     end
 
     [OcpParam.rutype, count] = fscanf(fid, '%d', 1);
-    disp(OcpParam.rutype)
     assert( count == 1);
 
     [OcpParam.octype, count] = fscanf(fid, '%d', 1);
-    disp(OcpParam.octype)
     assert( count == 1);
 
     [OcpParam.D, count] = fscanf(fid, '%g', 1);
-    disp(OcpParam.D)
     assert( count == 1);
 
     [OcpParam.ocdOrigin, count] = fscanf(fid, '%g', 3);  %in solidworks coord

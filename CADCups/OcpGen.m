@@ -38,7 +38,6 @@ function  OcpGen(RadiationUnitType, OuterCupType)
     %EXPORT
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
     %for verification in Solidworks that designs the cup
     %Export Fiducial curve segments
     for segment = 1 : length(OcpParam.FC)

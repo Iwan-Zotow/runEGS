@@ -20,7 +20,6 @@ function CwSaveAsDotIcp(IcpFilePath, IcpParam)
     fprintf(fid,'%s\n', IcpParam.ictype);
 
     fprintf(fid,'%d\n', size(IcpParam.GCi,1));
-    disp(IcpParam.Dinout);
     for i = 1 : size(IcpParam.GCi, 1)
         fprintf(fid,'%e %e\n', -(IcpParam.GCi(i,2) - yo) - IcpParam.Dinout, IcpParam.GCi(i,1) );
     end

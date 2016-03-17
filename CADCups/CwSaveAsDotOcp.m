@@ -8,6 +8,7 @@ function CwSaveAsDotOcp(OcpFilePath, OcpParam)
     %y' = x
     %z' = -(y-yo)
     yo = OcpParam.GCi(1,2);
+    disp(yo);
 
     fid = fopen(OcpFilePath, 'wt', 'native');
     if fid == -1
@@ -28,14 +29,13 @@ function CwSaveAsDotOcp(OcpFilePath, OcpParam)
         fprintf(fid, '%e %e\n', -(OcpParam.GCo(i,2) - yo), OcpParam.GCo(i,1));
     end
 
-
     V = GetVertices(OcpParam.FC);
     fprintf(fid,'%d\n', size(V, 1));
     for i = 1 : size(V, 1)
         fprintf(fid,'%e %e %e\n', -V(i,3), V(i,1), -(V(i,2) - yo) );
     end
 
-    E = GetEdges(OcpParam.FC)
+    E = GetEdges(OcpParam.FC);
     fprintf(fid,'%d\n', size(E,1));   %single curve mode
     for i = 1 : size(E,1)
         fprintf(fid,'%d %d\n', E(i,1), E(i,2));
