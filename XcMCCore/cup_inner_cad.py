@@ -21,7 +21,7 @@ class cup_inner_cad(cup):
     Contains curves for both inner cup and inner cup
     """
 
-    def __init__(self, fname, zshift = 0.0):
+    def __init__(self, fname, zshift = 0.0, use_cup = cup.USE_OUTER):
         """
         Inner ICPPARAM cup data constructor
 
@@ -40,6 +40,9 @@ class cup_inner_cad(cup):
         logging.info("cup_inner_cad::__init__ started")
         logging.debug(str(fname))
         logging.debug(str(zshift))
+        logging.debug(str(use_cup))
+
+        self._use_cup = use_cup
 
         self._RU = None
         self._OC = None
@@ -159,6 +162,9 @@ class cup_inner_cad(cup):
         if not self._linint_ow.invariant():
             return False
 
+        if self._use_cup != cup.USE_INNER and self._use_cup != cup.USE_OUTER:
+            return False
+
         return True
 
     def linint_ow(self):
@@ -172,26 +178,6 @@ class cup_inner_cad(cup):
         Inner wall interpolator
         """
         return self._linint_iw
-
-    def inner_curve(self, z):
-        """
-        For given Z, return positive R on the external cup curve
-
-        Parameters
-        ----------
-
-        z: float
-            position along the axis
-
-        returns: float
-            Radial position, negative value if outside the cup`
-        """
-        logging.debug(str(z))
-
-        if z > self._zmax:
-            return 0.0
-
-        return self._linint_iw.extrapolate(z - self._zshift)
 
     def inner_curve(self, z):
         """
@@ -246,6 +232,9 @@ class cup_inner_cad(cup):
         returns: float
             Radial position, negative value if outside the cup`
         """
+
+        if self._use_cup == cup.USE_INNER:
+            return self.inner_curve(z)
 
         return self.outer_curve(z)
 

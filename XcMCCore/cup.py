@@ -8,6 +8,11 @@ class cup(object):
     Contains base methods tobe reimplemented in the child classes
     """
 
+    # flag which curve to use for outline description
+    USE_INNER = 0
+    USE_OUTER = 1
+
+    # point classification flags
     OUTSIDE  = -1
     INTHECUP =  0
     INSIDE   = +1

@@ -21,21 +21,18 @@ class cup_outer_cad(cup):
     Contains curves for both inner cup and inner cup
     """
 
-    USE_INNER = 0
-    USE_OUTER = 1
-
-    def __init__(self, fname, zshift = 0.0, use_cup = USE_OUTER):
+    def __init__(self, fname, zshift = 0.0, use_cup = cup.USE_OUTER):
         """
-        Inner ICPPARAM cup data constructor
+        Inner OCPPARAM cup data constructor
 
         Parameters
         ----------
 
         fname: string
-            ICPPARAM file name
+            OCPPARAM file name
 
         zshift: float
-            inner cup Z shift, mm
+            outer cup Z shift, mm
         """
 
         super(cup_outer_cad, self).__init__(fname, zshift)
@@ -103,7 +100,7 @@ class cup_outer_cad(cup):
             try:
                 RU, OC, DistanceBottomOCToCouch, OCOrigin, OCWallEncodingType, OCInsideWallDescription, OCOutsideWallDescription, FiducialCurveDescription = ReadOCPparam.ReadOCPparam(self._fname)
             except Exception as e:
-                e.args += ('cup_outer_cad::Bad read of inner cup',)
+                e.args += ('cup_outer_cad::Bad read of outer cup',)
                 raise
 
         self._RU = RU
@@ -123,10 +120,10 @@ class cup_outer_cad(cup):
         # ? all data we have is of type 1
         # ? no chenches to outer wall
         #if self._ICWallEncodingType == 2:
-        #    self._xow = self.xow - self._ICOrigin[0]
-        #    self._yow = self.yow - self._ICOrigin[1]
-        #    self._xcow = self.xcow - self._ICOrigin[0]
-        #    self._ycow = self.ycow - self._ICOrigin[1]
+        #    self._xow = self.xow - self._OCOrigin[0]
+        #    self._yow = self.yow - self._OCOrigin[1]
+        #    self._xcow = self.xcow - self._OCOrigin[0]
+        #    self._ycow = self.ycow - self._OCOrigin[1]
 
         self.convert_to_OCP()
 
@@ -134,7 +131,7 @@ class cup_outer_cad(cup):
 
     def convert_to_OCP(self):
         """
-        Take digitized curves and convert then to .ICP format
+        Take digitized curves and convert then to .OCP format
         """
 
         yo = self._yiw[0]
@@ -164,7 +161,7 @@ class cup_outer_cad(cup):
         if not self._linint_ow.invariant():
             return False
 
-        if self._use_cup != cup_outer_cad.USE_INNER and self._use_cup != cup_outer_cad.USE_OUTER:
+        if self._use_cup != cup.USE_INNER and self._use_cup != cup.USE_OUTER:
             return False
 
         return True
@@ -235,7 +232,7 @@ class cup_outer_cad(cup):
             Radial position, negative value if outside the cup`
         """
 
-        if self._use_cup == cup_outer_cad.USE_INNER:
+        if self._use_cup == cup.USE_INNER:
             return self.inner_curve(z)
 
         return self.outer_curve(z)
