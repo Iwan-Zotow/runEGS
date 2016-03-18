@@ -6,8 +6,7 @@ import logging
 
 from XcDefinitions import XcConstants
 from XcIO          import names_helper
-from XcMCCore      import cup_curves
-from XcMCCore      import cup_linint
+
 from XcMCCore      import collimator
 from XcMCCore      import build_phandim
 from XcIO          import cup_downloader
@@ -18,6 +17,21 @@ from XcIO          import write_egs_phantom
 from XcIO          import write_egs_input
 from XcIO          import run_dosxyz
 from XcIO          import data_uploader
+from XcIO          import ReadOCPparam
+
+from XcMCCore      import cup_curves
+from XcMCCore      import cup_linint
+from XcMCCore      import cup_inner_cad
+from XcMCCore      import cup_outer_cad
+
+def get_OCP_zhift(fname):
+    """
+    Given file name, read OCP file and produce Z shift
+    """
+
+    RU, OC, DistanceBottomOCToCouch, OCOrigin, OCWallEncodingType, OCInsideWallDescription, OCOutsideWallDescription, FiducialCurveDescription = ReadOCPparam.ReadOCPparam(fname)
+
+    return DistanceBottomOCToCouch
 
 def read_credentials(creds):
     """
@@ -89,9 +103,18 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
         logging.info("Cups downloaded")
 
-        cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"))
-        cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-        cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+        # cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"))
+        # cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+        # cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+
+        fname_ocp = os.path.join( wrk_dir, "R" + str(radUnit) + "O" + str(outerCup) + ".ocpparam")
+        fname_icp = os.path.join( wrk_dir, file_prefix + ".icpparam")
+
+        shift_z = XcConstants.COUCH_BOTTOM + get_OCP_zhift(fname_ocp)
+
+        cupA = cup_inner_cad.cup_inner_cad(fname_inner, shift_z) # use outer curve for phantom
+        cupB = cup_outer_cad.cup_outer_cad(fname_outer, shift_z, use_cup = cup_outer_cad.cup_outer_cad.USE_INNER)
+        cupC = cup_outer_cad.cup_outer_cad(fname_outer, shift_z, use_cup = cup_outer_cad.cup_outer_cad.USE_OUTER)
 
         logging.info("Interpolators done")
 
