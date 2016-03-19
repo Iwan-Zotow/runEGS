@@ -4,6 +4,12 @@ EGSPHAN_EXT = ".egsphant"
 EGSINP_EXT  = ".egsinp"
 EGSPHSF_EXT = ".egsphsp1"
 
+# GENERAL CONVENTION
+# Outer cup prefix: R8O3
+#       cup prefix: R8O3IL08
+#      file prefix: R8O3IL08C25
+#      full_prefix: R8O3IL08C25_Y0Z0
+
 def make_cup_prefix(radUnit, outerCup, innerCupSer, innerCupNum):
     """
     Makes filename prefix given RU, OC, IC info
@@ -69,9 +75,20 @@ def parse_file_prefix(file_prefix):
 
     return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
 
-def outer_prefix(file_prefix):
+def parse_cup_prefix(file_prefix):
     """
-    Take file prefix string and produce outer cup prefix
+    Parse cup prefix string and produce rad.unit, outer cup, inner cup, inner cup number
+    """
+    radUnit  = str(file_prefix[1:2])
+    outerCup = str(file_prefix[3:4])
+    innerCupSer = str(file_prefix[5:6])
+    innerCupNum = str(file_prefix[6:8])
+
+    return (radUnit, outerCup, innerCupSer, innerCupNum)
+
+def outer_prefix(cup_prefix):
+    """
+    Take cup prefix string and produce outer cup prefix
     """
 
     radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_file_prefix(file_prefix)
