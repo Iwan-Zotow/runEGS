@@ -215,7 +215,7 @@ def disc_2d(curve, tol):
     cur_y = None
     for command in commands:
         s = command.split(" ")
-        s = [x for x in s if x] # remove empty strings
+        s = [q for q in s if q] # remove empty strings
 
         cmd = s[0]
 
