@@ -7,6 +7,8 @@ import subprocess
 import shutil
 import logging
 
+from XcIO import names_helper
+
 class cup_downloader(object):
     """
     Downloads and holds cups        logging.info("Start data uploader construction")
@@ -156,7 +158,7 @@ class cup_downloader(object):
         src = os.path.join( self._host_dir, fname )
         rc = self.single_load(src)
 
-        fname = self._file_prefix + ".ocpparam"
+        fname = names_helper.outer_prefix(self._file_prefix) + ".ocpparam"
         src = os.path.join( self._host_dir, fname )
         rc = self.single_load(src)
 
