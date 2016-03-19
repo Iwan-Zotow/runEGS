@@ -5,7 +5,7 @@ EGSINP_EXT  = ".egsinp"
 EGSPHSF_EXT = ".egsphsp1"
 
 # GENERAL CONVENTION
-# Outer cup prefix: R8O3
+#     outer prefix: R8O3
 #       cup prefix: R8O3IL08
 #      file prefix: R8O3IL08C25
 #      full_prefix: R8O3IL08C25_Y0Z0
@@ -91,7 +91,7 @@ def outer_prefix(cup_prefix):
     Take cup prefix string and produce outer cup prefix
     """
 
-    radUnit, outerCup, innerCupSer, innerCupNum, coll = parse_file_prefix(file_prefix)
+    radUnit, outerCup, innerCupSer, innerCupNum = parse_cup_prefix(cup_prefix)
 
     return "R" + str(radUnit) + "O" + str(outerCup)
 
