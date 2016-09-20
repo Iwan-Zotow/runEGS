@@ -1,5 +1,5 @@
 # Docker to run dose calc remotely
-FROM ubuntu:15.04
+FROM ubuntu:16.04
 MAINTAINER O.K. <oleg.krivosheev@xcision.com>
 
 # commands and configuration
