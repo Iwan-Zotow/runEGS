@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import subprocess
@@ -51,13 +51,13 @@ def copy_C25(top):
     """
     Copy source file
     """
-    shutil.copy("/home/beamuser/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
+    shutil.copy("/home/kriol/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
 
 def copy_C15(top):
     """
     Copy source file
     """
-    shutil.copy("/home/beamuser/C15.egsphsp1", os.path.join(top, "C15.egsphsp1"))
+    shutil.copy("/home/kriol/C15.egsphsp1", os.path.join(top, "C15.egsphsp1"))
 
 def copy_CUPS(top):
     """
@@ -97,10 +97,10 @@ def main():
     Building Docker image
     """
     
-    # step 0 - pull ubuntu:15.04 from docker hub
-    rc = subprocess.call(["docker", "pull", "ubuntu:15.04"], stderr=subprocess.PIPE)
+    # step 0 - pull ubuntu:16.04 from docker hub
+    rc = subprocess.call(["docker", "pull", "ubuntu:16.04"], stderr=subprocess.PIPE)
     if rc != 0:
-        raise RuntimeError("Unable to pull ubuntu:15.04 image")
+        raise RuntimeError("Unable to pull ubuntu:16.04 image")
 
     top = os.getcwd()
     

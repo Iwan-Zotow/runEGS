@@ -24,17 +24,17 @@ class phandim(object):
         bz: array of floats
             voxel boundaries in Z, mm
         """
-        if bx == None:
+        if bx is None:
             raise RuntimeError("phantom", "Null bx parameter in constructor")            
         if len(bx) < 2:
             raise RuntimeError("phantom", "bx is too short in constructor")
 
-        if by == None:
+        if by is None:
             raise RuntimeError("phantom", "Null by parameter in constructor")        
         if len(by) < 2:
             raise RuntimeError("phantom", "by is too short in constructor")
 
-        if bz == None:
+        if bz is None:
             raise RuntimeError("phantom", "Null bz parameter in constructor")                    
         if len(bz) < 2:
             raise RuntimeError("phantom", "bz is too short in constructor")
