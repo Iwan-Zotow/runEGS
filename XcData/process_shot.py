@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import os
-import conversion
 import subprocess
-import symdata
 import hashlib
 import struct
 import numpy as np
 import logging
 
-from XcIO import names_helper
+from XcIO     import names_helper
+from XcMath   import conversion
+from XcMCCore import symdata
 
 EXT = "xz"
 
