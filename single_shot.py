@@ -109,18 +109,14 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         # cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
         # cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
-        ##fname_ocp = os.path.join( wrk_dir, names_helper.outer_prefix(file_prefix) + ".ocpparam")
-        ##fname_icp = os.path.join( wrk_dir, file_prefix + ".icpparam")
+        fname_ocp = os.path.join( wrk_dir, names_helper.outer_prefix(file_prefix) + ".ocpparam")
+        fname_icp = os.path.join( wrk_dir, file_prefix + ".icpparam")
 
-        ##shift_z = XcConstants.COUCH_BOTTOM + get_OCP_zhift(fname_ocp)
+        shift_z = XcConstants.COUCH_BOTTOM + get_OCP_zhift(fname_ocp)
 
-        ##cupA = cup_inner_cad.cup_inner_cad(fname_icp, shift_z) # use outer curve for phantom
-        ##cupB = cup_outer_cad.cup_outer_cad(fname_ocp, shift_z, use_cup = cup.cup.USE_INNER)
-        ##cupC = cup_outer_cad.cup_outer_cad(fname_ocp, shift_z, use_cup = cup.cup.USE_OUTER)
-
-        cupA = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
-        cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-        cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+        cupA = cup_inner_cad.cup_inner_cad(fname_icp, shift_z) # use outer curve for phantom
+        cupB = cup_outer_cad.cup_outer_cad(fname_ocp, shift_z, use_cup = cup.cup.USE_INNER)
+        cupC = cup_outer_cad.cup_outer_cad(fname_ocp, shift_z, use_cup = cup.cup.USE_OUTER)
 
         logging.info("Interpolators done")
 
