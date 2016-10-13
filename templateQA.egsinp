@@ -2,7 +2,7 @@ R8O2IM01C15;Y0Z0;SPAD=18cm;SAD=36cm                                             
 0
 /home/beamuser/egsnrc_mp/dosxyznrc/clinical/cup_egsphant/R8O2IM01C15_Y0Z0.egsphant
 0.7, 0.01, 0
-1, 0, 1, 
+1, 0, 1
 2, 8, 0, 0, 0, -36, 18, 180, 0, 180, 0, 0, 0
 0, 72, 0.000000, 359.000000, 360, 1
 0, 71, 0.027778, 359.027778, 360, 1
@@ -45,7 +45,7 @@ R8O2IM01C15;Y0Z0;SPAD=18cm;SAD=36cm                                             
 200000000, 0, 99, 97, 33, 8, 1, 0, 1, 0, , -1, 0, 0, 1, 0
  #########################
  :Start MC Transport Parameter:
- 
+
  Global ECUT= 0.7
  Global PCUT= 0.01
  Global SMAX= 5
@@ -66,6 +66,6 @@ R8O2IM01C15;Y0Z0;SPAD=18cm;SAD=36cm                                             
  Atomic relaxations= On
  Electron impact ionization= Off
  Photon cross-sections output= Off
- 
+
  :Stop MC Transport Parameter:
  #########################

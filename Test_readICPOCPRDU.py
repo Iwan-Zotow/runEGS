@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May 26 14:29:16 2015 by Florin.Neacsu
-
-Copyright Xcision LLC.
-"""
-
 
 """
 For now, this is used for quick (integration) testing
-
-
-
 """
 
 from XcDefinitions import XcConstants
