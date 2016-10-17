@@ -110,9 +110,13 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
         logging.info("Cups downloaded")
 
-        cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"))
+        cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"), zshift = 0.5 + 10.28)
         cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
         cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+
+        ## cupA = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
+        ## cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
+        ## cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
         ## fname_ocp = os.path.join( wrk_dir, names_helper.outer_prefix(file_prefix) + ".ocpparam")
         ## fname_icp = os.path.join( wrk_dir, file_prefix + ".icpparam")
