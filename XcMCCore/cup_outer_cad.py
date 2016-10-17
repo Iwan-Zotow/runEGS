@@ -16,9 +16,9 @@ from XcMath       import linint
 class cup_outer_cad(cup):
     """
     Class to provide specialized cup,
-    where model is made from spherical curves and lines
+    where model is made from CAD curves and lines
 
-    Contains curves for both inner cup and inner cup
+    Contains curves for both inner outer cup and outer outer cup
     """
 
     def __init__(self, fname, zshift = 0.0, use_cup = cup.USE_OUTER):

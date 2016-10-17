@@ -8,9 +8,10 @@
 
 // A task runner that calls the Typescript compiler (tsc) and
 // Compiles a HelloWorld.ts program
+// "command": "c:\\Anaconda3\\python.exe",
 {
     "version": "0.1.0",
-    "command": "c:\\Anaconda3\\python.exe",
+    "command": "/usr/bin/python3",
     "args": ["${file}"]
 }
 
