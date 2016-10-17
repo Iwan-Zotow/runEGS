@@ -1,0 +1,7 @@
+{
+    "host": "75.148.23.254",
+    "port": 22,
+    "user": "sphinx",
+    "pswd": "twobob2015@xc",
+    "dest": "/home/sphinx/gcloud"
+}

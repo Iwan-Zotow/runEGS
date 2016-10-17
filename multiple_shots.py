@@ -3,6 +3,8 @@
 import os
 import sys
 
+from typing import Tuple
+
 from XcIO     import names_helper
 from XcMath   import linint
 
@@ -10,25 +12,25 @@ from XcMCCore import collimator
 from XcMCCore import clinical
 from XcMCCore import cup_curves
 
-def get_clinical_X_range():
+def get_clinical_X_range() -> Tuple[float, float]:
     """
     Returns clinical X range
     """
     return (-100.0, 100.0)     # in mm
 
-def get_clinical_Y_range():
+def get_clinical_Y_range() -> Tuple[float, float]:
     """
     Returns clinical Y range
     """
     return (-100.0, 100.0)     # in mm
 
-def get_clinical_Z_range():
+def get_clinical_Z_range() -> Tuple[float, float]:
     """
     Returns clinical Z range
     """
     return (-105.0, 100000000.0)     # in mm
 
-def parse_input(s):
+def parse_input(s: str) -> Tuple[str, str, str, str, int]:
     """
     Parse input string and produce rad.unit, outer cup, inner cup, inner cup #, collimator
     """
@@ -40,7 +42,7 @@ def parse_input(s):
 
     return (radUnit, outerCup, innerCupSer, innerCupNum, coll)
 
-def make_shots_list(radUnit, outerCup, innerCupSer, innerCupNum, x_range, y_range, z_range, shstep, shmargin):
+def make_shots_list(radUnit: str, outerCup: str, innerCupSer: str, innerCupNum: int, x_range, y_range, z_range, shstep, shmargin):
     """
     Given rad.unit, outer cup, inner cup, ranges, step size and margin,
     produce list of shots for a given conditions
