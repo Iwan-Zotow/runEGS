@@ -154,13 +154,13 @@ class cup_downloader(object):
         src = os.path.join( self._host_dir, fname )
         rc = self.single_load(src)
 
-        fname = self._file_prefix + ".icpparam"
-        src = os.path.join( self._host_dir, fname )
-        rc = self.single_load(src)
+        # fname = self._file_prefix + ".icpparam"
+        # src = os.path.join( self._host_dir, fname )
+        # rc = self.single_load(src)
 
-        fname = names_helper.outer_prefix(self._file_prefix) + ".ocpparam"
-        src = os.path.join( self._host_dir, fname )
-        rc = self.single_load(src)
+        # fname = names_helper.outer_prefix(self._file_prefix) + ".ocpparam"
+        # src = os.path.join( self._host_dir, fname )
+        # rc = self.single_load(src)
 
         self._rc = rc
         logging.info("Done cup downloading")
