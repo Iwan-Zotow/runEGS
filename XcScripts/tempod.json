@@ -2,13 +2,13 @@
   "kind": "Pod",
   "apiVersion": "v1",
   "metadata": {
-    "name": "the_name"
+    "name": "THE_NAME"
   },
   "spec": {
     "containers": [
       {
         "name": "the_name",
-        "image": "us.gcr.io/direct-disk-101619/docker",
+        "image": "us.gcr.io/direct-disk-101619/DOCKER",
         "workingDir": "/home/beamuser/runEGS",
         "command": [ "python", "main.py"],
         "args": ["THE_NAME"],
@@ -22,4 +22,3 @@
     "restartPolicy": "Never"
   }
 }
-

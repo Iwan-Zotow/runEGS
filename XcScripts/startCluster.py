@@ -53,7 +53,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID):
         return code from gcloud call
     """
 
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2}".format(CID, mach_type, nof_machs, ZID)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size=10".format(CID, mach_type, nof_machs, ZID)
 
     rc = subprocess.call(cmd, shell=True)
     return rc
