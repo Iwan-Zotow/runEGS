@@ -8,27 +8,8 @@ import shutil
 import subprocess
 import time
 
-def ReadKddsToBeCalculated(fname):
-    """
-    Read list of KDDs from file to be calculated
+from XcScripts import readKdds
 
-    Parameters
-    ------------
-
-    fname: string
-        file name of the KDDs list
-
-    returns: list
-        all KDDs from fname
-    """
-
-    listKdds=[]
-
-    with open(fname,'r') as f:
-        for line in f:
-            listKdds.append(line.rstrip('\n'))
-
-    return listKdds
 
 def make_cluster(CID, mach_type, nof_machs, ZID):
     """
@@ -228,9 +209,9 @@ def main(kdds_fname, numberOfGCL):
 
     print("Reading KDDs list from {0}".format(kdds_fname))
 
-    Kdds = ReadKddsToBeCalculated(kdds_fname)
+    kdds = readKdds.readKdds(kdds_fname)
 
-    print("To compute KDDs: {0}".format(len(Kdds)))
+    print("To compute KDDs: {0}".format(len(kdds)))
 
     print("Making cluster with nodes: {0}".format(numberOfGCL))
 
@@ -246,7 +227,7 @@ def main(kdds_fname, numberOfGCL):
 
     docker2run = os.path.join(gcr, project, docker) # full path to docker
 
-    for kdd in Kdds:
+    for kdd in kdds:
         pod_name = make_json_pod("tempod.json", kdd, docker2run)
         cmd = "kubectl create -f " + pod_name
         rc = 0
@@ -277,6 +258,9 @@ if __name__ =='__main__':
     numberOfGCL = 8 # default number of nodes
     if nof_args > 2:
         numberOfGCL = int(sys.argv[2])
+        if numberOfGCL < 1:
+            print("Default # of nodes is 8")
+            sys.exit(1)
 
     main(kdds_fname, numberOfGCL)
 
