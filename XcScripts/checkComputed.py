@@ -3,14 +3,10 @@
 
 import os
 import sys
-import json
-import shutil
-import subprocess
-import time
 
 from XcScripts import readKdds
 
-EXT = ".xz"
+EXT = ".tar.xz"
 
 def remove_shot(kdd):
     """
@@ -33,12 +29,13 @@ def main(cdir, kdds):
     missing = []
     for kdd in kdds:
         dname = remove_shot(kdd)
-        fname = os.path.join(cdir, dname, kdd) + EXT
+        fname = os.path.join(cdir, dname)
+        fname = os.path.join(fname, kdd) + EXT
+        # print(fname)
         if not os.path.isfile(fname):
             missing.append(kdd)
 
     return missing
-
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
@@ -51,10 +48,10 @@ if __name__ =='__main__':
     cdir       = sys.argv[1]
     kdds_fname = sys.argv[2]
 
-    missing = main(dir, kdds_fname)
+    missing = main(cdir, kdds_fname)
 
     if len(missing) > 0:
-        for m in missing:
+    	for m in missing:
             print(m)
 
     sys.exit(0)
