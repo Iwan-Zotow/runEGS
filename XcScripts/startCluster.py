@@ -11,7 +11,7 @@ import time
 from XcScripts import readKdds
 
 
-def make_cluster(CID, mach_type, nof_machs, ZID):
+def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
     """
     Given machine type and # of machines, creates cluster
 
@@ -29,12 +29,15 @@ def make_cluster(CID, mach_type, nof_machs, ZID):
 
     ZID: string
         zone id
+        
+    disk_size: integer
+        disk size in Gb
 
     returns: integer
         return code from gcloud call
     """
 
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size=10".format(CID, mach_type, nof_machs, ZID)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
 
     rc = subprocess.call(cmd, shell=True)
     return rc
@@ -215,7 +218,7 @@ def main(kdds_fname, numberOfGCL):
 
     print("Making cluster with nodes: {0}".format(numberOfGCL))
 
-    rc = make_cluster(CID, mtype, numberOfGCL, ZID)
+    rc = make_cluster(CID, mtype, numberOfGCL, ZID, disk_size=30)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
