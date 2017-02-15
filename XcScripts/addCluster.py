@@ -9,16 +9,7 @@ import subprocess
 import time
 
 from XcScripts import readKdds
-
-def cvt_kdd_to_gname(kdd):
-    """
-    given Kdd, convert the name into gcloud one
-    """
-    t = kdd
-    t = t.lower()
-    t = t. replace('_', '-')
-
-    return t
+from XcIO.Kdd_Pod import kdd2pod, pod2kdd
 
 def read_template(template):
     """
@@ -35,15 +26,15 @@ def make_pod_from_template(temjson, kdd, docker2run):
     given JSON from template and kdd, make in-memory pod json
     """
 
-    gname = cvt_kdd_to_gname( kdd )
+    pod = kdd2pod( kdd )
 
-    temjson["metadata"]["name"] = gname
+    temjson["metadata"]["name"] = pod
 
-    temjson["spec"]["containers"][0]["name"] = gname
+    temjson["spec"]["containers"][0]["name"] = pod
 
     temjson["spec"]["containers"][0]["image"] = docker2run
 
-    temjson["spec"]["containers"][0]["args"][0] = kdd
+    temjson["spec"]["containers"][0]["args"][0] = pod2kdd(kdd)
 
     return temjson
 
@@ -55,24 +46,19 @@ def make_json_pod(template, kdd, docker2run):
     temjson = read_template(template)
     outjson = make_pod_from_template(temjson, kdd, docker2run)
 
-    fname = "pod" + "_" + kdd + ".json"
+    fname = "pod" + "_" + pod2kdd(kdd) + ".json"
     with open(fname, "w+") as f:
         f.write(json.dumps(outjson, indent=4))
 
     return fname
 
-def read_config():
+def read_config(ccfg):
     """
+    read cluster configuration file from JSON
     """
-    with open("config_cluster.json") as data_file:
+    with open(ccfg) as data_file:
         data = json.load(data_file)
     return data
-
-def pod2Kdd(pod):
-    """
-    """
-
-
 
 def main(kdds_fname):
     """
@@ -81,7 +67,7 @@ def main(kdds_fname):
     which are read from input file
     """
 
-    cfg = read_config()
+    cfg = read_config("config_cluster.json")
 
     CID   = cfg["CID"]
     ZID   = cfg["ZID"]

@@ -9,7 +9,7 @@ import subprocess
 import time
 
 from XcScripts import readKdds
-
+from XcIO.Kdd_Pod import kdd2pod, pod2kdd
 
 def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
     """
@@ -63,27 +63,6 @@ def auth_cluster(CID, ZID):
     rc = subprocess.call(cmd, shell=True)
     return rc
 
-def cvt_kdd_to_gname(kdd):
-    """
-    Given Kdd, convert the name into gcloud compatible one
-    Gcloud shall have small letters and dahs instead of underscore
-
-    Parameters
-    ------------
-
-    kdd: string
-        KDD name
-
-    returns: string
-        name suited for gcloud
-    """
-
-    t = kdd
-    t = t.lower()
-    t = t. replace('_', '-')
-
-    return t
-
 def read_template(template):
     """
     Read and return template file as JSON
@@ -123,15 +102,15 @@ def make_pod_from_template(temjson, kdd, docker2run):
         modified JSON suitable for computation
     """
 
-    gname = cvt_kdd_to_gname( kdd )
+    pod = kdd2pod(kdd)
 
-    temjson["metadata"]["name"] = gname
+    temjson["metadata"]["name"] = pod
 
-    temjson["spec"]["containers"][0]["name"] = gname
+    temjson["spec"]["containers"][0]["name"] = pod
 
     temjson["spec"]["containers"][0]["image"] = docker2run
 
-    temjson["spec"]["containers"][0]["args"][0] = kdd
+    temjson["spec"]["containers"][0]["args"][0] = pod2kdd(kdd)
 
     return temjson
 
@@ -158,7 +137,7 @@ def make_json_pod(template, kdd, docker2run):
     temjson = read_template(template)
     outjson = make_pod_from_template(temjson, kdd, docker2run)
 
-    fname = "pod" + "_" + kdd + ".json"
+    fname = "pod" + "_" + pod2kdd(kdd) + ".json"
     with open(fname, "w+") as f:
         f.write(json.dumps(outjson, indent=4))
 
@@ -181,7 +160,7 @@ def read_config(cfname):
         data = json.load(data_file)
     return data
 
-def main(kdds_fname, numberOfGCL):
+def main(kdds_fname, nof_nodes):
     """
     This method creates a cluster, and then
     for a given cluster launches pods (one pod per kdd),
@@ -193,7 +172,7 @@ def main(kdds_fname, numberOfGCL):
     kdds_fname: string
         file name which contains list of KDDs to compute
 
-    numberOfGCL: integer
+    nof_nodes: integer
         number of the nodes in the cluster
     """
 
@@ -208,7 +187,7 @@ def main(kdds_fname, numberOfGCL):
     project = cfg["project"]
 
     print("From config_cluster.json:")
-    print(CID,ZID,mtype,docker,gcr,project)
+    print(CID, ZID, mtype, docker, gcr, project)
 
     print("Reading KDDs list from {0}".format(kdds_fname))
 
@@ -216,9 +195,9 @@ def main(kdds_fname, numberOfGCL):
 
     print("To compute KDDs: {0}".format(len(kdds)))
 
-    print("Making cluster with nodes: {0}".format(numberOfGCL))
+    print("Making cluster with nodes: {0}".format(nof_nodes))
 
-    rc = make_cluster(CID, mtype, numberOfGCL, ZID, disk_size=30)
+    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
@@ -241,9 +220,8 @@ def main(kdds_fname, numberOfGCL):
                 break
 
         if rc != 0:
-            print("Cannot make kdd {0}".format(kdd))
+            print("Cannot make kdd {0}".format(pod2kdd(kdd)))
             sys.exit(1)
-
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
@@ -258,13 +236,13 @@ if __name__ =='__main__':
     if nof_args >= 2:
         kdds_fname = sys.argv[1]
 
-    numberOfGCL = 8 # default number of nodes
+    nof_nodes = 8 # default number of nodes
     if nof_args > 2:
-        numberOfGCL = int(sys.argv[2])
-        if numberOfGCL < 1:
+        nof_nodes = int(sys.argv[2])
+        if nof_nodes < 1:
             print("Default # of nodes is 8")
             sys.exit(1)
 
-    main(kdds_fname, numberOfGCL)
+    main(kdds_fname, nof_nodes)
 
     sys.exit(0)
