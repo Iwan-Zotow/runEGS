@@ -120,10 +120,10 @@ class cup_outer_cad(cup):
         # ? all data we have is of type 1
         # ? no chenches to outer wall
         #if self._ICWallEncodingType == 2:
-        #    self._xow = self.xow - self._OCOrigin[0]
-        #    self._yow = self.yow - self._OCOrigin[1]
-        #    self._xcow = self.xcow - self._OCOrigin[0]
-        #    self._ycow = self.ycow - self._OCOrigin[1]
+        #    self._xow = self._xow - self._OCOrigin[0]
+        #    self._yow = self._yow - self._OCOrigin[1]
+        #    self._xcow = self._xcow - self._OCOrigin[0]
+        #    self._ycow = self._ycow - self._OCOrigin[1]
 
         self.convert_to_OCP()
 
