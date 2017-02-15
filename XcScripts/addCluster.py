@@ -68,6 +68,12 @@ def read_config():
         data = json.load(data_file)
     return data
 
+def pod2Kdd(pod):
+    """
+    """
+
+
+
 def main(kdds_fname):
     """
     This method use existing cluster, and then

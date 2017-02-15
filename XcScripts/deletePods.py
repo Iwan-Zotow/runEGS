@@ -21,17 +21,29 @@ def ReadPodsToBeDeleted(fname):
 
     return listPods
 
+# array with replacements
+replc = {"r":"R", "c":"C", "x":"X", "y":"Y", "z":"Z", "o":"O", "i":"I", "l":"L", "-":"_", "0":"0", "1":"1", "2":"2","3":"3", "4":"4", "5":"5", "6":"6", "7":"7", "8":"8", "9":"9"}
+
+def normalize_pod(pod):
+    """
+    Given the pod in Kuberbetes format, normalize it into EGS format
+    """
+
+    q = "".join(map(lambda x: replc[x], pod))
+    return q
+
 def main(pods_fname):
     """
     This method takes list of pods and delte them all,
     one by one
     """
-    
+
     pods = ReadPodsToBeDeleted(pods_fname)
 
     print("To remove PODs: {0}".format(len(pods)))
-    
+
     for pod in pods:
+        thepod = normalize_pod(pod)
         cmd = "kubectl delete pod " + pod
         rc = 0
         for k in range(0, 12): # several attempts to make a pod
@@ -40,7 +52,7 @@ def main(pods_fname):
                 break
 
         if rc != 0:
-            print("Cannot delete pod {0}".format(pod))
+            print("Cannot delete pod {0}".format(thepod))
             sys.exit(1)
 
 if __name__ =='__main__':

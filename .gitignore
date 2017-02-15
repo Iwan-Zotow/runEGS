@@ -60,7 +60,7 @@ target/
 
 # temporary files
 pod_*.json
-*.kdds
+# *.kdds
 
 # Sublime text project files
 *.sublime*
