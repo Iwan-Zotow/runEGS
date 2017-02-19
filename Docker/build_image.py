@@ -139,7 +139,17 @@ def main():
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:dxyz",  "."], stderr=subprocess.PIPE)
     if rc != 0:
         raise RuntimeError("Unable to build docker image")
+        
+    return 0
 
 if __name__ == '__main__':
-    main()
 
+    import sys
+
+    rc = 0
+    try:
+        rc = main()
+    except:
+        rc = -1
+
+    sys.exit(rc)
