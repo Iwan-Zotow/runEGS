@@ -35,5 +35,5 @@ def main(nof_sources):
         k += 1
 
 if __name__ == "__main__":
-    main(5)
+    main(6)
     sys.exit(0)
