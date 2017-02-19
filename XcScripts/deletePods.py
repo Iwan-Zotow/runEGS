@@ -7,18 +7,8 @@ import shutil
 import subprocess
 import time
 
-def ReadPodsToBeDeleted(fname):
-    """
-    self explanatory
-    """
-
-    listPods = []
-
-    with open(fname,'r') as f:
-        for line in f:
-            listPods.append(line.rstrip('\n'))
-
-    return listPods
+from XcScripts import readKdds
+from XcIO.Kdd_Pod import kdd2pod, pod2kdd
 
 def main(pods_fname):
     """
@@ -26,13 +16,13 @@ def main(pods_fname):
     one by one
     """
 
-    pods = ReadPodsToBeDeleted(pods_fname)
+    pods = readKdds.readKdds(pods_fname)
 
     print("To remove PODs: {0}".format(len(pods)))
 
     for pod in pods:
-        thepod = normalize_pod(pod)
-        cmd = "kubectl delete pod " + pod
+        thepod = kdd2pod(pod)
+        cmd = "kubectl delete pod " + thepod
         rc = 0
         for k in range(0, 12): # several attempts to make a pod
             rc = subprocess.call(cmd, shell=True)
