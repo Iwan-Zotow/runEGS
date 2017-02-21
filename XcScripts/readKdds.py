@@ -20,4 +20,10 @@ def readKdds(fname):
         for line in f:
             listKdds.append(line.rstrip('\n'))
 
-    return listKdds
+    rc = []
+    for kdd in listKdds:
+        q = kdd.split(" ")
+        rc.append(q[0])
+
+    return rc
+
