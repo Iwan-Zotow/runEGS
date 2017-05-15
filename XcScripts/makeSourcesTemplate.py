@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+#%%
 
 import os
 import sys
 
-polar_angles = [18, 25, 32, 39, 46, 53]
+polar_angles = [18, 24, 29, 35, 41, 47, 53]
 
 def main(nof_sources):
     """
@@ -18,7 +19,7 @@ def main(nof_sources):
         raise ValueError("N of sources is too large")
 
     if nof_sources < 1:
-        raise ValueError("N of sources is too small")
+        raise ValueError("N of sources is too small, shall be positive")
 
     first = 90 - polar_angles[0]
     last  = 90 - polar_angles[nof_sources-1]
@@ -35,5 +36,5 @@ def main(nof_sources):
         k += 1
 
 if __name__ == "__main__":
-    main(6)
+    main(7)
     sys.exit(0)
