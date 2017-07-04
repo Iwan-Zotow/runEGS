@@ -11,6 +11,7 @@ from XcMath   import linint
 from XcMCCore import collimator
 from XcMCCore import clinical
 from XcMCCore import cup_curves
+from XcMCCore import cup_linint
 
 def get_clinical_X_range() -> Tuple[float, float]:
     """
@@ -48,12 +49,15 @@ def make_shots_list(radUnit: str, outerCup: str, innerCupSer: str, innerCupNum: 
     produce list of shots for a given conditions
     """
 
-    cup_dir = "/home/beamuser/Documents/EGS/CUPS"
+    cup_dir = "/home/beamuser/Documents/EGS/runEGS/Docker/CUPS"
 
     file_prefix = clinical.make_cup_name(radUnit, outerCup, innerCupSer, innerCupNum)
 
-    fname = os.path.join( cup_dir, file_prefix + ".json")
-    liA   = cup_curves.cup_curves( fname, 0.5 + 10.28 )
+    ## fname = os.path.join( cup_dir, file_prefix + ".json")
+    ## liA   = cup_curves.cup_curves( fname, 0.5 + 10.28 )
+
+    fname = os.path.join(cup_dir, file_prefix + "_KddCurveC.txt")
+    liA   = cup_linint.cup_linint(fname)
 
     z_max = liA.zmax()
 
