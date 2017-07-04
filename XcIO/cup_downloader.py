@@ -11,17 +11,13 @@ from XcIO import names_helper
 
 class cup_downloader(object):
     """
-    Downloads and holds cups        logging.info("Start data uploader construction")
-        logging.debug(wrk_dir)
-        logging.debug(host_ip)
- data
+    Downloads and holds cups data
     """
 
     def __init__(self, host_ip, host_dir, cup_dir, file_prefix, user_id, user_pass):
         """
         Constructor
         """
-
         logging.info("Start cup downloader construction")
         logging.debug(host_ip)
         logging.debug(host_dir)
@@ -42,6 +38,7 @@ class cup_downloader(object):
 
         logging.info("Done cup downloader construction")
 
+
     def single_load_ssh(self, src):
         """
         Load single cup using SSH protocol
@@ -59,6 +56,7 @@ class cup_downloader(object):
         logging.info("One cup loaded")
 
         return rc
+
 
     def single_load_ftp(self, src):
         """
@@ -79,11 +77,11 @@ class cup_downloader(object):
 
         return rc
 
+
     def single_load_copy(self, src):
         """
         Load single cup using fs copy
         """
-
         up   = ".."
         cups = "CUPS"
 
@@ -107,6 +105,7 @@ class cup_downloader(object):
 
         return rc
 
+
     def single_load(self, src):
         """
         Load single cup from server
@@ -115,11 +114,11 @@ class cup_downloader(object):
         #return self.single_load_ftp(src)
         #return self.single_load_ssh(src)
 
+
     def load(self):
         """
         Load all cups info from server
         """
-
         logging.info("Start cup downloading")
 
         self._rc = 0
@@ -150,24 +149,24 @@ class cup_downloader(object):
             self._rc = rc
             return
 
-        fname = self._file_prefix + ".json"
-        src = os.path.join( self._host_dir, fname )
-        rc = self.single_load(src)
+        ## fname = self._file_prefix + ".json"
+        ## src = os.path.join( self._host_dir, fname )
+        ## rc = self.single_load(src)
 
-        # fname = self._file_prefix + ".icpparam"
-        # src = os.path.join( self._host_dir, fname )
-        # rc = self.single_load(src)
+        ## fname = self._file_prefix + ".icpparam"
+        ## src = os.path.join( self._host_dir, fname )
+        ## rc = self.single_load(src)
 
-        # fname = names_helper.outer_prefix(self._file_prefix) + ".ocpparam"
-        # src = os.path.join( self._host_dir, fname )
-        # rc = self.single_load(src)
+        ## fname = names_helper.outer_prefix(self._file_prefix) + ".ocpparam"
+        ## src = os.path.join( self._host_dir, fname )
+        ## rc = self.single_load(src)
 
         self._rc = rc
         logging.info("Done cup downloading")
+
 
     def rc(self):
         """
         Returns return code of the downloud operation
         """
-
         return self._rc
