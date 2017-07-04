@@ -56,7 +56,7 @@ def make_shots_list(radUnit: str, outerCup: str, innerCupSer: str, innerCupNum: 
     ## fname = os.path.join( cup_dir, file_prefix + ".json")
     ## liA   = cup_curves.cup_curves( fname, 0.5 + 10.28 )
 
-    fname = os.path.join(cup_dir, file_prefix + "_KddCurveC.txt")
+    fname = os.path.join(cup_dir, file_prefix + "_KddCurveA.txt")
     liA   = cup_linint.cup_linint(fname)
 
     z_max = liA.zmax()
