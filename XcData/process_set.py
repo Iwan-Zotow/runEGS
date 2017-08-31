@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import os
@@ -46,7 +45,7 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, sym_Y 
     	p.join()
 
 if __name__ == "__main__":
-    process_set("/home/sphinx/gcloud", "R8O1IS", 1, 9,  "Out", 116.0)
-    process_set("/home/sphinx/gcloud", "R8O2IM", 1, 10, "Out", 140.0)
-    process_set("/home/sphinx/gcloud", "R8O3IL", 1, 9,  "Out", 153.0)
-    process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", 15.0)
+    process_set("/home/sphinx/gcloud", "R8O1IS", 1, 5,  "Out", 116.0)
+    #process_set("/home/sphinx/gcloud", "R8O2IM", 1, 10, "Out", 140.0)
+    #process_set("/home/sphinx/gcloud", "R8O3IL", 1, 9,  "Out", 153.0)
+    #process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", 15.0)

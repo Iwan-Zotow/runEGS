@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import os
@@ -35,14 +34,14 @@ def write_ifo(cup_tag, out_dir, ifos, zshift):
     with open(fname, "w") as f:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( cup_tag + "C00" )
 
-    	f.write(str(radUnit))
-    	f.write("\n")
-    	f.write(str(outerCup))
-    	f.write("\n")
-    	f.write( innerCupSer + innerCupNum )
-    	f.write("\n")
-    	f.write(str(len(ifos)))
-    	f.write("\n")
+        f.write(str(radUnit))
+        f.write("\n")
+        f.write(str(outerCup))
+        f.write("\n")
+        f.write( innerCupSer + innerCupNum )
+        f.write("\n")
+        f.write(str(len(ifos)))
+        f.write("\n")
 
         for ifo in ifos:
             coll = ifo[0]
@@ -239,4 +238,6 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
     write_ifo(cup_tag, out_dir, ifos, zshift)
 
 if __name__ == "__main__":
-    process_cup("/home/sphinx/gcloud", "R8O3IL08",  "qqq",  153.0, True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM03",  "Out",  140.0, True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM07",  "Out",  140.0, True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL02",  "Out",  153.0, True)
