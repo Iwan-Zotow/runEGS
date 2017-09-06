@@ -91,7 +91,7 @@ def main(kdds_fname):
         pod_name = make_json_pod("tempod.json", kdd, docker2run)
         cmd = "kubectl create -f " + pod_name
         rc = 0
-        for k in range(0, 12): # several attempts to make a pod
+        for k in range(0, 2): # several attempts to make a pod
             rc = subprocess.call(cmd, shell=True)
             if rc == 0:
                 time.sleep(0.5)
@@ -99,7 +99,6 @@ def main(kdds_fname):
 
         if rc != 0:
             print("Cannot make kdd {0}".format(kdd))
-            sys.exit(1)
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
@@ -115,4 +114,3 @@ if __name__ =='__main__':
     main(kdds_fname)
 
     sys.exit(0)
-
