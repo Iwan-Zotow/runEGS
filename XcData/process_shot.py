@@ -333,6 +333,16 @@ def writeX_d3d(fname, tddata, zshift):
     data = tddata.data()
 
     with open(fname, "wb") as f:
+        # write 32 byte header
+        f.write(struct.pack("i", 1)) # 1
+        f.write(struct.pack("i", 2)) # 2
+        f.write(struct.pack("i", 3)) # 3
+        f.write(struct.pack("i", 4)) # 4
+        f.write(struct.pack("i", 5)) # 5
+        f.write(struct.pack("i", 6)) # 6
+        f.write(struct.pack("i", 7)) # 7
+        f.write(struct.pack("i", 8)) # 8
+
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
         f.write(struct.pack("i", 0)) # Y not sym
@@ -411,6 +421,16 @@ def writeXY_d3d(fname, tddata, zshift):
     data = tddata.data()
 
     with open(fname, "wb") as f:
+        # write 32byte header
+        f.write(struct.pack("i", 1)) # 1
+        f.write(struct.pack("i", 2)) # 2
+        f.write(struct.pack("i", 3)) # 3
+        f.write(struct.pack("i", 4)) # 4
+        f.write(struct.pack("i", 5)) # 5
+        f.write(struct.pack("i", 6)) # 6
+        f.write(struct.pack("i", 7)) # 7
+        f.write(struct.pack("i", 8)) # 8
+
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
         f.write(struct.pack("i", 1)) # Y sym
