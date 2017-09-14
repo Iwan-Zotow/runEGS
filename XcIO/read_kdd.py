@@ -24,16 +24,22 @@ def read_kdd(fname):
         xsym = struct.unpack('i',f.read(4))[0]
         ysym = struct.unpack('i',f.read(4))[0]
         zsym = struct.unpack('i',f.read(4))[0]
+        print(xsym)
+        print(ysym)
+        print(zsym)
 
         # read in nx, ny, and nz
         nx = struct.unpack('i',f.read(4))[0]
         ny = struct.unpack('i',f.read(4))[0]
         nz = struct.unpack('i',f.read(4))[0]
+        print(nx)
+        print(ny)
+        print(nz)
 
         # create boundary lists
-        xBoundary = np.empty(nx, dtype = float)
-        yBoundary = np.empty(ny, dtype = float)
-        zBoundary = np.empty(nz, dtype = float)
+        xBoundary = np.empty(nx + 1, dtype = np.float32)
+        yBoundary = np.empty(ny + 1, dtype = np.float32)
+        zBoundary = np.empty(nz + 1, dtype = np.float32)
 
         #read in the boundaries
         for k in range(0, nx+1):
@@ -46,7 +52,7 @@ def read_kdd(fname):
             zBoundary[к] = struct.unpack('f',f.read(4))[0]
 
         #create dose matrix
-        dose = np.zero((nx,ny,nz), dtype = float)
+        dose = np.empty((nx,ny,nz), dtype = np.float32)
 
         #read in the dose matrix, find max
         dmax = -1.0
@@ -56,7 +62,7 @@ def read_kdd(fname):
                     v = struct.unpack('f',f.read(4))[0]
                     dose[i, j, k] = v
                     if v > dmax:
-                        v = dmax
+                        dmax = v
 
         return (xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose, dmax)
 
