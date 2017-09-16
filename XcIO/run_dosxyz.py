@@ -54,6 +54,8 @@ def run_dosxyz(wrk_dir, egs_inp, pegs_inp):
 
     os.symlink(src, lnk)
 
+    q = [process_name, "-i", os.path.basename(egs_inp), "-p", pegs_inp, "-b"]
+    print(q)
     rc = subprocess.call([process_name, "-i", os.path.basename(egs_inp), "-p", pegs_inp, "-b"],
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if rc != 0:
