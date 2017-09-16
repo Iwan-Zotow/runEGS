@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import math
+import matplotlib.pyplot as plt
 import struct
 
 import numpy as np
@@ -8,33 +9,29 @@ import numpy as np
 def read_kdd(fname):
     """
     Read Kdd file and return back tuple
+
+
     """
     with open(fname, "rb") as f:
         # read header, 32 bytes
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
-        _ = struct.unpack('i',f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
+        _ = struct.unpack('i', f.read(4))[0]
 
-        # read in the xsym, ysym, and zsym
-        xsym = struct.unpack('i',f.read(4))[0]
-        ysym = struct.unpack('i',f.read(4))[0]
-        zsym = struct.unpack('i',f.read(4))[0]
-        print(xsym)
-        print(ysym)
-        print(zsym)
+        # read in the symmetry flags xsym, ysym, and zsym
+        xsym = struct.unpack('i', f.read(4))[0]
+        ysym = struct.unpack('i', f.read(4))[0]
+        zsym = struct.unpack('i', f.read(4))[0]
 
-        # read in nx, ny, and nz
-        nx = struct.unpack('i',f.read(4))[0]
-        ny = struct.unpack('i',f.read(4))[0]
-        nz = struct.unpack('i',f.read(4))[0]
-        print(nx)
-        print(ny)
-        print(nz)
+        # read in dimensions nx, ny, and nz
+        nx = struct.unpack('i', f.read(4))[0]
+        ny = struct.unpack('i', f.read(4))[0]
+        nz = struct.unpack('i', f.read(4))[0]
 
         # create boundary lists
         xBoundary = np.empty(nx + 1, dtype = np.float32)
@@ -69,11 +66,60 @@ def read_kdd(fname):
     return None
 
 if __name__ == "__main__":
-    import sys
 
-    print(sys.argv[0])
-    fname = sys.argv[1]
+    xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose25, dmax25 = read_kdd("C:/R8O0IQ00_Y000Z061C025.d3d")
+    xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose15, dmax15 = read_kdd("C:/R8O0IQ00_Y000Z061C015.d3d")
 
-    xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose, dmax = read_kdd(fname)
+    print(nx)
+    #print(len(xBoundary))
+    #print(xBoundary)
+    #print("")
 
-    print(dmax)
+    print(ny)
+    #print(len(yBoundary))
+    #print(yBoundary)
+    #print("")
+
+    print(nz)
+    #print(len(zBoundary))
+    #print(zBoundary)
+    #print("")
+
+    f, (ax1,ax2) = plt.subplots(1,2, figsize=(12,7))
+
+    img = ax1.imshow(dose15[0,:,:])
+    ax1.set_title("QA kdd Z=61, C15")
+
+    img = ax2.imshow(dose25[0,:,:])
+    ax2.set_title("QA kdd Z=61, C25")
+
+    f.subplots_adjust(right=0.8)
+    cbar_ax = f.add_axes([0.85, 0.25, 0.05, 0.5])
+    f.colorbar(img, cax=cbar_ax)
+
+    QA15max = np.nanmax(dose15)
+    QA25max = np.nanmax(dose25)
+    print("Max C15 = {0}, {1}\nMax C25 = {2}, {3}\n".format(QA15max, dmax15, QA25max, dmax25))
+
+    QA15Centroid = dose15[0:1, 59:60, 52:53]
+    QA25Centroid = dose25[0:1, 59:60, 52:53]
+    print("Centroid C15 = {0}\nCentroid C25 = {1}\n".format(QA15Centroid, QA25Centroid))
+
+    aQA15CentroidAveraged = np.mean(dose15[0:1, 59:61, 52:54])
+    aQA25CentroidAveraged = np.mean(dose25[0:1, 59:61, 52:54])
+    print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(aQA15CentroidAveraged, aQA25CentroidAveraged))
+    print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(aQA15CentroidAveraged/aQA25CentroidAveraged))
+
+    bQA15CentroidAveraged = np.mean(dose15[0:1, 58:62, 51:55])
+    bQA25CentroidAveraged = np.mean(dose25[0:1, 58:62, 51:55])
+    print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(bQA15CentroidAveraged, bQA25CentroidAveraged))
+    print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(bQA15CentroidAveraged/bQA25CentroidAveraged))
+
+    cQA15CentroidAveraged = np.mean(dose15[0:1, 57:63, 50:56])
+    cQA25CentroidAveraged = np.mean(dose25[0:1, 57:63, 50:56])
+    print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(cQA15CentroidAveraged, cQA25CentroidAveraged))
+    print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(cQA15CentroidAveraged/cQA25CentroidAveraged))
+
+    print("Kdd scalar = {0}   {1}    {2}    {3}".format(1.0/cQA25CentroidAveraged, 1.0/bQA25CentroidAveraged, 1.0/aQA25CentroidAveraged, 1.0/QA25Centroid))
+
+    plt.show()
