@@ -67,23 +67,15 @@ def read_kdd(fname):
 
 if __name__ == "__main__":
 
-    xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose25, dmax25 = read_kdd("C:/R8O0IQ00_Y000Z061C025.d3d")
-    xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose15, dmax15 = read_kdd("C:/R8O0IQ00_Y000Z061C015.d3d")
+    import os
 
-    print(nx)
-    #print(len(xBoundary))
-    #print(xBoundary)
-    #print("")
+    dirname = "D:/Ceres/Resource/PlanEngine/XcDoseData/trunk/PlanEngineResource/R8/Kdd"
 
-    print(ny)
-    #print(len(yBoundary))
-    #print(yBoundary)
-    #print("")
+    xsym25, ysym25, zsym25, nx25, ny25, nz25, xBoundary25, yBoundary25, zBoundary25, dose25, dmax25 = read_kdd(os.path.join(dirname, "R8O0IQ00_Y000Z061C025.d3d"))
+    xsym15, ysym15, zsym15, nx15, ny15, nz15, xBoundary15, yBoundary15, zBoundary15, dose15, dmax15 = read_kdd(os.path.join(dirname, "R8O0IQ00_Y000Z061C015.d3d"))
 
-    print(nz)
-    #print(len(zBoundary))
-    #print(zBoundary)
-    #print("")
+    print("{0}  {1}  {2}  {3}  {4}  {5}".format(nx25, ny25, nz25, nx15, ny15, nz15))
+    print("{0}  {1}  {2}  {3}  {4}  {5}".format(len(xBoundary25), len(yBoundary25), len(zBoundary25), len(xBoundary15), len(yBoundary15), len(zBoundary15)))
 
     f, (ax1,ax2) = plt.subplots(1,2, figsize=(12,7))
 
@@ -101,8 +93,8 @@ if __name__ == "__main__":
     QA25max = np.nanmax(dose25)
     print("Max C15 = {0}, {1}\nMax C25 = {2}, {3}\n".format(QA15max, dmax15, QA25max, dmax25))
 
-    QA15Centroid = dose15[0:1, 59:60, 52:53]
-    QA25Centroid = dose25[0:1, 59:60, 52:53]
+    QA15Centroid = np.mean(dose15[0:1, 59:60, 52:53])
+    QA25Centroid = np.mean(dose25[0:1, 59:60, 52:53])
     print("Centroid C15 = {0}\nCentroid C25 = {1}\n".format(QA15Centroid, QA25Centroid))
 
     aQA15CentroidAveraged = np.mean(dose15[0:1, 59:61, 52:54])
@@ -120,6 +112,6 @@ if __name__ == "__main__":
     print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(cQA15CentroidAveraged, cQA25CentroidAveraged))
     print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(cQA15CentroidAveraged/cQA25CentroidAveraged))
 
-    print("Kdd scalar = {0}   {1}    {2}    {3}".format(1.0/cQA25CentroidAveraged, 1.0/bQA25CentroidAveraged, 1.0/aQA25CentroidAveraged, 1.0/QA25Centroid))
+    print("Kdd scalar = {0:15.6e}   {1:15.6e}    {2:15.6e}    {3:15.6e}".format(1.0/cQA25CentroidAveraged, 1.0/bQA25CentroidAveraged, 1.0/aQA25CentroidAveraged, 1.0/QA25Centroid))
 
     plt.show()
