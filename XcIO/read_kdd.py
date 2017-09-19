@@ -69,10 +69,10 @@ if __name__ == "__main__":
 
     import os
 
-    dirname = "D:/Ceres/Resource/PlanEngine/XcDoseData/trunk/PlanEngineResource/R8/Kdd"
+    dirname = "D:/Ceres/Resource/PlanEngine/XcDoseData/trunk/PlanEngineResource/R5/Kdd"
 
-    xsym25, ysym25, zsym25, nx25, ny25, nz25, xBoundary25, yBoundary25, zBoundary25, dose25, dmax25 = read_kdd(os.path.join(dirname, "R8O0IQ00_Y000Z061C025.d3d"))
-    xsym15, ysym15, zsym15, nx15, ny15, nz15, xBoundary15, yBoundary15, zBoundary15, dose15, dmax15 = read_kdd(os.path.join(dirname, "R8O0IQ00_Y000Z061C015.d3d"))
+    xsym25, ysym25, zsym25, nx25, ny25, nz25, xBoundary25, yBoundary25, zBoundary25, dose25, dmax25 = read_kdd(os.path.join(dirname, "R5O0IQ00_Y000Z061C025.d3d"))
+    xsym15, ysym15, zsym15, nx15, ny15, nz15, xBoundary15, yBoundary15, zBoundary15, dose15, dmax15 = read_kdd(os.path.join(dirname, "R5O0IQ00_Y000Z061C015.d3d"))
 
     print("{0}  {1}  {2}  {3}  {4}  {5}".format(nx25, ny25, nz25, nx15, ny15, nz15))
     print("{0}  {1}  {2}  {3}  {4}  {5}".format(len(xBoundary25), len(yBoundary25), len(zBoundary25), len(xBoundary15), len(yBoundary15), len(zBoundary15)))
@@ -93,22 +93,22 @@ if __name__ == "__main__":
     QA25max = np.nanmax(dose25)
     print("Max C15 = {0}, {1}\nMax C25 = {2}, {3}\n".format(QA15max, dmax15, QA25max, dmax25))
 
-    QA15Centroid = np.mean(dose15[0:1, 59:60, 52:53])
-    QA25Centroid = np.mean(dose25[0:1, 59:60, 52:53])
+    QA15Centroid = np.mean(dose15[0:1, 60:61, 52:53])
+    QA25Centroid = np.mean(dose25[0:1, 60:61, 52:53])
     print("Centroid C15 = {0}\nCentroid C25 = {1}\n".format(QA15Centroid, QA25Centroid))
 
-    aQA15CentroidAveraged = np.mean(dose15[0:1, 59:61, 52:54])
-    aQA25CentroidAveraged = np.mean(dose25[0:1, 59:61, 52:54])
+    aQA15CentroidAveraged = np.mean(dose15[0:1, 59:61, 51:53])
+    aQA25CentroidAveraged = np.mean(dose25[0:1, 59:61, 51:53])
     print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(aQA15CentroidAveraged, aQA25CentroidAveraged))
     print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(aQA15CentroidAveraged/aQA25CentroidAveraged))
 
-    bQA15CentroidAveraged = np.mean(dose15[0:1, 58:62, 51:55])
-    bQA25CentroidAveraged = np.mean(dose25[0:1, 58:62, 51:55])
+    bQA15CentroidAveraged = np.mean(dose15[0:1, 58:62, 50:54])
+    bQA25CentroidAveraged = np.mean(dose25[0:1, 58:62, 50:54])
     print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(bQA15CentroidAveraged, bQA25CentroidAveraged))
     print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(bQA15CentroidAveraged/bQA25CentroidAveraged))
 
-    cQA15CentroidAveraged = np.mean(dose15[0:1, 57:63, 50:56])
-    cQA25CentroidAveraged = np.mean(dose25[0:1, 57:63, 50:56])
+    cQA15CentroidAveraged = np.mean(dose15[0:1, 57:63, 49:55])
+    cQA25CentroidAveraged = np.mean(dose25[0:1, 57:63, 49:55])
     print("Centroid averaged C15 = {0}\nCentroid averaged C25 = {1}".format(cQA15CentroidAveraged, cQA25CentroidAveraged))
     print("Centroid averaged C15 / Centroid averaged C25 = {0:1.4f}\n".format(cQA15CentroidAveraged/cQA25CentroidAveraged))
 
