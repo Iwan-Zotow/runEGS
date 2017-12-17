@@ -28,7 +28,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
 
     ZID: string
         zone id
-        
+
     disk_size: integer
         disk size in Gb
 
@@ -36,7 +36,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
         return code from gcloud call
     """
 
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4} --preemptible".format(CID, mach_type, nof_machs, ZID, disk_size)
 
     rc = subprocess.call(cmd, shell=True)
     return rc

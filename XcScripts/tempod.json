@@ -14,7 +14,7 @@
         "args": ["THE_NAME"],
         "resources": {
             "limits": {
-                "cpu": "700m"
+                "cpu": "725m"
             }
         }
       }
