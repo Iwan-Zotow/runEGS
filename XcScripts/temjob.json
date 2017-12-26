@@ -1,0 +1,32 @@
+{
+    "kind": "Job",
+    "apiVersion": "batch/v1",
+    "metadata": {
+        "name": "THE_NAME"
+    },
+    "spec": {
+        "template": {
+            "metadata": {
+                "name": "THE_NAME"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "the_name",
+                        "image": "us.gcr.io/direct-disk-101619/DOCKER",
+                        "workingDir": "/home/beamuser/runEGS",
+                        "command": [ "python", "main.py"],
+                        "args": ["THE_NAME"],
+                        "resources": {
+                          "limits": {
+                          "cpu": "725m"
+                        }
+                      }
+                    }
+                ],
+                "restartPolicy": "Never"
+            }
+        },
+        "backoffLimit": 1
+    }
+}
