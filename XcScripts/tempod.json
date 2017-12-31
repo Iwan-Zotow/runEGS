@@ -1,24 +1,24 @@
 {
-  "kind": "Pod",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "THE_NAME"
-  },
-  "spec": {
-    "containers": [
-      {
-        "name": "the_name",
-        "image": "us.gcr.io/direct-disk-101619/DOCKER",
-        "workingDir": "/home/beamuser/runEGS",
-        "command": [ "python", "main.py"],
-        "args": ["THE_NAME"],
-        "resources": {
-            "limits": {
-                "cpu": "725m"
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "THE_NAME"
+    },
+    "spec": {
+        "containers": [
+            {
+                "name": "the_name",
+                "image": "us.gcr.io/direct-disk-101619/DOCKER",
+                "workingDir": "/home/beamuser/runEGS",
+                "command": [ "python", "main.py"],
+                "args": ["THE_NAME"],
+                "resources": {
+                    "limits": {
+                        "cpu": "725m"
+                    }
+                }
             }
-        }
-      }
-    ],
-    "restartPolicy": "Never"
-  }
+        ],
+        "restartPolicy": "Never"
+    }
 }
