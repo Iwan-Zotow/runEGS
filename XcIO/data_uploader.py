@@ -211,6 +211,8 @@ class data_uploader(object):
             transport.connect(username=username, password=password)
 
             sftp = paramiko.SFTPClient.from_transport(transport)
+            chnl = sftp.get_channel()
+            chnl.settimeout(300.0)
 
             dest_dir = dir_name[0:dir_name.find("_")]
             remote_dir = os.path.join(self._host_dir, dest_dir)
