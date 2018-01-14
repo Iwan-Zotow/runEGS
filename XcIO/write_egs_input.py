@@ -78,7 +78,7 @@ def write_input(wrk_dir, template, full_prefix, cl, shot, nof_tracks):
 
     # making #tracks file input
 
-    lines[phsf_pos+1] = "{0}, 0, 99, 97, 33, 8, 1, 0, 1, 0, , -1, 0, 0, 1, 0".format(nof_tracks)
+    lines[phsf_pos+1] = "{0}, 0, 99, 97, 33, 8, 1, 0, 1, 0, , -1, 0, 0, 1, 0\n".format(nof_tracks)
 
     fname = os.path.join(wrk_dir, names_helper.make_egsinput_name(full_prefix))
     with open(fname, "wt") as f:
