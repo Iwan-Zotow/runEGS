@@ -85,7 +85,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.debug(str(z_range))
     logging.debug(str(steps))
     logging.debug(str(shot))
-    logging.debug(str(nof_shots))
+    logging.debug(str(nof_tracks))
 
     mats = materials.materials("Materials.txt")
 

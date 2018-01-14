@@ -47,23 +47,20 @@ def copy_HEN(top):
     except Error:
         raise RuntimeError("Unable to copy HEN_HOUSE, aboring")
 
-def copy_C25(top):
-    """
-    Copy source file
-    """
-    shutil.copy("/home/beamuser/C25.egsphsp1", os.path.join(top, "C25.egsphsp1"))
 
-def copy_C15(top):
+def copy_PHSF(top, fname):
     """
     Copy source file
     """
-    shutil.copy("/home/beamuser/C15.egsphsp1", os.path.join(top, "C15.egsphsp1"))
+    if not os.path.isfile(fname):
+        raise RuntimeError("File not here: {0}".format(fname))
+    shutil.copy(fname, os.path.join(top, os.path.basename(fname)))
+
 
 def copy_CUPS(top):
     """
     Copy all cups
     """
-
     cups = os.path.join(top, "CUPS")
 
     if os.path.isdir(cups):
@@ -125,8 +122,8 @@ def main():
     copy_HEN(top)
 
     # step 4 - copy C25 and C15 phsfs
-    copy_C25(top)
-    copy_C15(top)
+    copy_PHSF(top, "/home/beamuser/C25.egsphsp1")
+    copy_PHSF(top, "/home/beamuser/C15.egsphsp1")
 
     # step 5 - copy SSH key
 
@@ -139,7 +136,7 @@ def main():
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:dxyz",  "."], stderr=subprocess.PIPE)
     if rc != 0:
         raise RuntimeError("Unable to build docker image")
-        
+
     return 0
 
 if __name__ == '__main__':
