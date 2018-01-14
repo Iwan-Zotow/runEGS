@@ -16,7 +16,7 @@
                         "image": "us.gcr.io/direct-disk-101619/DOCKER",
                         "workingDir": "/home/beamuser/runEGS",
                         "command": [ "python", "main.py"],
-                        "args": ["THE_NAME"],
+                        "args": ["THE_NAME", "-1"],
                         "resources": {
                             "limits": {
                                 "cpu": "725m"

@@ -68,7 +68,7 @@ def read_credentials(creds):
 
     return (host, port, user, pswd, dest)
 
-def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot):
+def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot, nof_tracks):
     """
     Run single shot for a given cup, collimator, shot
     """
@@ -85,6 +85,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.debug(str(z_range))
     logging.debug(str(steps))
     logging.debug(str(shot))
+    logging.debug(str(nof_shots))
 
     mats = materials.materials("Materials.txt")
 
@@ -102,7 +103,6 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     cupB = None
     cupC = None
     if not XcConstants.IsQACup(innerCupSer):
-        #cdown = cup_downloader.cup_downloader("192.168.1.217", "./", wrk_dir, file_prefix, "kriol", "Proton31")
         cdown = cup_downloader.cup_downloader("192.168.1.230", "/Programs_n_Docs/Kdd_CupGeometry/Out/", wrk_dir, file_prefix, "beamuser", "beamuser")
         cdown.load()
         if (cdown.rc() != 0):
@@ -113,7 +113,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
         # old S cups done right
         ## cupA = cup_curves.cup_curves(os.path.join( wrk_dir, file_prefix + ".json"), zshift = 0.5 + 10.28)
         ## cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
-        ##cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
+        ## cupC = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveC.txt"))
 
         cupA = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveA.txt"))
         cupB = cup_linint.cup_linint(os.path.join( wrk_dir, file_prefix + "_" + "KddCurveB.txt"))
@@ -156,13 +156,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
 
     logging.info("Phantom saved")
 
-    egsinp_template = None
-    if not XcConstants.IsQACup(innerCupSer):
-        egsinp_template = "template.egsinp"
-    else:
-        egsinp_template = "templateQA.egsinp"
-
-    egsinp_name = write_egs_input.write_input(wrk_dir, egsinp_template, full_prefix, cl, shot)
+    egsinp_name = write_egs_input.write_input(wrk_dir, "template.egsinp", full_prefix, cl, shot, nof_tracks)
 
     logging.info("Making EGS input")
 

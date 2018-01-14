@@ -57,7 +57,6 @@ def auth_cluster(CID, ZID):
     returns: integer
         return code from gcloud call
     """
-
     cmd = "gcloud container clusters get-credentials {0} --zone {1}".format(CID, ZID)
     rc = subprocess.call(cmd, shell=True)
     return rc
@@ -81,7 +80,7 @@ def read_template(template):
 
     return data
 
-def make_pod_from_template(temjson, kdd, docker2run):
+def make_pod_from_template(temjson, kdd, docker2run, nof_tracks):
     """
     Given JSON from template and kdd, make in-memory pod json
 
@@ -97,6 +96,9 @@ def make_pod_from_template(temjson, kdd, docker2run):
     docker2run: string
         docker image to run
 
+    nof_tracks: integer
+        number of tracks to run
+
     returns: dictionary
         modified JSON suitable for computation
     """
@@ -110,10 +112,11 @@ def make_pod_from_template(temjson, kdd, docker2run):
     temjson["spec"]["containers"][0]["image"] = docker2run
 
     temjson["spec"]["containers"][0]["args"][0] = pod2kdd(kdd)
+    temjson["spec"]["containers"][0]["args"][1] = str(nof_tracks)
 
     return temjson
 
-def make_json_pod(template, kdd, docker2run):
+def make_json_pod(template, kdd, docker2run, nof_tracks):
     """
     From template and Kdd to calc, make appropriate pod JSON
 
@@ -129,12 +132,15 @@ def make_json_pod(template, kdd, docker2run):
     docker2run: string
         docker image to run
 
+    nof_tracks: integer
+        number of tracks to execute
+
     returns: dictionary
         modified JSON suitable for computation
     """
 
     temjson = read_template(template)
-    outjson = make_pod_from_template(temjson, kdd, docker2run)
+    outjson = make_pod_from_template(temjson, kdd, docker2run, nof_tracks)
 
     fname = "pod" + "_" + pod2kdd(kdd) + ".json"
     with open(fname, "w+") as f:
@@ -159,7 +165,7 @@ def read_config(cfname):
         data = json.load(data_file)
     return data
 
-def main(kdds_fname, nof_nodes):
+def main(kdds_fname, nof_tracks, nof_nodes):
     """
     This method creates a cluster, and then
     for a given cluster launches pods (one pod per kdd),
@@ -170,6 +176,9 @@ def main(kdds_fname, nof_nodes):
 
     kdds_fname: string
         file name which contains list of KDDs to compute
+
+    nof_tracks: integer
+        number of tracks to compute for each KDD
 
     nof_nodes: integer
         number of the nodes in the cluster
@@ -209,7 +218,7 @@ def main(kdds_fname, nof_nodes):
     docker2run = os.path.join(gcr, project, docker) # full path to docker
 
     for kdd in kdds:
-        pod_name = make_json_pod("tempod.json", kdd, docker2run)
+        pod_name = make_json_pod("tempod.json", kdd, docker2run, nof_tracks)
         cmd = "kubectl create -f " + pod_name
         rc = 0
         for k in range(0, 12): # several attempts to make a pod
@@ -226,22 +235,30 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: startCluster list_of_KDDs <optional # of nodes>")
+        print("Use: startCluster list_of_KDDs <# of tracks> <optional # of nodes>")
         print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         print("Default # of nodes is 8")
+        print("Default # of tracks is 100000000")
         sys.exit(1)
 
     kdds_fname = ""
     if nof_args >= 2:
         kdds_fname = sys.argv[1]
 
-    nof_nodes = 8 # default number of nodes
+    nof_tracks = 100000000
     if nof_args > 2:
-        nof_nodes = int(sys.argv[2])
-        if nof_nodes < 1:
-            print("Default # of nodes is 8")
+        nof_tracks = int(sys.argv[2])
+        if nof_tracks < 1:
+            print("# of tracks should be positive")
             sys.exit(1)
 
-    main(kdds_fname, nof_nodes)
+    nof_nodes = 8 # default number of nodes
+    if nof_args > 3:
+        nof_nodes = int(sys.argv[3])
+        if nof_nodes < 1:
+            print("# of nodes should be positive")
+            sys.exit(1)
+
+    main(kdds_fname, nof_tracks, nof_nodes)
 
     sys.exit(0)

@@ -90,7 +90,7 @@ def clean_wrk_dir(wrk_dir):
 
     return
 
-def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
+def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tracks):
     """
     Make everything to compute one shot
     """
@@ -113,7 +113,7 @@ def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
     logging.basicConfig(filename=os.path.join(wrk_dir, full_prefix+".log"), level=logging.DEBUG)
     logging.info("Started")
 
-    logging.info("Running shot for input parameters: {0} {1} {2} {3} {4} {5}".format(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot) )
+    logging.info("Running shot for input parameters: {0} {1} {2} {3} {4} {5} {6}".format(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tracks) )
 
     # ranges and steps
     if not XcConstants.IsQACup(innerCupSer):
@@ -129,23 +129,35 @@ def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot):
 
         steps = get_qa_steps()
 
-    single_shot.run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot)
+    single_shot.run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_range, z_range, steps, shot, nof_tracks)
 
     logging.info("Done")
+
+def usage():
+    """
+    Print use of the main function
+    """
+    print("Usage: python main.py R8O3IL08C25_Y00Z00 #tracks")
 
 def main():
     """
     Drives all other methods to compute single shot dose
     """
 
-    if len(sys.argv) == 1:
-        radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
-        shot = (0.0, 0.0)
-    else:
+    if len(sys.argv) == 1 or len(sys.argv) == 2:
+        # radUnit, outerCup, innerCupSer, innerCupNum, coll = get_clinical_cup() # = get_qa_cup()
+        # shot = (0.0, 0.0)
+        usage()
+        return
+
+    if len(sys.argv) >= 3:
         radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix(sys.argv[1])
         shot = names_helper.parse_shot(sys.argv[1])
+        nof_tracks = int(sys.argv[2])
+        if nof_tracks <= 0:
+            return
 
-    run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot)
+    run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tracks)
 
 if __name__ == '__main__':
 
