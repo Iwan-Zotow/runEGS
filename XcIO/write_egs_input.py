@@ -17,7 +17,7 @@ def find_egsphsp1(lines):
 
     return -1
 
-def write_input(wrk_dir, template, full_prefix, cl, shot, nof_shots):
+def write_input(wrk_dir, template, full_prefix, cl, shot, nof_tracks):
     """
     Write EGS input file from template
 
@@ -39,7 +39,7 @@ def write_input(wrk_dir, template, full_prefix, cl, shot, nof_shots):
     shot: tuple of two floats
         shot position, (Y,Z) in MM
 
-    nof_shots: integer
+    nof_tracks: integer
         number of tracks to run
     """
 
@@ -49,7 +49,7 @@ def write_input(wrk_dir, template, full_prefix, cl, shot, nof_shots):
     logging.debug(full_prefix)
     logging.debug(str(cl))
     logging.debug(str(shot))
-    logging.debug(str(nof_shots))
+    logging.debug(str(nof_tracks))
 
     lines = []
     with open(template, "rt") as f:
