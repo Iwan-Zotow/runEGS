@@ -20,7 +20,7 @@ def read_template(template):
 
     return data
 
-def make_pod_from_template(temjson, kdd, docker2run):
+def make_pod_from_template(temjson, kdd, docker2run, nof_tracks):
     """
     given JSON from template and kdd, make in-memory pod json
     """
@@ -34,16 +34,35 @@ def make_pod_from_template(temjson, kdd, docker2run):
     temjson["spec"]["containers"][0]["image"] = docker2run
 
     temjson["spec"]["containers"][0]["args"][0] = pod2kdd(kdd)
+    temjson["spec"]["containers"][0]["args"][1] = str(nof_tracks)
 
     return temjson
 
-def make_json_pod(template, kdd, docker2run):
+def make_json_pod(template, kdd, docker2run, nof_tracks):
     """
-    from template and Kdd to calc, make appropriate
+    From template and Kdd to calc, make appropriate pod JSON
+
+    Parameters
+    ------------
+
+    template: string
+        file name of the JSON template
+
+    kdd: string
+        KDD to compute name
+
+    docker2run: string
+        docker image to run
+
+    nof_tracks: integer
+        number of tracks to execute
+
+    returns: dictionary
+        modified JSON suitable for computation
     """
 
     temjson = read_template(template)
-    outjson = make_pod_from_template(temjson, kdd, docker2run)
+    outjson = make_pod_from_template(temjson, kdd, docker2run, nof_tracks)
 
     fname = "pod" + "_" + pod2kdd(kdd) + ".json"
     with open(fname, "w+") as f:
@@ -53,13 +72,22 @@ def make_json_pod(template, kdd, docker2run):
 
 def read_config(ccfg):
     """
-    read cluster configuration file from JSON
+    Read cluster configuration file as JSON
+
+    Parameters
+    ------------
+
+    cfname: string
+        cluster config name
+
+    returns: dictionary
+        JSON parsed as dictionary
     """
     with open(ccfg) as data_file:
         data = json.load(data_file)
     return data
 
-def main(kdds_fname):
+def main(kdds_fname, nof_tracks):
     """
     This method use existing cluster, and then
     for a given cluster launches pods (one pod per kdd),
@@ -88,7 +116,7 @@ def main(kdds_fname):
     docker2run = os.path.join(gcr, project, docker) # full path to docker
 
     for kdd in Kdds:
-        pod_name = make_json_pod("tempod.json", kdd, docker2run)
+        pod_name = make_json_pod("tempod.json", kdd, docker2run, nof_tracks)
         cmd = "kubectl create -f " + pod_name
         rc = 0
         for k in range(0, 2): # several attempts to make a pod
@@ -104,13 +132,21 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: addCluster list_of_KDDs")
+        print("Use: addCluster list_of_KDDs <# of tracks>")
+        print("Default # of tracks is 100000000")
         sys.exit(1)
 
     kdds_fname = ""
     if nof_args >= 2:
         kdds_fname = sys.argv[1]
 
-    main(kdds_fname)
+    nof_tracks = 100000000
+    if nof_args > 2:
+        nof_tracks = int(sys.argv[2])
+        if nof_tracks < 1:
+            print("# of tracks should be positive")
+            sys.exit(1)
+
+    main(kdds_fname, nof_tracks)
 
     sys.exit(0)
