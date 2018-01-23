@@ -10,7 +10,7 @@ import time
 from XcScripts import readKdds
 from XcIO.Kdd_Pod import kdd2pod, pod2kdd
 
-def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
+def make_cluster(CID, mach_type, nof_machs, ZID, disk_size, preempt = True):
     """
     Given machine type and # of machines, creates cluster
 
@@ -32,14 +32,19 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
     disk_size: integer
         disk size in Gb
 
+    preempt: boolean
+        if True (default) make preemptible cluster, if False make standard one
+
     returns: integer
         return code from gcloud call
     """
-
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4} --preemptible".format(CID, mach_type, nof_machs, ZID, disk_size)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
+    if preempt:
+        cmd + = " --preemptible"
 
     rc = subprocess.call(cmd, shell=True)
     return rc
+
 
 def auth_cluster(CID, ZID):
     """
@@ -61,6 +66,7 @@ def auth_cluster(CID, ZID):
     rc = subprocess.call(cmd, shell=True)
     return rc
 
+
 def read_template(template):
     """
     Read and return template file as JSON
@@ -79,6 +85,7 @@ def read_template(template):
         data = json.load(data_file)
 
     return data
+
 
 def make_pod_from_template(temjson, kdd, docker2run, nof_tracks):
     """
@@ -102,7 +109,6 @@ def make_pod_from_template(temjson, kdd, docker2run, nof_tracks):
     returns: dictionary
         modified JSON suitable for computation
     """
-
     pod = kdd2pod(kdd)
 
     temjson["metadata"]["name"] = pod
@@ -115,6 +121,7 @@ def make_pod_from_template(temjson, kdd, docker2run, nof_tracks):
     temjson["spec"]["containers"][0]["args"][1] = str(nof_tracks)
 
     return temjson
+
 
 def make_json_pod(template, kdd, docker2run, nof_tracks):
     """
@@ -138,7 +145,6 @@ def make_json_pod(template, kdd, docker2run, nof_tracks):
     returns: dictionary
         modified JSON suitable for computation
     """
-
     temjson = read_template(template)
     outjson = make_pod_from_template(temjson, kdd, docker2run, nof_tracks)
 
@@ -147,6 +153,7 @@ def make_json_pod(template, kdd, docker2run, nof_tracks):
         f.write(json.dumps(outjson, indent=4))
 
     return fname
+
 
 def read_config(cfname):
     """
@@ -165,7 +172,8 @@ def read_config(cfname):
         data = json.load(data_file)
     return data
 
-def main(kdds_fname, nof_tracks, nof_nodes):
+
+def main(kdds_fname, nof_tracks, nof_nodes, preempt = True):
     """
     This method creates a cluster, and then
     for a given cluster launches pods (one pod per kdd),
@@ -182,8 +190,10 @@ def main(kdds_fname, nof_tracks, nof_nodes):
 
     nof_nodes: integer
         number of the nodes in the cluster
-    """
 
+    preempt: boolean
+        if True (default) make preemptible cluster, if False make standard one
+    """
     cfg = read_config("config_cluster.json")
 
     CID   = cfg["CID"]
@@ -205,7 +215,7 @@ def main(kdds_fname, nof_tracks, nof_nodes):
 
     print("Making cluster with nodes: {0}".format(nof_nodes))
 
-    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30)
+    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30, preempt)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
@@ -235,7 +245,7 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: startCluster list_of_KDDs <# of tracks> <optional # of nodes>")
+        print("Use: startCluster list_of_KDDs <# of tracks> <optional # of nodes> <any parameter make non-preemptible cluster>")
         print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         print("Default # of nodes is 8")
         print("Default # of tracks is 100000000")
@@ -259,6 +269,9 @@ if __name__ =='__main__':
             print("# of nodes should be positive")
             sys.exit(1)
 
-    main(kdds_fname, nof_tracks, nof_nodes)
+    preempt = True
+    if nof_args > 4:
+        preempt = False
+    main(kdds_fname, nof_tracks, nof_nodes, preempt)
 
     sys.exit(0)
