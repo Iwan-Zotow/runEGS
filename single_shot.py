@@ -171,7 +171,7 @@ def run(wrk_dir, radUnit, outerCup, innerCupSer, innerCupNum, coll, x_range, y_r
     logging.info("Data uploader is going up")
     logging.info("...right now, no upload")
 
-    host, port, user, pswd, dest = read_credentials("config_sftp.json")
+    host, port, user, pswd, dest = read_credentials("config_gs.json")
     dupload = data_uploader.data_uploader(wrk_dir, host, port, dest, file_prefix, user, pswd)
 
     dupload.upload(cl)

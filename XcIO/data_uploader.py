@@ -57,7 +57,6 @@ class data_uploader(object):
         Compute hash functions of the downloaded cups, to be
         used as a signature
         """
-
         logging.info("Start data signing")
 
         algo = "sha1"
@@ -186,11 +185,11 @@ class data_uploader(object):
 
         logging.info("Done data uploading")
 
+
     def upload_sftp(self, cl):
         """
         Upload data to the server using SFTP
         """
-
         logging.info("Start data uploading [SFTP]")
 
         cwd, dir_name = os.path.split(self._wrk_dir)
@@ -240,12 +239,50 @@ class data_uploader(object):
         logging.info("Done with upload")
 
 
+    def upload_gs(self, cl):
+        """
+        Upload data to the Google Storage bucket using Python API
+        """
+        from google.cloud import storage
+
+        logging.info("Start data uploading [GSTOR]")
+
+        cwd, dir_name = os.path.split(self._wrk_dir)
+        self.sign(cl)
+        rc, aname = self.compress_data(dir_name)
+
+        if rc != 0:
+            self._rc = rc
+            return
+
+        try:
+            print(self._host_dir)
+            dest_dir = dir_name[0:dir_name.find("_")]
+
+            storage_client = storage.Client.from_service_account_json(self._user_id)
+            bucket         = storage_client.get_bucket(self._user_pass)
+
+            blob = bucket.blob(os.path.join(dest_dir, aname))
+            blob.upload_from_filename(aname)
+
+            rc = 0
+
+        except OSError:
+            logging.debug("upload_gs: OS failure ")
+            rc = -1
+            self._rc = rc
+            return
+
+        self._rc = rc
+        logging.info("Done with upload")
+
+
     def upload(self, cl):
         """
         Upload data to the server
         """
-
-        return self.upload_sftp(cl)
+        return self.upload_gs(cl)
+        #return self.upload_sftp(cl)
         #return self.upload_ssh(cl)
 
     def rc(self):
