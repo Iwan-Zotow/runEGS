@@ -262,7 +262,7 @@ class data_uploader(object):
             storage_client = storage.Client.from_service_account_json(self._user_id)
             bucket         = storage_client.get_bucket(self._user_pass)
 
-            blob = bucket.blob(os.path.join(dest_dir, aname))
+            blob = bucket.blob(os.path.join(self._host_dir, dest_dir, aname))
             blob.upload_from_filename(aname)
 
             rc = 0

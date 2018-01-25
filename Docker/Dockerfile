@@ -20,7 +20,9 @@ COPY C25.egsphsp1 /home/beamuser/runEGS/C25.egsphsp1
 
 COPY C15.egsphsp1 /home/beamuser/runEGS/C15.egsphsp1
 
-COPY config_sftp.json /home/beamuser/runEGS/config_sftp.json
+COPY magickey.json /home/beamuser/runEGS/magickey.json
+
+COPY config_gs.json /home/beamuser/runEGS/config_gs.json
 
 # python environment
 ENV PYTHONPATH /home/beamuser/runEGS/XcDefinitions:/home/beamuser/runEGS/XcMath:/home/beamuser/runEGS/XcMCCore:/home/beamuser/runEGS/XcIO
