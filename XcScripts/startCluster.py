@@ -40,7 +40,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size, preempt = True):
     """
     cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
     if preempt:
-        cmd + = " --preemptible"
+        cmd = cmd + " --preemptible"
 
     rc = subprocess.call(cmd, shell=True)
     return rc
@@ -215,7 +215,7 @@ def main(kdds_fname, nof_tracks, nof_nodes, preempt = True):
 
     print("Making cluster with nodes: {0}".format(nof_nodes))
 
-    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30, preempt)
+    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30, preempt = preempt)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
