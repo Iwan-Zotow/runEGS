@@ -1,19 +1,59 @@
 # -*- coding: utf-8 -*-
 
-import math
+import sys
 import matplotlib.pyplot as plt
 import struct
 
 import numpy as np
 
+"""
+This is sample code to read .d3d kernel files.
+After reading KDD file, code is computing KDD Scalar
+"""
+
+
+def expand_boundary(b):
+    """
+    Expand boundary vector around the left border in case it was symmetrized
+    """
+    n = b.shape[0]
+
+    r = np.empty(n + n - 1, dtype = np.float32)
+
+    i = 0
+    for k in range(0, n):
+        r[i] = -b[n-1-i]
+        i += 1
+
+    for k in range(0, n-1):
+        r[i] = b[k+1]
+        i += 1
+
+    return r
+
+
+def remake_boundary(f, n, sym):
+    """
+    Given filestream f and number of voxels/pixels n and symmetry flag sym,
+    remake the boundary array
+    """
+    b = np.empty(n + 1, dtype = np.float32)
+
+    for k in range(0, n + 1):
+        b[k] = struct.unpack('f', f.read(4))[0]
+
+    # uncoment if you prefer to work with full boundary
+    #if sym is True:
+    #    return expand_boundary(b)
+
+    return b
+
 def read_kdd(fname):
     """
-    Read Kdd file and return back tuple
-
-
+    Given KDD filename, read KDD file and return back data tuple
     """
     with open(fname, "rb") as f:
-        # read header, 32 bytes
+        # read header, 32 bytes as 8*int32
         _ = struct.unpack('i', f.read(4))[0]
         _ = struct.unpack('i', f.read(4))[0]
         _ = struct.unpack('i', f.read(4))[0]
@@ -24,44 +64,37 @@ def read_kdd(fname):
         _ = struct.unpack('i', f.read(4))[0]
 
         # read in the symmetry flags xsym, ysym, and zsym
-        xsym = struct.unpack('i', f.read(4))[0]
-        ysym = struct.unpack('i', f.read(4))[0]
-        zsym = struct.unpack('i', f.read(4))[0]
+        xsym = True if struct.unpack('i', f.read(4))[0] != 0 else False
+        ysym = True if struct.unpack('i', f.read(4))[0] != 0 else False
+        zsym = True if struct.unpack('i', f.read(4))[0] != 0 else False
 
         # read in dimensions nx, ny, and nz
         nx = struct.unpack('i', f.read(4))[0]
         ny = struct.unpack('i', f.read(4))[0]
         nz = struct.unpack('i', f.read(4))[0]
 
-        # create boundary lists
-        xBoundary = np.empty(nx + 1, dtype = np.float32)
-        yBoundary = np.empty(ny + 1, dtype = np.float32)
-        zBoundary = np.empty(nz + 1, dtype = np.float32)
-
-        #read in the boundaries
-        for k in range(0, nx+1):
-            xBoundary[k] = struct.unpack('f',f.read(4))[0]
-
-        for k in range(0, ny+1):
-            yBoundary[k] = struct.unpack('f',f.read(4))[0]
-
-        for к in range(0, nz+1):
-            zBoundary[к] = struct.unpack('f',f.read(4))[0]
+        # create boundary arrays, read in the boundaries
+        xBoundary = remake_boundary(f, nx, xsym)
+        yBoundary = remake_boundary(f, ny, ysym)
+        zBoundary = remake_boundary(f, nz, zsym)
 
         #create dose matrix
         dose = np.empty((nx,ny,nz), dtype = np.float32)
 
         #read in the dose matrix, find max
-        dmax = -1.0
         for i in range(0, nx):
             for j in range(0, ny):
                 for k in range(0, nz):
-                    v = struct.unpack('f',f.read(4))[0]
-                    dose[i, j, k] = v
-                    if v > dmax:
-                        dmax = v
+                    dose[i, j, k] = struct.unpack('f',f.read(4))[0]
+        try:
+            _ = struct.unpack('i', f.read(4))[0]
+            # if successfull, means we did something wrong, should be an exception thrown
+            raise RuntimeError("There is something wrong with KDD file,  it's TOO LONG!")
+        except struct.error as ex:
+            # got and exception, file is ok, return good values
+            pass
 
-        return (xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose, dmax)
+        return (xsym, ysym, zsym, nx, ny, nz, xBoundary, yBoundary, zBoundary, dose)
 
     return None
 
@@ -69,10 +102,15 @@ if __name__ == "__main__":
 
     import os
 
-    dirname = "D:/Ceres/Resource/PlanEngine/XcDoseData/trunk/PlanEngineResource/R5/Kdd"
+    # dirname = "D:/Ceres/Resource/PlanEngine/R5/Kdd"
+    dirname = "D:/XCSW/XcDoseData/R3/PlanEngineResource/R3/Kdd"
+    xsym25, ysym25, zsym25, nx25, ny25, nz25, xBoundary25, yBoundary25, zBoundary25, dose25 = read_kdd(os.path.join(dirname, "R3O0IQ00_Y000Z061C025.d3d"))
+    idxmax25 = np.unravel_index(np.argmax(dose25, axis=None), dose25.shape)
+    dmax25 = dose25[idxmax25]
 
-    xsym25, ysym25, zsym25, nx25, ny25, nz25, xBoundary25, yBoundary25, zBoundary25, dose25, dmax25 = read_kdd(os.path.join(dirname, "R5O0IQ00_Y000Z061C025.d3d"))
-    xsym15, ysym15, zsym15, nx15, ny15, nz15, xBoundary15, yBoundary15, zBoundary15, dose15, dmax15 = read_kdd(os.path.join(dirname, "R5O0IQ00_Y000Z061C015.d3d"))
+    xsym15, ysym15, zsym15, nx15, ny15, nz15, xBoundary15, yBoundary15, zBoundary15, dose15 = read_kdd(os.path.join(dirname, "R3O0IQ00_Y000Z061C015.d3d"))
+    idxmax15 = np.unravel_index(np.argmax(dose15, axis=None), dose15.shape)
+    dmax15 = dose15[idxmax15]
 
     print("{0}  {1}  {2}  {3}  {4}  {5}".format(nx25, ny25, nz25, nx15, ny15, nz15))
     print("{0}  {1}  {2}  {3}  {4}  {5}".format(len(xBoundary25), len(yBoundary25), len(zBoundary25), len(xBoundary15), len(yBoundary15), len(zBoundary15)))

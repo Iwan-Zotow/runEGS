@@ -19,11 +19,13 @@ def get_clinical_cup():
     """
     return ("8", "2", "M", "01", 25)
 
+
 def get_clinical_X_range():
     """
     Returns clinical X range
     """
     return (-100.0, 100.0)     # in mm
+
 
 def get_clinical_Y_range():
     """
@@ -31,17 +33,20 @@ def get_clinical_Y_range():
     """
     return (-100.0, 100.0)     # in mm
 
+
 def get_clinical_Z_range():
     """
     Returns clinical Z range
     """
     return (-105.0, 100000000.0)     # in mm
 
+
 def get_clinical_steps():
     """
     Returns clinical steps
     """
     return (1.2, 3.6) # in mm
+
 
 def get_qa_cup():
     """
@@ -51,11 +56,13 @@ def get_qa_cup():
     # inner cup shall be always Q
     return ("8", "0", "Q", "00", 25)
 
+
 def get_qa_X_range():
     """
     Returns qa X range
     """
     return (-80.0, 80.0)     # in mm
+
 
 def get_qa_Y_range():
     """
@@ -63,17 +70,20 @@ def get_qa_Y_range():
     """
     return (-80.0, 80.0)     # in mm
 
+
 def get_qa_Z_range():
     """
     Returns qa Z range
     """
     return (0.0, 130.0)     # in mm
 
+
 def get_qa_steps():
     """
     Returns qa steps
     """
     return (1.0, 2.0) # in mm
+
 
 def clean_wrk_dir(wrk_dir):
     """
@@ -89,6 +99,7 @@ def clean_wrk_dir(wrk_dir):
         os.rmdir(wrk_dir)
 
     return
+
 
 def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tracks):
     """
@@ -133,11 +144,13 @@ def run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tr
 
     logging.info("Done")
 
+
 def usage():
     """
     Print use of the main function
     """
     print("Usage: python main.py R8O3IL08C25_Y00Z00 #tracks")
+
 
 def main():
     """
@@ -158,6 +171,7 @@ def main():
             return
 
     run_one_shot(radUnit, outerCup, innerCupSer, innerCupNum, coll, shot, nof_tracks)
+
 
 if __name__ == '__main__':
 
