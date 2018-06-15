@@ -190,7 +190,7 @@ def merge_lsofs(lsof15, lsof25):
 
     return combined
 
-def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
+def process_cup(cups_dir, cup_tag, out_dir, zshift, header, sym_Y = False):
     """
     Process all shots for both collimators for a given cup tag
 
@@ -208,6 +208,12 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
 
     zshift: float
         cup Z shift relative to shot, mm
+
+    header: 8*[int]
+        array of 8 ints to write as a header
+
+    sym_Y: boolean
+        set to true if user need symmetrized-over-Y shots
     """
 
     lsof15 = get_sorted_file_list(cups_dir, cup_tag, XcConstants.C15)
@@ -224,7 +230,7 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
     ifos = []
     for shot_fname in allcups:
         fname = shot_fname
-        shot_data = process_shot.process_shot(fname, out_dir, zshift, sy)
+        shot_data = process_shot.process_shot(fname, out_dir, zshift, header, sy)
         ifos.append(shot_data)
 
         head, tail = os.path.split(shot_fname)
@@ -238,6 +244,6 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, sym_Y = False):
     write_ifo(cup_tag, out_dir, ifos, zshift)
 
 if __name__ == "__main__":
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM03",  "Out",  140.0, True)
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM07",  "Out",  140.0, True)
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL02",  "Out",  153.0, True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM03",  "Out",  140.0, [1,2,3,4,5,6,7,8], True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM07",  "Out",  140.0, [1,2,3,4,5,6,7,8], True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL02",  "Out",  153.0, [1,2,3,4,5,6,7,8], True)

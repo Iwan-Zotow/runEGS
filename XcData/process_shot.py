@@ -381,7 +381,7 @@ def writeX_d3d(fname, tddata, zshift, header):
 
     return ( bx[0], bx[-1], by[0], by[-1], bz[0] - zshift, bz[-1] - zshift)
 
-def writeXY_d3d(fname, tddata, zshift):
+def writeXY_d3d(fname, tddata, zshift, header):
     """
     Write X&Y averaged dose data, assuming data is X&Y averaged
 
@@ -396,6 +396,9 @@ def writeXY_d3d(fname, tddata, zshift):
 
     zshift: float
         Z shift, mm
+
+    header: 8*[int]
+        array of 8 ints to write as a header
 
     returns: Tuple of floats
         dose bounding box (minX, maxX, minY, maxY, minZ, maxZ), in mm, or None in the case of failure
@@ -425,14 +428,14 @@ def writeXY_d3d(fname, tddata, zshift):
 
     with open(fname, "wb") as f:
         # write 32byte header
-        f.write(struct.pack("i", 1)) # 1
-        f.write(struct.pack("i", 2)) # 2
-        f.write(struct.pack("i", 3)) # 3
-        f.write(struct.pack("i", 4)) # 4
-        f.write(struct.pack("i", 5)) # 5
-        f.write(struct.pack("i", 6)) # 6
-        f.write(struct.pack("i", 7)) # 7
-        f.write(struct.pack("i", 8)) # 8
+        f.write(struct.pack("i", np.int32(header[0]))) # 1
+        f.write(struct.pack("i", np.int32(header[1]))) # 2
+        f.write(struct.pack("i", np.int32(header[2]))) # 3
+        f.write(struct.pack("i", np.int32(header[3]))) # 4
+        f.write(struct.pack("i", np.int32(header[4]))) # 5
+        f.write(struct.pack("i", np.int32(header[5]))) # 6
+        f.write(struct.pack("i", np.int32(header[6]))) # 7
+        f.write(struct.pack("i", np.int32(header[7]))) # 8
 
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
@@ -490,7 +493,7 @@ def full_prefix_2_d3d_name(full_prefix):
 
     return file_prefix + "_Y{0:03d}Z{1:03d}C{2:03d}".format(int(shY), int(shZ), int(coll))
 
-def process_shot(shot_name, out_dir, zshift, sym_Y = False):
+def process_shot(shot_name, out_dir, zshift, header, sym_Y = False):
     """
     Process single shot given shot full filename
 
@@ -502,6 +505,12 @@ def process_shot(shot_name, out_dir, zshift, sym_Y = False):
 
     zshift: float
         Z shift, in mm
+
+    header: 8*[int]
+        array of 8 ints to write as a header
+
+    sym_Y: boolean
+        set to true if user need symmetrized-over-Y shots
 
     returns: tuple of data for .d3difo file
         collimator, shot position (Y,Z) in mm, dose box bounds (minX, maxX, minY, maxY, minZ, maxZ) in mm, .d3d file name
@@ -561,10 +570,9 @@ def process_shot(shot_name, out_dir, zshift, sym_Y = False):
         raise Exception("No dose box bounds returned\n")
 
     shot   = names_helper.parse_shot(full_prefix)
-    radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix( full_prefix )
+    radUnit, outerCup, innerCupSer, innerCupNum, coll = names_helper.parse_file_prefix(full_prefix)
 
     return (coll, shot, bounds, aname)
 
 if __name__ == "__main__":
-    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0)
-
+    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0, [1,2,3,4,5,6,7,8])
