@@ -337,14 +337,14 @@ def writeX_d3d(fname, tddata, zshift, header):
 
     with open(fname, "wb") as f:
         # write 32 byte header
-        f.write(struct.pack("i", np.int32(header[0]))) # 1
-        f.write(struct.pack("i", np.int32(header[1]))) # 2
-        f.write(struct.pack("i", np.int32(header[2]))) # 3
-        f.write(struct.pack("i", np.int32(header[3]))) # 4
-        f.write(struct.pack("i", np.int32(header[4]))) # 5
-        f.write(struct.pack("i", np.int32(header[5]))) # 6
-        f.write(struct.pack("i", np.int32(header[6]))) # 7
-        f.write(struct.pack("i", np.int32(header[7]))) # 8
+        f.write(struct.pack("i", header[0])) # 1
+        f.write(struct.pack("i", header[1])) # 2
+        f.write(struct.pack("i", header[2])) # 3
+        f.write(struct.pack("i", header[3])) # 4
+        f.write(struct.pack("i", header[4])) # 5
+        f.write(struct.pack("i", header[5])) # 6
+        f.write(struct.pack("i", header[6])) # 7
+        f.write(struct.pack("i", header[7])) # 8
 
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
@@ -428,14 +428,14 @@ def writeXY_d3d(fname, tddata, zshift, header):
 
     with open(fname, "wb") as f:
         # write 32byte header
-        f.write(struct.pack("i", np.int32(header[0]))) # 1
-        f.write(struct.pack("i", np.int32(header[1]))) # 2
-        f.write(struct.pack("i", np.int32(header[2]))) # 3
-        f.write(struct.pack("i", np.int32(header[3]))) # 4
-        f.write(struct.pack("i", np.int32(header[4]))) # 5
-        f.write(struct.pack("i", np.int32(header[5]))) # 6
-        f.write(struct.pack("i", np.int32(header[6]))) # 7
-        f.write(struct.pack("i", np.int32(header[7]))) # 8
+        f.write(struct.pack("i", header[0])) # 1
+        f.write(struct.pack("i", header[1])) # 2
+        f.write(struct.pack("i", header[2])) # 3
+        f.write(struct.pack("i", header[3])) # 4
+        f.write(struct.pack("i", header[4])) # 5
+        f.write(struct.pack("i", header[5])) # 6
+        f.write(struct.pack("i", header[6])) # 7
+        f.write(struct.pack("i", header[7])) # 8
 
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
@@ -562,9 +562,9 @@ def process_shot(shot_name, out_dir, zshift, header, sym_Y = False):
     aname = full_prefix_2_d3d_name(full_prefix)+".d3d"
     bounds = None
     if can_sym_Y:
-        bounds = writeXY_d3d(os.path.join(out_dir, aname), tddose, zshift)
+        bounds = writeXY_d3d(os.path.join(out_dir, aname), tddose, zshift, header)
     else:
-        bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift)
+        bounds = writeX_d3d(os.path.join(out_dir, aname), tddose, zshift, header)
 
     if bounds == None:
         raise Exception("No dose box bounds returned\n")
@@ -575,4 +575,4 @@ def process_shot(shot_name, out_dir, zshift, header, sym_Y = False):
     return (coll, shot, bounds, aname)
 
 if __name__ == "__main__":
-    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0, [1,2,3,4,5,6,7,8])
+    process_shot("/home/beamuser/Documents/EGS/R8O3IL09C25_Y0Z0.tar.xz", ".", 140.0, [1, 2, 3, 4, 5, 6, 7, 8])
