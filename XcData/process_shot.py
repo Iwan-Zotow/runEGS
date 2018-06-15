@@ -293,7 +293,7 @@ def read_data(full_prefix):
 
     return phd
 
-def writeX_d3d(fname, tddata, zshift):
+def writeX_d3d(fname, tddata, zshift, header):
     """
     Write X averaged dose data, assuming data is X averaged
 
@@ -308,6 +308,9 @@ def writeX_d3d(fname, tddata, zshift):
 
     zshift: float
         Z shift, mm
+
+    header: 8*[int]
+        array of 8 ints to write as a header
 
     returns: Tuple of floats
         dose bounding box (minX, maxX, minY, maxY, minZ, maxZ), in mm, or None in the case of failure
@@ -334,14 +337,14 @@ def writeX_d3d(fname, tddata, zshift):
 
     with open(fname, "wb") as f:
         # write 32 byte header
-        f.write(struct.pack("i", 1)) # 1
-        f.write(struct.pack("i", 2)) # 2
-        f.write(struct.pack("i", 3)) # 3
-        f.write(struct.pack("i", 4)) # 4
-        f.write(struct.pack("i", 5)) # 5
-        f.write(struct.pack("i", 6)) # 6
-        f.write(struct.pack("i", 7)) # 7
-        f.write(struct.pack("i", 8)) # 8
+        f.write(struct.pack("i", np.int32(header[0]))) # 1
+        f.write(struct.pack("i", np.int32(header[1]))) # 2
+        f.write(struct.pack("i", np.int32(header[2]))) # 3
+        f.write(struct.pack("i", np.int32(header[3]))) # 4
+        f.write(struct.pack("i", np.int32(header[4]))) # 5
+        f.write(struct.pack("i", np.int32(header[5]))) # 6
+        f.write(struct.pack("i", np.int32(header[6]))) # 7
+        f.write(struct.pack("i", np.int32(header[7]))) # 8
 
         # write symmetry flags
         f.write(struct.pack("i", 1)) # X sym
