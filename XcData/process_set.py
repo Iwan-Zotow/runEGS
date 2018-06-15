@@ -52,6 +52,6 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, header
 
 if __name__ == "__main__":
     process_set("/mnt/d/UTSW/R010", "R8O1IS", 1, 1,  "/mnt/d/UTSW/Out", 116.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
-    #process_set("/mnt/d/UTSW/R3", "R8O2IM", 9, 10, "/mnt/d/UTSW/Out", [1, 2, 3, 4, 5, 6, 7, 8], 140.0)
-    #process_set("/mnt/d/UTSW/R3", "R8O3IL", 9, 9,  "/mnt/d/UTSW/Out", 153.0, [1, 2, 3, 4, 5, 6, 7, 8])
-    #process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", [1, 2, 3, 4, 5, 6, 7, 8], 15.0)
+    #process_set("/mnt/d/UTSW/R3", "R8O2IM", 9, 10, "/mnt/d/UTSW/Out", 140.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    #process_set("/mnt/d/UTSW/R3", "R8O3IL", 9, 9,  "/mnt/d/UTSW/Out", 153.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    #process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", 15.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
