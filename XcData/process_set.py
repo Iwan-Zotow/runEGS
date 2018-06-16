@@ -45,13 +45,14 @@ def process_set(cups_dir, set_tag, idx_start, idx_stop,  out_dir, zshift, header
         cup_tag = "{}{:02d}".format(set_tag, k)
         p = Process(target=process_cup.process_cup, args=(cups_dir, cup_tag, out_dir, zshift, header, sy)) # calls process_cup.process_cup(cups_dir, cup_tag, out_dir, zshift, sy)
         p.start()
+        p.join()
         pps.append(p)
 
-    for p in pps:
-    	p.join()
+    #for p in pps:
+    #	p.join()
 
 if __name__ == "__main__":
-    process_set("/mnt/d/UTSW/R010", "R8O1IS", 1, 1,  "/mnt/d/UTSW/Out", 116.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
-    #process_set("/mnt/d/UTSW/R3", "R8O2IM", 9, 10, "/mnt/d/UTSW/Out", 140.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
-    #process_set("/mnt/d/UTSW/R3", "R8O3IL", 9, 9,  "/mnt/d/UTSW/Out", 153.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
-    #process_set("/home/sphinx/gcloud", "R8O0IQ", 0, 0,  "Out", 15.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    #process_set("/mnt/d/UTSW/R010", "R8O1IS", 2, 5,  "/mnt/d/UTSW/Out", 116.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    process_set("/mnt/d/UTSW/R010", "R8O2IM", 1, 10, "/mnt/d/UTSW/Out", 140.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    process_set("/mnt/d/UTSW/R010", "R8O3IL", 1, 9,  "/mnt/d/UTSW/Out", 153.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
+    process_set("/mnt/d/UTSW/R010", "R8O0IQ", 0, 0,  "/mnt/d/UTSW/Out",  15.0, [0x30313052, 2, 3, 4, 5, 6, 7, 8])
