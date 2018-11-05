@@ -6,10 +6,6 @@ RUN apt-get install -y --no-install-recommends python-pip && \
     apt-get install -y --no-install-recommends python-setuptools && \
     apt-get autoremove; apt-get autoclean; apt-get clean
 
-RUN pip install --upgrade pip
-
-RUN pip install google-cloud-storage
-
 # copy HEN_HOUSE & egsnrc
 
 RUN mkdir -p /home/beamuser/egsnrc_mp
