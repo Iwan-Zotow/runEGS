@@ -38,7 +38,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size, preempt = True):
     returns: integer
         return code from gcloud call
     """
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4} --no-enable-ip-alias".format(CID, mach_type, nof_machs, ZID, disk_size)
     if preempt:
         cmd = cmd + " --preemptible"
 
