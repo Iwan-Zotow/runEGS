@@ -244,6 +244,7 @@ def process_cup(cups_dir, cup_tag, out_dir, zshift, header, sym_Y = False):
     write_ifo(cup_tag, out_dir, ifos, zshift)
 
 if __name__ == "__main__":
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM03",  "Out",  140.0, [1,2,3,4,5,6,7,8], True)
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM07",  "Out",  140.0, [1,2,3,4,5,6,7,8], True)
-    process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL02",  "Out",  153.0, [1,2,3,4,5,6,7,8], True)
+    process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL04",  "Out",  140.0, [0x52303132, 2,3,4,5,6,7,8], True)
+    #process_cup("/home/sphinx/gcloud/30Sources", "R8O2IM07",  "Out",  140.0, [1,2,3,4,5,6,7,8], True)
+    #process_cup("/home/sphinx/gcloud/30Sources", "R8O3IL02",  "Out",  153.0, [1,2,3,4,5,6,7,8], True)
+
