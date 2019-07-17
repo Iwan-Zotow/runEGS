@@ -245,7 +245,7 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: startCluster list_of_KDDs <# of tracks> <optional # of nodes> <any parameter make non-preemptible cluster>")
+        print("Use: startCluster list_of_KDDs <# of tracks> <optional # of nodes> <any value to make non-preemptible cluster>")
         print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         print("Default # of nodes is 8")
         print("Default # of tracks is 100000000")
