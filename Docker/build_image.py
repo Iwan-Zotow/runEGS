@@ -95,9 +95,9 @@ def main():
     """
 
     # step 0 - pull ubuntu:16.04 from docker hub
-    rc = subprocess.call(["docker", "pull", "ubuntu:16.04"], stderr=subprocess.PIPE)
-    if rc != 0:
-        raise RuntimeError("Unable to pull ubuntu:16.04 image")
+    #rc = subprocess.call(["docker", "pull", "ubuntu:16.04"], stderr=subprocess.PIPE)
+    #if rc != 0:
+    #    raise RuntimeError("Unable to pull ubuntu:16.04 image")
 
     top = os.getcwd()
 
