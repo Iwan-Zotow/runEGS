@@ -61,7 +61,7 @@ class data_uploader(object):
 
         algo = "sha1"
 
-        if not (algo in hashlib.algorithms):
+        if not (algo in hashlib.algorithms_available):
             raise Exception("data_uploader", "No SHA1 hash available")
 
         self._hash = []

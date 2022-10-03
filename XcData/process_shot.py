@@ -125,7 +125,7 @@ def check_signatures(full_prefix):
         raise Exception("check_signatures", "SHA1 file is problematic")
 
     algo = "sha1"
-    if not (algo in hashlib.algorithms):
+    if not (algo in hashlib.algorithms_available):
         raise Exception("check_signatures", "No SHA1 hash available")
 
     for k, v in shas.items():
