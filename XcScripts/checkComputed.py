@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """This script compares already computed files either in directory or in the
 list vs what was requested to compute (shots list). Difference is printed
 on the console output
